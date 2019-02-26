@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Collections.Generic;
+using static Auction.Entities.Enums.CommonEnum;
 
 namespace Auction.Entities
 {
@@ -16,7 +18,7 @@ namespace Auction.Entities
         {
 
         }
-        
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             // optionsBuilder.UseSqlite("Data Source=blogging.db");
@@ -26,24 +28,24 @@ namespace Auction.Entities
         /// <summary>
         /// 用户
         /// </summary>
-        public DbSet<User> User { get; set; }
+        public DbSet<User> Users { get; set; }
 
         /// <summary>
         /// 图片
         /// </summary>
-        public DbSet<Photo> Photo { get; set; }
+        public DbSet<Photo> Photos { get; set; }
 
 
 
         /// <summary>
         /// 设备
         /// </summary>
-        public DbSet<Photo> Equipment { get; set; }
+        public DbSet<Equipment> Equipments { get; set; }
 
         /// <summary>
         /// 设备图片对应
         /// </summary>
-        public DbSet<Equipment> EquipmentPhoto { get; set; }
+        public DbSet<EquipmentPhoto> EquipmentPhotos { get; set; }
 
         #region DbQuery
         /// <summary>
@@ -59,20 +61,35 @@ namespace Auction.Entities
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            // modelBuilder.Entity<User>(entity =>
-            // {
-            //     entity.HasIndex(x => x.Guid).IsUnique();
-            // });
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.Property(e => e.IsDelete)
+                    .HasDefaultValue(IsDeleted.No);
+                entity.Property(e => e.IsLocked)
+                    .HasDefaultValue(IsLocked.UnLocked);
+                entity.Property(e => e.CreatedOn)
+                    .HasDefaultValueSql("getdate()");
+                entity.Property(e => e.UserRole)
+                    .HasDefaultValue(UserRole.Guest);
+            });
 
-            // modelBuilder.Entity<Photo>(entity =>
-            // {
-            //     entity.HasIndex(x => x.Guid).IsUnique();
-            // });
+            modelBuilder.Entity<Photo>(entity =>
+            {
+                entity.Property(e => e.IsDelete)
+                    .HasDefaultValue(IsDeleted.No);
+                entity.Property(e => e.CreatedOn)
+                    .HasDefaultValueSql("getdate()");
+            });
 
-            //  modelBuilder.Entity<Equipment>(entity =>
-            // {
-            //     entity.HasIndex(x => x.Guid).IsUnique();
-            // });
+            modelBuilder.Entity<Equipment>(entity =>
+           {
+               entity.Property(e => e.IsDelete)
+                   .HasDefaultValue(IsDeleted.No);
+               entity.Property(e => e.IsSold)
+                    .HasDefaultValue(IsSold.No);
+               entity.Property(e => e.CreatedOn)
+                   .HasDefaultValueSql("getdate()");
+           });
 
             modelBuilder.Entity<EquipmentPhoto>(entity =>
             {
@@ -95,5 +112,10 @@ namespace Auction.Entities
 
             base.OnModelCreating(modelBuilder);
         }
+
+
+        // public override EntityEntry<User> Update<User>(User entity){
+        //     return (EntityEntry)entity;
+        // }
     }
 }

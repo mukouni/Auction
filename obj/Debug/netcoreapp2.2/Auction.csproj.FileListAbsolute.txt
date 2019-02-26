@@ -1,8 +1,3 @@
-D:\net_project\Auction\obj\Debug\netcoreapp2.2\Auction.csproj.CoreCompileInputs.cache
-D:\net_project\Auction\obj\Debug\netcoreapp2.2\Auction.RazorAssemblyInfo.cache
-D:\net_project\Auction\obj\Debug\netcoreapp2.2\Auction.RazorAssemblyInfo.cs
-D:\net_project\Auction\obj\Debug\netcoreapp2.2\Auction.AssemblyInfoInputs.cache
-D:\net_project\Auction\obj\Debug\netcoreapp2.2\Auction.AssemblyInfo.cs
 D:\net_project\Auction\bin\Debug\netcoreapp2.2\Auction.deps.json
 D:\net_project\Auction\bin\Debug\netcoreapp2.2\Auction.runtimeconfig.json
 D:\net_project\Auction\bin\Debug\netcoreapp2.2\Auction.runtimeconfig.dev.json
@@ -10,6 +5,11 @@ D:\net_project\Auction\bin\Debug\netcoreapp2.2\Auction.dll
 D:\net_project\Auction\bin\Debug\netcoreapp2.2\Auction.pdb
 D:\net_project\Auction\bin\Debug\netcoreapp2.2\Auction.Views.dll
 D:\net_project\Auction\bin\Debug\netcoreapp2.2\Auction.Views.pdb
+D:\net_project\Auction\obj\Debug\netcoreapp2.2\Auction.csproj.CoreCompileInputs.cache
+D:\net_project\Auction\obj\Debug\netcoreapp2.2\Auction.RazorAssemblyInfo.cache
+D:\net_project\Auction\obj\Debug\netcoreapp2.2\Auction.RazorAssemblyInfo.cs
+D:\net_project\Auction\obj\Debug\netcoreapp2.2\Auction.AssemblyInfoInputs.cache
+D:\net_project\Auction\obj\Debug\netcoreapp2.2\Auction.AssemblyInfo.cs
 D:\net_project\Auction\obj\Debug\netcoreapp2.2\Auction.TagHelpers.input.cache
 D:\net_project\Auction\obj\Debug\netcoreapp2.2\Auction.TagHelpers.output.cache
 D:\net_project\Auction\obj\Debug\netcoreapp2.2\Auction.RazorCoreGenerate.cache

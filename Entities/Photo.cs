@@ -37,7 +37,7 @@ namespace Auction.Entities
         /// <summary>
         /// 图片排序
         /// </summary>
-        public int Ranking { get; set; }
+        public int? Ranking { get; set; }
 
         /// <summary>
         /// 是否是展示图片

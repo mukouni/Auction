@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Auction.Migrations
 {
     [DbContext(typeof(AuctionDbContext))]
-    [Migration("20190225181306_Initial")]
-    partial class Initial
+    [Migration("20190226080743_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -25,55 +25,74 @@ namespace Auction.Migrations
                 {
                     b.Property<Guid>("Guid");
 
-                    b.Property<string>("AuctionHouse");
+                    b.Property<string>("AuctionHouse")
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("City");
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Code");
 
-                    b.Property<string>("Country");
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<Guid>("CreatedByUserGuid");
+                    b.Property<Guid?>("CreatedByUserGuid");
 
-                    b.Property<string>("CreatedByUserName");
+                    b.Property<string>("CreatedByUserName")
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime>("CreatedOn");
+                    b.Property<DateTime?>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("getdate()");
 
-                    b.Property<decimal>("DealPrice");
+                    b.Property<decimal?>("DealPrice")
+                        .HasColumnType("decimal(18, 2)");
 
-                    b.Property<decimal>("DealPriceRMB");
+                    b.Property<decimal?>("DealPriceRMB")
+                        .HasColumnType("decimal(18, 2)");
 
-                    b.Property<int>("Height");
+                    b.Property<int?>("Height");
 
-                    b.Property<int>("IsDelete");
+                    b.Property<int?>("IsDelete")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(0);
 
                     b.Property<string>("IsPurchase");
 
-                    b.Property<int>("IsSold");
+                    b.Property<int>("IsSold")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(0);
 
-                    b.Property<int>("Long");
+                    b.Property<int?>("Long");
 
-                    b.Property<string>("Manufacturer");
+                    b.Property<string>("Manufacturer")
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Model");
+                    b.Property<string>("Model")
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<Guid?>("ModifiedByUserGuid");
 
-                    b.Property<string>("ModifiedByUserName");
+                    b.Property<string>("ModifiedByUserName")
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime?>("ModifiedOn");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime>("ProductionDate");
+                    b.Property<DateTime?>("ProductionDate");
 
-                    b.Property<decimal>("Volume");
+                    b.Property<string>("UseType");
 
-                    b.Property<double>("Weight");
+                    b.Property<decimal?>("Volume")
+                        .HasColumnType("decimal(18, 3)");
 
-                    b.Property<int>("Width");
+                    b.Property<double?>("Weight");
 
-                    b.Property<DateTime>("WorkingTime");
+                    b.Property<int?>("Width");
+
+                    b.Property<DateTime?>("WorkingTime");
 
                     b.HasKey("Guid");
 
@@ -86,7 +105,7 @@ namespace Auction.Migrations
 
                     b.Property<Guid>("PhotoGuid");
 
-                    b.Property<DateTime>("CreatedOn");
+                    b.Property<DateTime?>("CreatedOn");
 
                     b.HasKey("EquipmentGuid", "PhotoGuid");
 
@@ -103,29 +122,35 @@ namespace Auction.Migrations
 
                     b.Property<string>("AttachmentType");
 
-                    b.Property<Guid>("CreatedByUserGuid");
+                    b.Property<Guid?>("CreatedByUserGuid");
 
-                    b.Property<string>("CreatedByUserName");
+                    b.Property<string>("CreatedByUserName")
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime>("CreatedOn");
+                    b.Property<DateTime?>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("Extension");
 
                     b.Property<string>("FileName");
 
-                    b.Property<int>("IsDelete");
+                    b.Property<int?>("IsDelete")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(0);
 
                     b.Property<bool>("IsHome");
 
                     b.Property<Guid?>("ModifiedByUserGuid");
 
-                    b.Property<string>("ModifiedByUserName");
+                    b.Property<string>("ModifiedByUserName")
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime?>("ModifiedOn");
 
-                    b.Property<int>("Order");
-
                     b.Property<string>("OriginName");
+
+                    b.Property<int?>("Ranking");
 
                     b.Property<string>("StoreDir");
 
@@ -140,11 +165,14 @@ namespace Auction.Migrations
 
                     b.Property<Guid?>("AvatorGuid");
 
-                    b.Property<Guid>("CreatedByUserGuid");
+                    b.Property<Guid?>("CreatedByUserGuid");
 
-                    b.Property<string>("CreatedByUserName");
+                    b.Property<string>("CreatedByUserName")
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime>("CreatedOn");
+                    b.Property<DateTime?>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(800)");
@@ -152,17 +180,21 @@ namespace Auction.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("IsDelete");
+                    b.Property<int?>("IsDelete")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(0);
 
-                    b.Property<int>("IsLocked");
+                    b.Property<int?>("IsLocked")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(0);
 
                     b.Property<string>("LoginName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<Guid?>("ModifiedByUserGuid");
 
-                    b.Property<string>("ModifiedByUserName");
+                    b.Property<string>("ModifiedByUserName")
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime?>("ModifiedOn");
 
@@ -186,12 +218,12 @@ namespace Auction.Migrations
                     b.HasOne("Auction.Entities.Equipment", "Equipment")
                         .WithMany("EquipmentPhotos")
                         .HasForeignKey("EquipmentGuid")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Auction.Entities.Photo", "Photo")
                         .WithMany("EquipmentPhotos")
                         .HasForeignKey("PhotoGuid")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Auction.Entities.User", b =>

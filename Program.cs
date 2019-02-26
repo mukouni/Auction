@@ -19,6 +19,9 @@ namespace Auction
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseKestrel(c => c.AddServerHeader = false)
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                // .UseIISIntegration()
                 .UseStartup<Startup>();
     }
 }
