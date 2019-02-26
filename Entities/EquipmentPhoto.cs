@@ -1,18 +1,18 @@
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Auction.Entities
 {
     /// <summary>
     /// 设备-图片映射
     /// </summary>
-public class EquipmentPhoto
+    [Table("ac_equipment_photo")]
+    public class EquipmentPhoto
     {
         /// <summary>
         /// 设备GUID
         /// </summary>
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Key]
-        [DefaultValue("newid()")]
         public Guid EquipmentGuid { get; set; }
         /// <summary>
         /// 设备实体
@@ -22,10 +22,7 @@ public class EquipmentPhoto
         /// <summary>
         /// 图片Guid
         /// </summary>
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Key]
-        [DefaultValue("newid()")]
-        public string PhotoGuid { get; set; }
+        public Guid PhotoGuid { get; set; }
         /// <summary>
         /// 图片实体
         /// </summary>

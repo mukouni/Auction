@@ -1,5 +1,5 @@
-using Auction.Entities.QueryModels.Permission;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace Auction.Entities
 {
@@ -15,6 +15,12 @@ namespace Auction.Entities
         public AuctionDbContext(DbContextOptions<AuctionDbContext> options) : base(options)
         {
 
+        }
+        
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            // optionsBuilder.UseSqlite("Data Source=blogging.db");
+            // optionsBuilder.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"));
         }
 
         /// <summary>
@@ -68,24 +74,24 @@ namespace Auction.Entities
             //     entity.HasIndex(x => x.Guid).IsUnique();
             // });
 
-            // modelBuilder.Entity<EquipmentPhoto>(entity =>
-            // {
-            //     entity.HasKey(x => new
-            //     {
-            //         x.EquipmentGuid,
-            //         x.PhotoGuid
-            //     });
+            modelBuilder.Entity<EquipmentPhoto>(entity =>
+            {
+                entity.HasKey(x => new
+                {
+                    x.EquipmentGuid,
+                    x.PhotoGuid
+                });
 
-            //     // entity.HasOne(x => x.Equipment)
-            //     //     .WithMany(x => x.Photos)
-            //     //     .HasForeignKey(x => x.EquipmentGuid)
-            //     //     .OnDelete(DeleteBehavior.Restrict);
+                // entity.HasOne(x => x.Equipment)
+                //     .WithMany(x => x.EquipmentPhotos)
+                //     .HasForeignKey(x => x.EquipmentGuid)
+                //     .OnDelete(DeleteBehavior.Restrict);
 
-            //     // entity.HasOne(x => x.Photo)
-            //     //     .WithMany(x => x.Equipments)
-            //     //     .HasForeignKey(x => x.PhotoGuid)
-            //     //     .OnDelete(DeleteBehavior.Restrict);
-            // });
+                // entity.HasOne(x => x.Photo)
+                //     .WithMany(x => x.EquipmentPhotos)
+                //     .HasForeignKey(x => x.PhotoGuid)
+                //     .OnDelete(DeleteBehavior.Restrict);
+            });
 
             base.OnModelCreating(modelBuilder);
         }

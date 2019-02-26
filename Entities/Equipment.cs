@@ -1,9 +1,13 @@
 using System;
 using Auction.Entities;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using static Auction.Entities.Enums.CommonEnum;
 
-namespace Auction.Models
+namespace Auction.Entities
 {
+    [Table("ac_equipment")]
     public class Equipment : BaseEntity
     {
         public string Code { get; set; }
@@ -94,6 +98,6 @@ namespace Auction.Models
         /// </summary>
         public Decimal Volume { get; set; }
 
-        public virtual ICollection<Photo> Photos { get; set; } = new List<EquipmentPhoto>();
+        public virtual ICollection<EquipmentPhoto> EquipmentPhotos { get; set; } = new List<EquipmentPhoto>();
     }
 }

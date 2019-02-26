@@ -10,6 +10,7 @@ namespace Auction.Entities
     /// <summary>
     /// 登陆用户
     /// </summary>
+    [Table("ac_user")]
     public class User : BaseEntity
     {
 
@@ -21,7 +22,7 @@ namespace Auction.Entities
         public string Email { get; set; }
 
         [Column(TypeName = "nvarchar(20)")]
-        public Photo Phone { get; set; }
+        public Photo Avator { get; set; }
 
         [Column(TypeName = "nvarchar(50)")]
         public string RealName { get; set; }
@@ -29,11 +30,7 @@ namespace Auction.Entities
         [Column(TypeName = "nvarchar(255)")]
         public string Password { get; set; }
 
-        [Column(TypeName = "nvarchar(255)", Order = 100)]
-        public string Avatar { get; set; }
-
-        public IsLocked IsLocked { get; set; } = false;
-        public IsDelete IsDelete { get; set; } = false;
+        public IsLocked IsLocked { get; set; } = IsLocked.UnLocked;
 
         /// <summary>
         /// 用户描述信息

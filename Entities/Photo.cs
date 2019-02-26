@@ -1,9 +1,13 @@
-using System;
 using Auction.Entities;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using static Auction.Entities.Enums.CommonEnum;
 
-namespace Auction.Models
+namespace Auction.Entities
 {
+    [Table("ac_photo")]
     public class Photo : BaseEntity
     {
         public int AttachmentId { get; set; }
@@ -33,7 +37,7 @@ namespace Auction.Models
         /// <summary>
         /// 图片排序
         /// </summary>
-        public int Order { get; set; }
+        public int Ranking { get; set; }
 
         /// <summary>
         /// 是否是展示图片
