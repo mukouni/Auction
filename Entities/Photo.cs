@@ -1,37 +1,33 @@
-using Auction.Entities;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static Auction.Entities.Enums.CommonEnum;
 
 namespace Auction.Entities
 {
     [Table("ac_photo")]
     public class Photo : BaseEntity
     {
-        public int AttachmentId { get; set; }
-
-        public string AttachmentType { get; set; }
-
-        /// <summary>
         /// 存储的相对路径
         /// </summary>
+        [Column(TypeName = "nvarchar(255)")]
         public string StoreDir { get; set; }
 
         /// <summary>
         /// 上传后名字
         /// </summary>
+        [Column(TypeName = "nvarchar(50)")]
         public string FileName { get; set; }
 
         /// <summary>
         /// 后缀
         /// </summary>
+        [Column(TypeName = "nvarchar(50)")]
         public string Extension { get; set; }
 
         /// <summary>
         /// 上传前名字
         /// </summary>
+        [Column(TypeName = "nvarchar(255)")]
         public string OriginName { get; set; }
 
         /// <summary>
@@ -42,9 +38,20 @@ namespace Auction.Entities
         /// <summary>
         /// 是否是展示图片
         /// </summary>
-        public Boolean IsHome { get; set; } = false;
+        public Boolean? IsHome { get; set; }
 
-        public ICollection<EquipmentPhoto> EquipmentPhotos { get; } = new List<EquipmentPhoto>(); 
+        /// <summary>
+        /// 图片格式
+        /// </summary>
+        [Column(TypeName = "nvarchar(50)")]
+        public string ContentType { get; set; }
 
+        /// <summary>
+        /// 图片大小
+        /// </summary>
+        public int? FileSize { get; set; }
+
+        //导航属性
+        public Equipment EquipmentPhoto { get; set; }
     }
 }

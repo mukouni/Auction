@@ -1,7 +1,5 @@
 using System;
-using Auction.Entities;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static Auction.Entities.Enums.CommonEnum;
 
@@ -10,6 +8,7 @@ namespace Auction.Entities
     [Table("ac_equipment")]
     public class Equipment : BaseEntity
     {
+        [Column(TypeName = "nvarchar(50)")]
         public string Code { get; set; }
 
         /// <summary>
@@ -51,12 +50,13 @@ namespace Auction.Entities
         ///<summary>
         /// 是否被拍卖
         /// </summary>
-        public IsSold IsSold { get; set; } = IsSold.No;
+        public IsSold? IsSold { get; set; }
 
         ///<summary>
         /// 是否是采购设备
         /// </summary>
 
+        [Column(TypeName = "nvarchar(50)")]
         public string IsPurchase { get; set; }
 
         ///<summary>
@@ -107,12 +107,7 @@ namespace Auction.Entities
         [Column(TypeName = "decimal(18, 3)")]
         public Decimal? Volume { get; set; }
 
-
-        ///<summary>
-        /// 设备类型 
-        /// </summary>
-        public string UseType { get; set; }
-
-        public virtual ICollection<EquipmentPhoto> EquipmentPhotos { get; set; } = new List<EquipmentPhoto>();
+        // 导航属性
+        public virtual ICollection<Photo> Photos { get; set; } = new List<Photo>();
     }
 }

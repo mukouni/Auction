@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System.Collections.Generic;
+using System;
 using static Auction.Entities.Enums.CommonEnum;
 
 namespace Auction.Entities
@@ -35,17 +35,10 @@ namespace Auction.Entities
         /// </summary>
         public DbSet<Photo> Photos { get; set; }
 
-
-
         /// <summary>
         /// 设备
         /// </summary>
         public DbSet<Equipment> Equipments { get; set; }
-
-        /// <summary>
-        /// 设备图片对应
-        /// </summary>
-        public DbSet<EquipmentPhoto> EquipmentPhotos { get; set; }
 
         #region DbQuery
         /// <summary>
@@ -55,7 +48,12 @@ namespace Auction.Entities
         #endregion
 
         /// <summary>
-        /// 
+        /// 数据注释[DatabaseGenerated(DatabaseGeneratedOption.None)]
+        /// DatabaseGeneratedOption 可选项 与 Fluent API的对应关系
+        /// Computed：ValueGeneratedOnAddOrUpdate
+        /// Identity：ValueGeneratedOnAdd
+        /// None：ValueGeneratedNever
+        /// 数据注释中不能设定数据库中的默认值，只能在Fluent API中指定
         /// </summary>
         /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -63,59 +61,73 @@ namespace Auction.Entities
 
             modelBuilder.Entity<User>(entity =>
             {
+                entity.Property(e => e.Guid)
+                    .ValueGeneratedNever()
+                    .HasDefaultValueSql("newid()");
                 entity.Property(e => e.IsDelete)
                     .HasDefaultValue(IsDeleted.No);
                 entity.Property(e => e.IsLocked)
                     .HasDefaultValue(IsLocked.UnLocked);
-                entity.Property(e => e.CreatedOn)
-                    .HasDefaultValueSql("getdate()");
                 entity.Property(e => e.UserRole)
                     .HasDefaultValue(UserRole.Guest);
+                entity.Property(e => e.CreatedAt)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("getdate()");
+                entity.Property(e => e.LastUpdatedAt)
+                    .ValueGeneratedOnAddOrUpdate()
+                    .HasDefaultValueSql("getdate()");
             });
 
             modelBuilder.Entity<Photo>(entity =>
             {
+                entity.Property(e => e.Guid)
+                    .ValueGeneratedNever()
+                    .HasDefaultValueSql("newid()");
                 entity.Property(e => e.IsDelete)
                     .HasDefaultValue(IsDeleted.No);
-                entity.Property(e => e.CreatedOn)
+                entity.Property(e => e.IsHome)
+                    .HasDefaultValue(false);
+                entity.Property(e => e.CreatedAt)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("getdate()");
+                entity.Property(e => e.LastUpdatedAt)
+                    .ValueGeneratedOnAddOrUpdate()
                     .HasDefaultValueSql("getdate()");
             });
 
             modelBuilder.Entity<Equipment>(entity =>
-           {
-               entity.Property(e => e.IsDelete)
-                   .HasDefaultValue(IsDeleted.No);
-               entity.Property(e => e.IsSold)
-                    .HasDefaultValue(IsSold.No);
-               entity.Property(e => e.CreatedOn)
-                   .HasDefaultValueSql("getdate()");
-           });
-
-            modelBuilder.Entity<EquipmentPhoto>(entity =>
             {
-                entity.HasKey(x => new
-                {
-                    x.EquipmentGuid,
-                    x.PhotoGuid
-                });
-
-                // entity.HasOne(x => x.Equipment)
-                //     .WithMany(x => x.EquipmentPhotos)
-                //     .HasForeignKey(x => x.EquipmentGuid)
-                //     .OnDelete(DeleteBehavior.Restrict);
-
-                // entity.HasOne(x => x.Photo)
-                //     .WithMany(x => x.EquipmentPhotos)
-                //     .HasForeignKey(x => x.PhotoGuid)
-                //     .OnDelete(DeleteBehavior.Restrict);
+                entity.Property(e => e.Guid)
+                     .ValueGeneratedNever()
+                     .HasDefaultValueSql("newid()");
+                entity.Property(e => e.IsDelete)
+                    .HasDefaultValue(IsDeleted.No);
+                entity.Property(e => e.IsSold)
+                     .HasDefaultValue(IsSold.No);
+                entity.Property(e => e.CreatedAt)
+                     .ValueGeneratedOnAdd()
+                     .HasDefaultValueSql("getdate()");
+                entity.Property(e => e.LastUpdatedAt)
+                    .ValueGeneratedOnAddOrUpdate()
+                    .HasDefaultValueSql("getdate()");
             });
 
             base.OnModelCreating(modelBuilder);
         }
 
+        public override int SaveChanges()
+        {
+            return base.SaveChanges();
+        }
 
-        // public override EntityEntry<User> Update<User>(User entity){
-        //     return (EntityEntry)entity;
-        // }
+        public override EntityEntry Update(object entity)
+        {
+            return base.Update(entity);
+        }
+
+        public override EntityEntry<TEntity> Update<TEntity>(TEntity entity)
+        {
+            return base.Update<TEntity>(entity);
+        }
     }
 }

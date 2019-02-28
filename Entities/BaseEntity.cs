@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,30 +11,36 @@ namespace Auction.Entities
     /// </summary>
     public abstract class BaseEntity
     {
-        [Column(Order = 100)]
+        // private Guid id = Guid.Empty;
+
+        [Column(Order = 1)]
         /// <summary>
         /// GUID
         /// </summary>
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Key]
-        [DefaultValue("newid()")]
-        public Guid Guid { get; set; }
+        // [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public Guid Guid { get; set; } = Guid.NewGuid();
 
         [Column(Order = 101)]
-        public IsDeleted? IsDelete { get; set; } = IsDeleted.No;
+        public IsDeleted? IsDelete { get; set; }
 
         /// <summary>
         /// 创建时间
         /// </summary>
         [Column(Order = 102)]
-        public DateTime? CreatedOn { get; set; }
+        // [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
 
 
-         /// <summary>
+        /// <summary>
         /// 最近修改时间
+        /// EF.Property<DateTime>(b, "LastUpdated")
+        /// context.Entry(myBlog).Property("LastUpdated").CurrentValue
+        /// EF Code Model 中定义的shadow(隐藏、卷影，直译阴影)属性LastUpdated和这个字段是同一个作用。两者不确定相同，但是可以肯定时间相近
         /// </summary>
         [Column(Order = 103)]
-        public DateTime? ModifiedOn { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTime? LastUpdatedAt { get; set; }
 
         /// <summary>
         /// 创建者ID

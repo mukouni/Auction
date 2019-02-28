@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Auction.Migrations
 {
     [DbContext(typeof(AuctionDbContext))]
-    [Migration("20190226080743_init")]
+    [Migration("20190228081123_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,7 +23,8 @@ namespace Auction.Migrations
 
             modelBuilder.Entity("Auction.Entities.Equipment", b =>
                 {
-                    b.Property<Guid>("Guid");
+                    b.Property<Guid>("Guid")
+                        .HasDefaultValueSql("newid()");
 
                     b.Property<string>("AuctionHouse")
                         .HasColumnType("nvarchar(50)");
@@ -31,19 +32,20 @@ namespace Auction.Migrations
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Code");
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Country")
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<Guid?>("CreatedByUserGuid");
 
                     b.Property<string>("CreatedByUserName")
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime?>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("getdate()");
 
                     b.Property<decimal?>("DealPrice")
                         .HasColumnType("decimal(18, 2)");
@@ -57,11 +59,16 @@ namespace Auction.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(0);
 
-                    b.Property<string>("IsPurchase");
+                    b.Property<string>("IsPurchase")
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("IsSold")
+                    b.Property<int?>("IsSold")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(0);
+
+                    b.Property<DateTime?>("LastUpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<int?>("Long");
 
@@ -76,14 +83,10 @@ namespace Auction.Migrations
                     b.Property<string>("ModifiedByUserName")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime?>("ModifiedOn");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime?>("ProductionDate");
-
-                    b.Property<string>("UseType");
 
                     b.Property<decimal?>("Volume")
                         .HasColumnType("decimal(18, 3)");
@@ -99,80 +102,116 @@ namespace Auction.Migrations
                     b.ToTable("ac_equipment");
                 });
 
-            modelBuilder.Entity("Auction.Entities.EquipmentPhoto", b =>
+            modelBuilder.Entity("Auction.Entities.LoginLogging", b =>
                 {
-                    b.Property<Guid>("EquipmentGuid");
+                    b.Property<Guid>("Guid")
+                        .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("PhotoGuid");
-
-                    b.Property<DateTime?>("CreatedOn");
-
-                    b.HasKey("EquipmentGuid", "PhotoGuid");
-
-                    b.HasIndex("PhotoGuid");
-
-                    b.ToTable("ac_equipment_photo");
-                });
-
-            modelBuilder.Entity("Auction.Entities.Photo", b =>
-                {
-                    b.Property<Guid>("Guid");
-
-                    b.Property<int>("AttachmentId");
-
-                    b.Property<string>("AttachmentType");
+                    b.Property<DateTime?>("CreatedAt");
 
                     b.Property<Guid?>("CreatedByUserGuid");
 
                     b.Property<string>("CreatedByUserName")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime?>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("getdate()");
+                    b.Property<string>("Ip");
 
-                    b.Property<string>("Extension");
+                    b.Property<int?>("IsDelete");
 
-                    b.Property<string>("FileName");
-
-                    b.Property<int?>("IsDelete")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(0);
-
-                    b.Property<bool>("IsHome");
+                    b.Property<DateTime?>("LastUpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<Guid?>("ModifiedByUserGuid");
 
                     b.Property<string>("ModifiedByUserName")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime?>("ModifiedOn");
+                    b.Property<string>("Platform");
 
-                    b.Property<string>("OriginName");
-
-                    b.Property<int?>("Ranking");
-
-                    b.Property<string>("StoreDir");
+                    b.Property<Guid?>("UserGuid");
 
                     b.HasKey("Guid");
 
-                    b.ToTable("ac_photo");
+                    b.HasIndex("UserGuid");
+
+                    b.ToTable("st_login_log");
                 });
 
-            modelBuilder.Entity("Auction.Entities.User", b =>
+            modelBuilder.Entity("Auction.Entities.Photo", b =>
                 {
-                    b.Property<Guid>("Guid");
+                    b.Property<Guid>("Guid")
+                        .HasDefaultValueSql("newid()");
 
-                    b.Property<Guid?>("AvatorGuid");
+                    b.Property<string>("ContentType")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<Guid?>("CreatedByUserGuid");
 
                     b.Property<string>("CreatedByUserName")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime?>("CreatedOn")
+                    b.Property<Guid?>("EquipmentPhotoGuid");
+
+                    b.Property<string>("Extension")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("FileSize");
+
+                    b.Property<int?>("IsDelete")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(0);
+
+                    b.Property<bool?>("IsHome")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime?>("LastUpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("getdate()");
+
+                    b.Property<Guid?>("ModifiedByUserGuid");
+
+                    b.Property<string>("ModifiedByUserName")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("OriginName")
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int?>("Ranking");
+
+                    b.Property<string>("StoreDir")
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("Guid");
+
+                    b.HasIndex("EquipmentPhotoGuid");
+
+                    b.ToTable("ac_photo");
+                });
+
+            modelBuilder.Entity("Auction.Entities.User", b =>
+                {
+                    b.Property<Guid>("Guid")
+                        .HasDefaultValueSql("newid()");
+
+                    b.Property<string>("AvatorPath")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getdate()");
+
+                    b.Property<Guid?>("CreatedByUserGuid");
+
+                    b.Property<string>("CreatedByUserName")
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(800)");
@@ -188,6 +227,14 @@ namespace Auction.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(0);
 
+                    b.Property<DateTime?>("LastLoginAt");
+
+                    b.Property<string>("LastLoginIp");
+
+                    b.Property<DateTime?>("LastUpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("getdate()");
+
                     b.Property<string>("LoginName")
                         .HasColumnType("nvarchar(50)");
 
@@ -196,41 +243,36 @@ namespace Auction.Migrations
                     b.Property<string>("ModifiedByUserName")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime?>("ModifiedOn");
-
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("RealName")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("UserRole");
+                    b.Property<int?>("UserRole")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(0);
 
                     b.HasKey("Guid");
 
-                    b.HasIndex("AvatorGuid");
-
-                    b.ToTable("ac_user");
+                    b.ToTable("st_user");
                 });
 
-            modelBuilder.Entity("Auction.Entities.EquipmentPhoto", b =>
+            modelBuilder.Entity("Auction.Entities.LoginLogging", b =>
                 {
-                    b.HasOne("Auction.Entities.Equipment", "Equipment")
-                        .WithMany("EquipmentPhotos")
-                        .HasForeignKey("EquipmentGuid")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Auction.Entities.Photo", "Photo")
-                        .WithMany("EquipmentPhotos")
-                        .HasForeignKey("PhotoGuid")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("Auction.Entities.User", "User")
+                        .WithMany("LoginLogging")
+                        .HasForeignKey("UserGuid");
                 });
 
-            modelBuilder.Entity("Auction.Entities.User", b =>
+            modelBuilder.Entity("Auction.Entities.Photo", b =>
                 {
-                    b.HasOne("Auction.Entities.Photo", "Avator")
-                        .WithMany()
-                        .HasForeignKey("AvatorGuid");
+                    b.HasOne("Auction.Entities.Equipment", "EquipmentPhoto")
+                        .WithMany("Photos")
+                        .HasForeignKey("EquipmentPhotoGuid");
                 });
 #pragma warning restore 612, 618
         }

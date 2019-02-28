@@ -12,15 +12,15 @@ namespace Auction.Entities.Enums
         public enum IsDeleted
         {
             /// <summary>
-            /// 所有
+            /// 所有 -1
             /// </summary>
             All = -1,
             /// <summary>
-            /// 否
+            /// 否 0
             /// </summary>
             No = 0,
             /// <summary>
-            /// 是
+            /// 是 1
             /// </summary>
             Yes = 1
         }
@@ -31,11 +31,11 @@ namespace Auction.Entities.Enums
         public enum IsLocked
         {
             /// <summary>
-            /// 未锁定
+            /// 未锁定 0
             /// </summary>
             UnLocked = 0,
             /// <summary>
-            /// 已锁定
+            /// 已锁定 1
             /// </summary>
             Locked = 1
         }
@@ -46,11 +46,11 @@ namespace Auction.Entities.Enums
         public enum IsEnabled
         {
             /// <summary>
-            /// 否
+            /// 否 0
             /// </summary>
             No = 0,
             /// <summary>
-            /// 是
+            /// 是 1
             /// </summary>
             Yes = 1
         }
@@ -62,15 +62,15 @@ namespace Auction.Entities.Enums
         public enum Status
         {
             /// <summary>
-            /// 未指定
+            /// 未指定 -1
             /// </summary>
             All = -1,
             /// <summary>
-            /// 已禁用
+            /// 已禁用 0
             /// </summary>
             Forbidden = 0,
             /// <summary>
-            /// 正常
+            /// 正常 1
             /// </summary>
             Normal = 1
         }
@@ -81,11 +81,11 @@ namespace Auction.Entities.Enums
         public enum PermissionType
         {
             /// <summary>
-            /// 菜单
+            /// 菜单 0
             /// </summary>
             Menu = 0,
             /// <summary>
-            /// 按钮/操作/功能
+            /// 按钮/操作/功能 1
             /// </summary>
             Action = 1
         }
@@ -96,15 +96,15 @@ namespace Auction.Entities.Enums
         public enum YesOrNo
         {
             /// <summary>
-            /// 所有
+            /// 所有 -1
             /// </summary>
             All = -1,
             /// <summary>
-            /// 否
+            /// 否 0
             /// </summary>
             No = 0,
             /// <summary>
-            /// 是
+            /// 是 1
             /// </summary>
             Yes = 1
         }
@@ -116,19 +116,19 @@ namespace Auction.Entities.Enums
         public enum UserRole
         {
             /// <summary>
-            /// 管理员
+            /// 管理员 -1
             /// </summary>
             Admin = -1,
             /// <summary>
-            /// 员工
+            /// 员工 9
             /// </summary>
             Staff = 9,
             /// <summary>
-            /// 客人
+            /// 客人 0
             /// </summary>
             Guest = 0,
             /// <summary>
-            /// 会员
+            /// 会员 5
             /// </summary>
             Member = 5
         }
@@ -139,43 +139,68 @@ namespace Auction.Entities.Enums
         public enum UserStatus
         {
             /// <summary>
-            /// 未指定
+            /// 未指定 -1
             /// </summary>
             All = -1,
             /// <summary>
-            /// 已禁用
+            /// 已禁用 0
             /// </summary>
             Forbidden = 0,
             /// <summary>
-            /// 正常
+            /// 正常 1
             /// </summary>
             Normal = 1
         }
-         /// <summary>
+        /// <summary>
         /// 是否被拍卖
         /// </summary>
         public enum IsSold
         {
             /// <summary>
-            /// 未指定
+            /// 未指定 -1
             /// </summary>
             All = -1,
             /// <summary>
-            /// 否
+            /// 否 0
             /// </summary>
             No = 0,
             /// <summary>
-            /// 是
+            /// 是 1
             /// </summary>
             Yes = 1
         }
 
-        public enum  PhotoVersion
+        public enum PhotoVersion
         {
-           Normal = 48,
-           Small = 16,
-           large = 64,
-           big  = 120
+            Normal = 48,
+            Small = 16,
+            large = 64,
+            big = 120
+        }
+
+
+        /// <summary>
+        /// 平台
+        /// </summary>
+
+        public enum Platfrom
+        {
+            /// <summary>
+            /// WEB 1
+            /// </summary>
+            WEB = 1,
+            /// <summary>
+            /// Android 2
+            /// </summary>
+            Android = 2,
+            /// <summary>
+            /// IPhone 3
+            /// </summary>
+            IPhone = 3,
+            /// <summary>
+            /// WX 4
+            /// </summary>
+            WX = 4
         }
     }
 }

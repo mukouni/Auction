@@ -10,28 +10,44 @@ namespace Auction.Entities
     /// <summary>
     /// 登陆用户
     /// </summary>
-    [Table("ac_user")]
+    [Table("st_user")]
     public class User : BaseEntity
     {
-        public User(){
-
-        }
-
+        /// <summary>
+        /// 登陆名
+        /// </summary>
         [Column(TypeName = "nvarchar(50)")]
         public string LoginName { get; set; }
 
+        /// <summary>
+        /// 邮箱
+        /// </summary>
         [Column(TypeName = "nvarchar(50)")]
         public string Email { get; set; }
 
-        public Photo Avator { get; set; }
+        /// <summary>
+        /// 手机号
+        /// </summary>
+        [Column(TypeName = "nvarchar(20)")]
+        public string Phone { get; set; }
 
+        /// <summary>
+        /// 真实姓名
+        /// </summary>
         [Column(TypeName = "nvarchar(50)")]
         public string RealName { get; set; }
 
+        /// <summary>
+        /// 密码
+        /// </summary>
         [Column(TypeName = "nvarchar(255)")]
         public string Password { get; set; }
 
-        public IsLocked? IsLocked { get; set; } = Enums.CommonEnum.IsLocked.UnLocked;
+        /// <summary>
+        /// 账户是否锁定
+        /// </summary>
+
+        public IsLocked? IsLocked { get; set; }
 
         /// <summary>
         /// 用户描述信息
@@ -42,8 +58,29 @@ namespace Auction.Entities
         /// <summary>
         /// 用户的角色
         /// </summary>
-        public virtual UserRole UserRole { get; set; } = UserRole.Guest;
+        public UserRole? UserRole { get; set; }
+
+        /// <summary>
+        /// 头像 path+name+后缀
+        /// </summary>
+        public string LastLoginIp { get; set; }
+
+        /// <summary>
+        /// 头像 path+name+后缀
+        /// </summary>
+        public DateTime? LastLoginAt { get; set; }
+
+        /// <summary>
+        /// 头像 path+name+后缀
+        /// </summary>
+        [Column(TypeName = "nvarchar(50)")]
+        public string AvatorPath { get; set; }
+
+        // 导航属性
+        /// <summary>
+        /// 登陆日志
+        /// </summary>
+        public virtual ICollection<LoginLogging> LoginLogging { get; set; }
 
     }
-
 }
