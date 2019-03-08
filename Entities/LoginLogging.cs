@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static Auction.Entities.Enums.CommonEnum;
+using Auction.Identity.Entities;
 
 namespace Auction.Entities
 {
@@ -22,6 +18,6 @@ namespace Auction.Entities
         public string Platform { get; set; }
 
         // 导航属性
-        public User User { get; set; }
+        public virtual ApplicationUser User { get; set; }
     }
 }

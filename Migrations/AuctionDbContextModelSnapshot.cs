@@ -3,7 +3,6 @@ using System;
 using Auction.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Auction.Migrations
@@ -15,13 +14,11 @@ namespace Auction.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.2-servicing-10034")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "2.2.2-servicing-10034");
 
             modelBuilder.Entity("Auction.Entities.Equipment", b =>
                 {
-                    b.Property<Guid>("Guid")
+                    b.Property<Guid>("Id")
                         .HasDefaultValueSql("newid()");
 
                     b.Property<string>("AuctionHouse")
@@ -95,14 +92,14 @@ namespace Auction.Migrations
 
                     b.Property<DateTime?>("WorkingTime");
 
-                    b.HasKey("Guid");
+                    b.HasKey("Id");
 
                     b.ToTable("ac_equipment");
                 });
 
             modelBuilder.Entity("Auction.Entities.LoginLogging", b =>
                 {
-                    b.Property<Guid>("Guid")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime?>("CreatedAt");
@@ -126,18 +123,18 @@ namespace Auction.Migrations
 
                     b.Property<string>("Platform");
 
-                    b.Property<Guid?>("UserGuid");
+                    b.Property<Guid?>("UserId");
 
-                    b.HasKey("Guid");
+                    b.HasKey("Id");
 
-                    b.HasIndex("UserGuid");
+                    b.HasIndex("UserId");
 
                     b.ToTable("st_login_log");
                 });
 
             modelBuilder.Entity("Auction.Entities.Photo", b =>
                 {
-                    b.Property<Guid>("Guid")
+                    b.Property<Guid>("Id")
                         .HasDefaultValueSql("newid()");
 
                     b.Property<string>("ContentType")
@@ -152,7 +149,7 @@ namespace Auction.Migrations
                     b.Property<string>("CreatedByUserName")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<Guid?>("EquipmentPhotoGuid");
+                    b.Property<Guid?>("EquipmentPhotoId");
 
                     b.Property<string>("Extension")
                         .HasColumnType("nvarchar(50)");
@@ -187,90 +184,233 @@ namespace Auction.Migrations
                     b.Property<string>("StoreDir")
                         .HasColumnType("nvarchar(255)");
 
-                    b.HasKey("Guid");
+                    b.HasKey("Id");
 
-                    b.HasIndex("EquipmentPhotoGuid");
+                    b.HasIndex("EquipmentPhotoId");
 
                     b.ToTable("ac_photo");
                 });
 
-            modelBuilder.Entity("Auction.Entities.User", b =>
+            modelBuilder.Entity("Auction.Identity.Entities.ApplicationRole", b =>
                 {
-                    b.Property<Guid>("Guid")
-                        .HasDefaultValueSql("newid()");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken();
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasName("RoleNameIndex");
+
+                    b.ToTable("st_roles");
+                });
+
+            modelBuilder.Entity("Auction.Identity.Entities.ApplicationUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("AccessFailedCount");
 
                     b.Property<string>("AvatorPath")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("getdate()");
-
-                    b.Property<Guid?>("CreatedByUserGuid");
-
-                    b.Property<string>("CreatedByUserName")
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken();
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(800)");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(256);
 
-                    b.Property<int?>("IsDelete")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(0);
+                    b.Property<bool>("EmailConfirmed");
 
-                    b.Property<int?>("IsLocked")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(0);
+                    b.Property<bool>("LockoutEnabled");
 
-                    b.Property<DateTime?>("LastLoginAt");
+                    b.Property<DateTimeOffset?>("LockoutEnd");
 
-                    b.Property<string>("LastLoginIp");
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256);
 
-                    b.Property<DateTime?>("LastUpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasDefaultValueSql("getdate()");
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256);
 
-                    b.Property<string>("LoginName")
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<string>("PasswordHash");
 
-                    b.Property<Guid?>("ModifiedByUserGuid");
+                    b.Property<string>("PhoneNumber");
 
-                    b.Property<string>("ModifiedByUserName")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Phone")
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<bool>("PhoneNumberConfirmed");
 
                     b.Property<string>("RealName")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("UserRole")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(0);
+                    b.Property<string>("SecurityStamp");
 
-                    b.HasKey("Guid");
+                    b.Property<bool>("TwoFactorEnabled");
 
-                    b.ToTable("st_user");
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasName("UserNameIndex");
+
+                    b.ToTable("st_users");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ClaimType");
+
+                    b.Property<string>("ClaimValue");
+
+                    b.Property<Guid>("RoleId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("st_role_claims");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ClaimType");
+
+                    b.Property<string>("ClaimValue");
+
+                    b.Property<Guid>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("st_user_claims");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+                {
+                    b.Property<string>("LoginProvider");
+
+                    b.Property<string>("ProviderKey");
+
+                    b.Property<string>("ProviderDisplayName");
+
+                    b.Property<Guid>("UserId");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("st_user_logins");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+                {
+                    b.Property<Guid>("UserId");
+
+                    b.Property<Guid>("RoleId");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("st_user_roles");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+                {
+                    b.Property<Guid>("UserId");
+
+                    b.Property<string>("LoginProvider");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("st_user_tokens");
                 });
 
             modelBuilder.Entity("Auction.Entities.LoginLogging", b =>
                 {
-                    b.HasOne("Auction.Entities.User", "User")
+                    b.HasOne("Auction.Identity.Entities.ApplicationUser", "User")
                         .WithMany("LoginLogging")
-                        .HasForeignKey("UserGuid");
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Auction.Entities.Photo", b =>
                 {
                     b.HasOne("Auction.Entities.Equipment", "EquipmentPhoto")
                         .WithMany("Photos")
-                        .HasForeignKey("EquipmentPhotoGuid");
+                        .HasForeignKey("EquipmentPhotoId");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+                {
+                    b.HasOne("Auction.Identity.Entities.ApplicationRole")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+                {
+                    b.HasOne("Auction.Identity.Entities.ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+                {
+                    b.HasOne("Auction.Identity.Entities.ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+                {
+                    b.HasOne("Auction.Identity.Entities.ApplicationRole")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Auction.Identity.Entities.ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+                {
+                    b.HasOne("Auction.Identity.Entities.ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

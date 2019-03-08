@@ -1,14 +1,18 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using static Auction.Entities.Enums.CommonEnum;
+using Auction.Identity;
+using Auction.Identity.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace Auction.Entities
 {
     /// <summary>
     /// 
     /// </summary>
-    public class AuctionDbContext : DbContext
+    public class AuctionDbContext : AppIdentityDbContext
     {
         /// <summary>
         /// 
@@ -25,10 +29,10 @@ namespace Auction.Entities
             // optionsBuilder.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"));
         }
 
-        /// <summary>
-        /// 用户
-        /// </summary>
-        public DbSet<User> Users { get; set; }
+        // /// <summary>
+        // /// 用户
+        // /// </summary>
+        // public DbSet<User> Users { get; set; }
 
         /// <summary>
         /// 图片
@@ -39,6 +43,8 @@ namespace Auction.Entities
         /// 设备
         /// </summary>
         public DbSet<Equipment> Equipments { get; set; }
+
+        public DbSet<LoginLogging> LoginLoggings { get; set; }
 
         #region DbQuery
         /// <summary>
@@ -56,31 +62,37 @@ namespace Auction.Entities
         /// 数据注释中不能设定数据库中的默认值，只能在Fluent API中指定
         /// </summary>
         /// <param name="modelBuilder"></param>
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
+            // builder.Entity<ApplicationUser>().ToTable("st_users");
+            // builder.Entity<ApplicationRole>().ToTable("st_roles");
+            // builder.Entity<IdentityUserRole<Guid>>().ToTable("st_user_roles");
+            // builder.Entity<IdentityRoleClaim<Guid>>().ToTable("st_role_claims");
+            // builder.Entity<IdentityUserClaim<Guid>>().ToTable("st_user_claims");
+            // builder.Entity<IdentityUserLogin<Guid>>().ToTable("st_user_logins");
+            // builder.Entity<IdentityUserToken<Guid>>().ToTable("st_user_tokens");
+            // modelBuilder.Entity<User>(entity =>
+            // {
+            //     entity.Property(e => e.Guid)
+            //         .ValueGeneratedNever()
+            //         .HasDefaultValueSql("newid()");
+            //     entity.Property(e => e.IsDelete)
+            //         .HasDefaultValue(IsDeleted.No);
+            //     entity.Property(e => e.IsLocked)
+            //         .HasDefaultValue(IsLocked.UnLocked);
+            //     entity.Property(e => e.Role)
+            //         .HasDefaultValue(UserRole.Guest);
+            //     entity.Property(e => e.CreatedAt)
+            //         .ValueGeneratedOnAdd()
+            //         .HasDefaultValueSql("getdate()");
+            //     entity.Property(e => e.LastUpdatedAt)
+            //         .ValueGeneratedOnAddOrUpdate()
+            //         .HasDefaultValueSql("getdate()");
+            // });
 
-            modelBuilder.Entity<User>(entity =>
+            builder.Entity<Photo>(entity =>
             {
-                entity.Property(e => e.Guid)
-                    .ValueGeneratedNever()
-                    .HasDefaultValueSql("newid()");
-                entity.Property(e => e.IsDelete)
-                    .HasDefaultValue(IsDeleted.No);
-                entity.Property(e => e.IsLocked)
-                    .HasDefaultValue(IsLocked.UnLocked);
-                entity.Property(e => e.UserRole)
-                    .HasDefaultValue(UserRole.Guest);
-                entity.Property(e => e.CreatedAt)
-                    .ValueGeneratedOnAdd()
-                    .HasDefaultValueSql("getdate()");
-                entity.Property(e => e.LastUpdatedAt)
-                    .ValueGeneratedOnAddOrUpdate()
-                    .HasDefaultValueSql("getdate()");
-            });
-
-            modelBuilder.Entity<Photo>(entity =>
-            {
-                entity.Property(e => e.Guid)
+                entity.Property(e => e.Id)
                     .ValueGeneratedNever()
                     .HasDefaultValueSql("newid()");
                 entity.Property(e => e.IsDelete)
@@ -95,9 +107,9 @@ namespace Auction.Entities
                     .HasDefaultValueSql("getdate()");
             });
 
-            modelBuilder.Entity<Equipment>(entity =>
+            builder.Entity<Equipment>(entity =>
             {
-                entity.Property(e => e.Guid)
+                entity.Property(e => e.Id)
                      .ValueGeneratedNever()
                      .HasDefaultValueSql("newid()");
                 entity.Property(e => e.IsDelete)
@@ -112,7 +124,7 @@ namespace Auction.Entities
                     .HasDefaultValueSql("getdate()");
             });
 
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(builder);
         }
 
         public override int SaveChanges()

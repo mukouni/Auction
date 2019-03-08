@@ -1,0 +1,98 @@
+using System;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Auction.Identity.Services;
+using Auction.Identity.Entities;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Auction.Identity.Options;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
+[assembly: HostingStartup(hostingStartupType: typeof(Auction.Identity.IdentityHostingStartup))]
+namespace Auction.Identity
+{
+    public class IdentityHostingStartup : IHostingStartup
+    {
+        public void Configure(IWebHostBuilder builder)
+        {
+            builder.ConfigureServices((context, services) =>
+            {
+                // services.AddDbContext<AppIdentityDbContext>(options =>
+                // {
+                //     options.UseSqlServer(context.Configuration.GetConnectionString("DefaultConnection"));
+                //     options.UseLazyLoadingProxies();
+                //     options.EnableSensitiveDataLogging();
+                // });
+                services.AddDbContext<AppIdentityDbContext>(options =>
+                {
+                    var connection = "Data Source=Auction.db";
+                    options.UseSqlite(connection);
+                    options.UseLazyLoadingProxies();
+                    options.EnableSensitiveDataLogging();
+                });
+
+                services.AddIdentity<ApplicationUser, ApplicationRole>()
+                    .AddEntityFrameworkStores<AppIdentityDbContext>()
+                    .AddUserManager<UserManager<ApplicationUser>>()
+                    .AddUserStore<ApplicationUser>()
+                    .AddSignInManager()
+                    .AddDefaultTokenProviders();
+
+                services.AddTransient<ISmsSender, SmsSender>();
+                services.AddTransient<IEmailSender, EmailSender>();
+
+                services.AddAuthentication(o =>
+                {
+                    o.DefaultScheme = IdentityConstants.ApplicationScheme;
+                    o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+                })
+                .AddIdentityCookies(o => { });
+
+                services.Configure<AuthMessageSenderOptions>(context.Configuration);
+
+                services.Configure<IdentityOptions>(options =>
+                {
+                    // options.SignIn.RequireConfirmedEmail = true;
+                    options.SignIn.RequireConfirmedPhoneNumber = true; // 需要确认的电话号码进行登录。
+                    // Password settings.
+                    options.Password.RequireDigit = true;           // 需要介于 0-9 的密码。
+                    options.Password.RequireLowercase = true;       // 要求密码中的小写字符。
+                    options.Password.RequireUppercase = true;       // 需要大写字符的密码。
+                    options.Password.RequireNonAlphanumeric = true; // 需要在密码中的非字母数字字符。
+                    options.Password.RequiredUniqueChars = 1;       // 要求在密码中非重复字符数。
+                    options.Password.RequiredLength = 6;            // 密码最小长度。
+
+                    // Lockout settings.
+                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                    options.Lockout.MaxFailedAccessAttempts = 5; // 用户被锁定之前允许的失败访问尝试次数
+                    options.Lockout.AllowedForNewUsers = true;   // 确定是否新用户会被锁定。
+
+                    // User settings.
+                    options.User.AllowedUserNameCharacters =
+                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+"; // 在用户名中允许的字符。
+                    options.User.RequireUniqueEmail = false; // 要求每个用户必须拥有唯一的电子邮件。
+                });
+
+                services.ConfigureApplicationCookie(options =>
+                {
+                    // Cookie settings
+                    options.Cookie.HttpOnly = true;
+                    options.ExpireTimeSpan = TimeSpan.FromHours(1);//FromMinutes(5);
+
+                    options.LoginPath = "/Identity/Account/Login";
+                    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                    options.SlidingExpiration = true;
+
+                    options.Cookie = new CookieBuilder
+                    {
+                        IsEssential = true // required for auth to work without explicit user consent; adjust to suit your privacy policy
+                    };
+                });
+            });
+        }
+    }
+}

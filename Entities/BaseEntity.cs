@@ -19,7 +19,7 @@ namespace Auction.Entities
         /// </summary>
         [Key]
         // [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public Guid Guid { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Column(Order = 101)]
         public IsDeleted? IsDelete { get; set; }

@@ -52,6 +52,6 @@ namespace Auction.Entities
         public int? FileSize { get; set; }
 
         //导航属性
-        public Equipment EquipmentPhoto { get; set; }
+        public virtual Equipment EquipmentPhoto { get; set; }
     }
 }
