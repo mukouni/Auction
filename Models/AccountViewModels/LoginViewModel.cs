@@ -9,8 +9,8 @@ namespace Auction.Models.AccountViewModels
     public class LoginViewModel
     {
         [Required]
-        [EmailAddress]
-        public string Email { get; set; }
+        [Phone]
+        public string Phone { get; set; }
 
         [Required]
         [DataType(DataType.Password)]

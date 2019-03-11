@@ -13,39 +13,54 @@ using System.Text;
 using Auction.HealthChecks;
 using Swashbuckle.AspNetCore.Swagger;
 using Auction.Api.Auth;
-using Newtonsoft.Json.Serialization;
-using System.Reflection;
 using System.IO;
-using System;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Auction
 {
     public class Startup
     {
         private IServiceCollection _services;
-        public Startup(IHostingEnvironment env)
+        // public Startup(IHostingEnvironment env)
+        // {
+        //     var builder = new ConfigurationBuilder()
+        //         .SetBasePath(env.ContentRootPath)
+        //         .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+        //         .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+
+        //     builder.AddEnvironmentVariables();
+        //     _configuration = builder.Build();
+        // }
+        // public IConfigurationRoot _configuration { get; set; }
+
+        public Startup(IConfiguration configuration)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
-
-            builder.AddEnvironmentVariables();
-            _configuration = builder.Build();
+            _configuration = configuration;
         }
-
-        public IConfigurationRoot _configuration { get; set; }
+        public IConfiguration _configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddOptions();
+            services.AddCors(o =>
+                o.AddPolicy("*",
+                    builder => builder
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowAnyOrigin()
+                        .AllowCredentials()
+                ));
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+            var auctionSettingsSection = _configuration.GetSection("AuctionSettings");
+            services.Configure<AuctionSettings>(auctionSettingsSection);
+
             services.AddDbContext<AuctionDbContext>(options =>
             {
                 var connection = "Data Source=Auction.db";
@@ -54,37 +69,34 @@ namespace Auction
                 options.UseLazyLoadingProxies();
                 options.EnableSensitiveDataLogging();
             });
-                
-            var appSettingsSection = _configuration.GetSection("AppSettings");
-            var appSettings = appSettingsSection.Get<AppAuthenticationSettings>();
-            services.AddJwtBearerAuthentication(appSettings);
+
+
+            services.AddJwtBearerAuthentication(auctionSettingsSection.Get<AuctionSettings>());
 
             services.AddMemoryCache();
+
             services.AddAutoMapper();
-            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
             services.AddMvc()
-                    .AddJsonOptions(options =>
-                    {
-                        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                    })
+                    // .AddJsonOptions(options =>
+                    // {
+                    //     options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                    // })
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
 
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
+                // var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                // var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                // c.IncludeXmlComments(xmlPath);
             });
             services.AddHealthChecks()
                 .AddCheck<HomePageHealthCheck>("home_page_health_check")
                 .AddCheck<ApiHealthCheck>("api_health_check");
 
             services.AddHttpContextAccessor();
-
-            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
             _services = services;
         }
@@ -95,7 +107,7 @@ namespace Auction
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                ListAllRegisteredServices(app, linkGenerator);
+                // ListAllRegisteredServices(app, linkGenerator);
                 app.UseDatabaseErrorPage();
             }
             else
@@ -124,6 +136,11 @@ namespace Auction
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: "api",
+                    template: "{area:exists}/{controller=Account}/{action=Login}/{id?}")
+                ;
             });
         }
 

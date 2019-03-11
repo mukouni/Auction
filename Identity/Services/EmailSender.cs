@@ -1,42 +1,104 @@
 using System.Threading.Tasks;
-using System.Net;
-using System.Net.Mail;
 using Microsoft.Extensions.Options;
-using Auction.Identity.Options;
-using Microsoft.AspNetCore.Identity.UI.Services;
+using System;
+using MailKit.Net.Smtp;
+using MailKit;
+using MimeKit;
+using System.IO;
 
 namespace Auction.Identity.Services
 {
+    public interface IEmailSender
+    {
+        Task SendEmailAsync(string email, string userName, string subject, string callbackUrl);
+    }
+
     // This class is used by the application to send email for account confirmation and password reset.
     // For more details see https://go.microsoft.com/fwlink/?LinkID=532713
     public class EmailSender : IEmailSender
     {
-        public EmailSender(IOptions<AuthMessageSenderOptions> optionsAccessor)
+        public EmailSender(IOptions<AuctionSettings> options)
         {
-            _options = optionsAccessor.Value;
+            _options = options.Value;
         }
 
-        public AuthMessageSenderOptions _options { get; }
-        public Task SendEmailAsync(string email, string subject, string message)
+        public AuctionSettings _options { get; }
+        public Task SendEmailAsync(string email, string userName, string subject, string callbackUrl)
         {
             // return Task.CompletedTask;
 
-            return Execute(subject, message, email);
+            return ExecuteAsync(email, userName, subject, callbackUrl);
         }
 
-        public Task Execute(string subject, string message, string email)
+        public async Task ExecuteAsync(string emailAdrr, string userName, string subject, string callbackUrl)
         {
-            SmtpClient client = new SmtpClient("smtp.263.net");
-            client.UseDefaultCredentials = false;
-            client.Credentials = new NetworkCredential(_options.AdminEmailUserName, _options.AdminEmailPassword);
+            // SmtpClient client = new SmtpClient(_options.EmailHost, _options.EmailPort);
+            // client.Credentials = new NetworkCredential(_options.AdminEmailUserName, _options.AdminEmailPassword);
+            // client.UseDefaultCredentials = false;
+            // client.EnableSsl = false;
 
-            MailMessage mailMessage = new MailMessage();
-            mailMessage.From = new MailAddress(_options.AdminEmailUserName);
-            mailMessage.To.Add(email);
-            mailMessage.Body = message;
-            mailMessage.Subject = subject;
+            // var builder = new StringBuilder();
+            // string templatePath = $@"{Directory.GetCurrentDirectory()}\Identity\Templates";
+            // IRazorLightEngine engine = EngineFactory.CreatePhysical(templatePath);
+            // var model = new
+            // {
+            //     Username = userName,
+            //     Url = callbackUrl
+            // };
+            // var htmlMessage = "";
+            // var model = new
+            // {
+            //     Username = userName,
+            //     Url = callbackUrl
+            // };
+            // MailMessage mailMessage = new MailMessage();
+            // mailMessage.From = new MailAddress("it@ascendantcn.com");
+            // mailMessage.To.Add(email);
+            // mailMessage.Body = htmlMessage;
+            // mailMessage.IsBodyHtml = true;
+            // mailMessage.Subject = subject;
 
-            return client.SendMailAsync(mailMessage);
+            // Email.DefaultSender = new SmtpSender();
+            // Email.DefaultRenderer = new RazorRenderer();
+
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("中机电", _options.AdminEmailUserName));
+            message.To.Add(new MailboxAddress(userName, emailAdrr));
+            message.Subject = subject;
+
+            var builder = new BodyBuilder();
+            // var rootFolder = Directory.GetCurrentDirectory();
+            // rootFolder = rootFolder.Substring(0,
+            //             rootFolder.IndexOf(@"\Project\", StringComparison.Ordinal) + @"\Project\".Length);
+            // PathToData = Path.GetFullPath(Path.Combine(rootFolder, "Data"));
+
+            // var Parser = Parser();
+            // var d = new FileStream(Path.Combine(PathToData, $"{dataFileName}.txt"), FileMode.Open);
+            // var fs = new StreamReader(d, Encoding.UTF8);
+            using (StreamReader SourceReader = System.IO.File.OpenText($@"{Directory.GetCurrentDirectory()}\Identity\Templates\EmailTemplates.cshtml"))
+            {
+                builder.HtmlBody = SourceReader.ReadToEnd();
+            }
+            message.Body = new TextPart("html")
+            {
+                Text = builder.HtmlBody.Replace("#{UserName}", userName).Replace("#{Url}", callbackUrl)
+            };
+            // message.HtmlBody = builder.HtmlBody;
+
+            using (var client = new SmtpClient())
+            {
+                // For demo-purposes, accept all SSL certificates (in case the server supports STARTTLS)
+                // client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+
+                client.Connect(_options.EmailHost, _options.EmailPort, false);
+
+                // Note: only needed if the SMTP server requires authentication
+                client.Authenticate(_options.AdminEmailUserName, _options.AdminEmailPassword);
+
+                await client.SendAsync(message);
+                await client.DisconnectAsync(true);
+            }
+            // return Task.CompletedTask;
         }
     }
 }

@@ -14,6 +14,11 @@ namespace Auction.Models.AccountViewModels
         // public string Email { get; set; }
 
         [Required]
+        [MinLength(4)]
+        [Display(Name = "UserName")]
+        public string UserName { get; set; }
+
+        [Required]
         [Phone]
         [Display(Name = "Phone")]
         public string Phone { get; set; }

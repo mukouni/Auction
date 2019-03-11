@@ -12,7 +12,7 @@ namespace Auction.Entities
     /// <summary>
     /// 
     /// </summary>
-    public class AuctionDbContext : AppIdentityDbContext
+    public class AuctionDbContext : DbContext
     {
         /// <summary>
         /// 

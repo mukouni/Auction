@@ -10,17 +10,18 @@ using Auction.Entities;
 using Microsoft.AspNetCore.Identity;
 using Auction.Identity.Entities;
 using Auction.Identity.Services;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Auction.Models.AccountViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Auction.Identity;
 
 namespace Auction.Controllers
 {
+    [Route("[controller]")]
     public class AccountController : Controller
     {
-        private readonly AuctionDbContext _context;
+        private readonly AppIdentityDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
@@ -28,21 +29,25 @@ namespace Auction.Controllers
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public AccountController(AuctionDbContext context,
+        public AccountController(AppIdentityDbContext context,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
+            IEmailSender emailSender,
+            ISmsSender smsSender,
             IMapper mapper,
             ILoggerFactory loggerFactory)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailSender = emailSender;
+            _smsSender = smsSender;
             _mapper = mapper;
             _logger = loggerFactory.CreateLogger<AccountController>();
         }
 
         // GET: /Account/Login
-        [HttpGet]
+        [HttpGet("[action]")]
         [AllowAnonymous]
         public IActionResult Login(string returnUrl = null)
         {
@@ -52,7 +57,7 @@ namespace Auction.Controllers
 
         //
         // POST: /Account/Login
-        [HttpPost]
+        [HttpPost("[action]")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
@@ -62,7 +67,8 @@ namespace Auction.Controllers
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                String username = _context.Users.Where(u => u.PhoneNumber == model.Phone).Select(u => u.UserName).ToList().First();
+                var result = await _signInManager.PasswordSignInAsync(username, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
@@ -90,7 +96,7 @@ namespace Auction.Controllers
 
         //
         // GET: /Account/Register
-        [HttpGet]
+        [HttpGet("[action]")]
         [AllowAnonymous]
         public IActionResult Register(string returnUrl = null)
         {
@@ -101,7 +107,7 @@ namespace Auction.Controllers
         // POST: Account/Register
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost("[action]")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
@@ -109,7 +115,7 @@ namespace Auction.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { PhoneNumber = model.Phone };
+                var user = new ApplicationUser { PhoneNumber = model.Phone, UserName = model.UserName };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -132,7 +138,7 @@ namespace Auction.Controllers
 
         //
         // POST: /Account/LogOff
-        [HttpPost]
+        [HttpPost("[action]")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogOff()
         {
@@ -143,7 +149,7 @@ namespace Auction.Controllers
 
         //
         // POST: /Account/ExternalLogin
-        [HttpPost]
+        [HttpPost("[action]")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public IActionResult ExternalLogin(string provider, string returnUrl = null)
@@ -156,7 +162,7 @@ namespace Auction.Controllers
 
         // 使用外部账号登陆.Facebook, Google之类的
         // GET: /Account/ExternalLoginCallback
-        [HttpGet]
+        [HttpGet("[action]")]
         [AllowAnonymous]
         public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
         {
@@ -201,7 +207,7 @@ namespace Auction.Controllers
 
         //
         // POST: /Account/ExternalLoginConfirmation
-        [HttpPost]
+        [HttpPost("[action]")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl = null)
@@ -238,7 +244,7 @@ namespace Auction.Controllers
         }
 
         // GET: /Account/ConfirmEmail
-        [HttpGet]
+        [HttpGet("[action]")]
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
@@ -257,7 +263,7 @@ namespace Auction.Controllers
 
         //
         // GET: /Account/ForgotPassword
-        [HttpGet]
+        [HttpGet("[action]")]
         [AllowAnonymous]
         public IActionResult ForgotPassword()
         {
@@ -266,7 +272,7 @@ namespace Auction.Controllers
 
         //
         // POST: /Account/ForgotPassword
-        [HttpPost]
+        [HttpPost("[action]")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
@@ -274,19 +280,19 @@ namespace Auction.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
-                {
-                    // Don't reveal that the user does not exist or is not confirmed
-                    return View("ForgotPasswordConfirmation");
-                }
+                // var user = _context.Users.Where(u => u.NormalizedEmail == model.Email).ToList().FirstOrDefault();
+                // if (user == null ) // || !(await _userManager.IsEmailConfirmedAsync(user)))
+                // {
+                //     // Don't reveal that the user does not exist or is not confirmed
+                //     return View("ForgotPasswordConfirmation");
+                // }
 
                 // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                 // Send an email with this link
-                //var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                //var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-                //await _emailSender.SendEmailAsync(model.Email, "Reset Password",
-                //   "Please reset your password by clicking here: <a href=\"" + callbackUrl + "\">link</a>");
-                //return View("ForgotPasswordConfirmation");
+                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+                await _emailSender.SendEmailAsync(model.Email, user.UserName, "Reset Password", callbackUrl);
+                return View("ForgotPasswordConfirmation");
             }
 
             // If we got this far, something failed, redisplay form
@@ -295,7 +301,7 @@ namespace Auction.Controllers
 
         //
         // GET: /Account/ForgotPasswordConfirmation
-        [HttpGet]
+        [HttpGet("[action]")]
         [AllowAnonymous]
         public IActionResult ForgotPasswordConfirmation()
         {
@@ -304,7 +310,7 @@ namespace Auction.Controllers
 
         //
         // GET: /Account/ResetPassword
-        [HttpGet]
+        [HttpGet("[action]")]
         [AllowAnonymous]
         public IActionResult ResetPassword(string code = null)
         {
@@ -313,7 +319,7 @@ namespace Auction.Controllers
 
         //
         // POST: /Account/ResetPassword
-        [HttpPost]
+        [HttpPost("[action]")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
@@ -339,7 +345,7 @@ namespace Auction.Controllers
 
         //
         // GET: /Account/ResetPasswordConfirmation
-        [HttpGet]
+        [HttpGet("[action]")]
         [AllowAnonymous]
         public IActionResult ResetPasswordConfirmation()
         {
@@ -348,7 +354,7 @@ namespace Auction.Controllers
 
         //
         // GET: /Account/SendCode
-        [HttpGet]
+        [HttpGet("[action]")]
         [AllowAnonymous]
         public async Task<ActionResult> SendCode(string returnUrl = null, bool rememberMe = false)
         {
@@ -364,7 +370,7 @@ namespace Auction.Controllers
 
         //
         // POST: /Account/SendCode
-        [HttpPost]
+        [HttpPost("[action]")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SendCode(SendCodeViewModel model)
@@ -395,7 +401,7 @@ namespace Auction.Controllers
             var message = "Your security code is: " + code;
             if (model.SelectedProvider == "Email")
             {
-                await _emailSender.SendEmailAsync(await _userManager.GetEmailAsync(user), "Security Code", message);
+                await _emailSender.SendEmailAsync(await _userManager.GetEmailAsync(user), await _userManager.GetUserNameAsync(user), "Security Code", code);
             }
             else if (model.SelectedProvider == "Phone")
             {
@@ -407,7 +413,7 @@ namespace Auction.Controllers
 
         //
         // GET: /Account/VerifyCode
-        [HttpGet]
+        [HttpGet("[action]")]
         [AllowAnonymous]
         public async Task<IActionResult> VerifyCode(string provider, bool rememberMe, string returnUrl = null)
         {
@@ -422,7 +428,7 @@ namespace Auction.Controllers
 
         //
         // POST: /Account/VerifyCode
-        [HttpPost]
+        [HttpPost("[action]")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> VerifyCode(VerifyCodeViewModel model)
@@ -454,7 +460,7 @@ namespace Auction.Controllers
 
         //
         // GET: /Account/VerifyAuthenticatorCode
-        [HttpGet]
+        [HttpGet("[action]")]
         [AllowAnonymous]
         public async Task<IActionResult> VerifyAuthenticatorCode(bool rememberMe, string returnUrl = null)
         {
@@ -469,7 +475,7 @@ namespace Auction.Controllers
 
         //
         // POST: /Account/VerifyAuthenticatorCode
-        [HttpPost]
+        [HttpPost("[action]")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> VerifyAuthenticatorCode(VerifyAuthenticatorCodeViewModel model)
@@ -501,7 +507,7 @@ namespace Auction.Controllers
 
         //
         // GET: /Account/UseRecoveryCode
-        [HttpGet]
+        [HttpGet("[action]")]
         [AllowAnonymous]
         public async Task<IActionResult> UseRecoveryCode(string returnUrl = null)
         {
@@ -516,7 +522,7 @@ namespace Auction.Controllers
 
         //
         // POST: /Account/UseRecoveryCode
-        [HttpPost]
+        [HttpPost("[action]")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UseRecoveryCode(UseRecoveryCodeViewModel model)

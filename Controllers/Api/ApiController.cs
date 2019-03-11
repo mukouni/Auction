@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Auction.Api.Controllers.V1
+namespace Auction.Controllers.Api
 {
+    
     [ApiController]
     public class ApiController : ControllerBase { }
 }

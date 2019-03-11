@@ -7,20 +7,20 @@ using Auction.Identity.Entities;
 using Auction.Entities;
 using Microsoft.AspNetCore.Identity;
 using Auction.Identity.Services;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Auction.Models.AccountViewModels;
 using Auction.Api.Extensions;
+using Auction.Identity;
 
-namespace Auction.Api.Controllers.V1
+namespace Auction.Controllers.Api
 {
-    [Route("api/v1/[controller]")]
-    [ApiController]
+    [Area("api")]
+    [Route("[area]/[controller]")]
     public class AccountController : ApiController
     {
-        private readonly AuctionDbContext _dbContext;
+        private readonly AppIdentityDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
@@ -28,13 +28,13 @@ namespace Auction.Api.Controllers.V1
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public AccountController(AuctionDbContext dbContext,
+        public AccountController(AppIdentityDbContext context,
              UserManager<ApplicationUser> userManager,
              SignInManager<ApplicationUser> signInManager,
              IMapper mapper,
              ILoggerFactory loggerFactory)
         {
-            _dbContext = dbContext;
+            _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
             _mapper = mapper;
@@ -43,7 +43,7 @@ namespace Auction.Api.Controllers.V1
 
         //
         // POST: /Account/Login
-        [HttpPost]
+        [HttpPost("[action]")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
@@ -54,7 +54,8 @@ namespace Auction.Api.Controllers.V1
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                string username = _context.Users.Where(u => u.PhoneNumber == model.Phone).Select(u => u.UserName).ToList().First();
+                var result = await _signInManager.PasswordSignInAsync(username, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");

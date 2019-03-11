@@ -2,7 +2,6 @@ using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Auction.Identity.Services;
@@ -37,27 +36,27 @@ namespace Auction.Identity
 
                 services.AddIdentity<ApplicationUser, ApplicationRole>()
                     .AddEntityFrameworkStores<AppIdentityDbContext>()
-                    .AddUserManager<UserManager<ApplicationUser>>()
-                    .AddUserStore<ApplicationUser>()
+                    // .AddUserManager<UserManager<ApplicationUser>>()
+                    // .AddUserStore<ApplicationUser>()
                     .AddSignInManager()
                     .AddDefaultTokenProviders();
 
                 services.AddTransient<ISmsSender, SmsSender>();
                 services.AddTransient<IEmailSender, EmailSender>();
 
-                services.AddAuthentication(o =>
-                {
-                    o.DefaultScheme = IdentityConstants.ApplicationScheme;
-                    o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-                })
-                .AddIdentityCookies(o => { });
+                // services.AddAuthentication(o =>
+                // {
+                //     o.DefaultScheme = IdentityConstants.ApplicationScheme;
+                //     o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+                // })
+                // .AddIdentityCookies(o => { });
 
                 services.Configure<AuthMessageSenderOptions>(context.Configuration);
 
                 services.Configure<IdentityOptions>(options =>
                 {
                     // options.SignIn.RequireConfirmedEmail = true;
-                    options.SignIn.RequireConfirmedPhoneNumber = true; // 需要确认的电话号码进行登录。
+                    options.SignIn.RequireConfirmedPhoneNumber = false; // 需要确认的电话号码进行登录。
                     // Password settings.
                     options.Password.RequireDigit = true;           // 需要介于 0-9 的密码。
                     options.Password.RequireLowercase = true;       // 要求密码中的小写字符。
@@ -81,7 +80,7 @@ namespace Auction.Identity
                 {
                     // Cookie settings
                     options.Cookie.HttpOnly = true;
-                    options.ExpireTimeSpan = TimeSpan.FromHours(1);//FromMinutes(5);
+                    options.ExpireTimeSpan = TimeSpan.FromHours(1); //FromMinutes(5);
 
                     options.LoginPath = "/Identity/Account/Login";
                     options.AccessDeniedPath = "/Identity/Account/AccessDenied";

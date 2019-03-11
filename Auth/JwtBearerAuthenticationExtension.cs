@@ -19,7 +19,7 @@ namespace Auction.Api.Auth
         /// </summary>
         /// <param name="services"></param>
         /// <param name="appSettings">JWT授权的配置项</param>
-        public static void AddJwtBearerAuthentication(this IServiceCollection services, AppAuthenticationSettings appSettings)
+        public static void AddJwtBearerAuthentication(this IServiceCollection services, AuctionSettings appSettings)
         {
             //使用应用密钥得到一个加密密钥字节数组
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);

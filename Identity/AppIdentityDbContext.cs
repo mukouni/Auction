@@ -11,7 +11,7 @@ namespace Auction.Identity
 {
     public class AppIdentityDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
-        public AppIdentityDbContext(DbContextOptions options) : base(options)
+        public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options) : base(options)
         {
         }
 
