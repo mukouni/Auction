@@ -21,35 +21,60 @@ namespace Auction.Api.Auth
         /// <param name="appSettings">JWT授权的配置项</param>
         public static void AddJwtBearerAuthentication(this IServiceCollection services, AuctionSettings appSettings)
         {
-            //使用应用密钥得到一个加密密钥字节数组
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-
-            services.AddAuthentication()
-                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, x =>
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, o =>
                 {
-                    x.RequireHttpsMetadata = true;
-                    x.SaveToken = true;
-                    x.TokenValidationParameters = new TokenValidationParameters
+                    o.RequireHttpsMetadata = true;
+                    o.SaveToken = true;
+
+                    o.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(key),
-                        ValidateIssuer = false,
-                        ValidateAudience = false
+                        IssuerSigningKey = appSettings.IssuerSigningKey,
+
+                        ValidateIssuer = true,
+                        ValidIssuer = appSettings.Issuer,
+
+                        ValidateAudience = true,
+                        ValidAudience = appSettings.Audience,
+
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.FromMinutes(5)
                     };
                 });
         }
 
-        public static string GetJwtAccessToken(AppAuthenticationSettings appSettings, ClaimsIdentity claimsIdentity)
+        /// <summary>
+        /// 登陆用户
+        /// </summary>
+        public static string GenerateJwtToken(AuctionSettings appSettings, Claim[] claims) // ClaimsIdentity claimsIdentity)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = claimsIdentity,
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+            // var tokenDescriptor = new SecurityTokenDescriptor
+            // {
+            //     Issuer = appSettings.Issuer,
+            //     Audience = appSettings.Audience,
+            //     Subject = claimsIdentity,
+            //     IssuedAt = DateTime.Now,
+            //     NotBefore = DateTime.Now.AddSeconds(3),
+            //     Expires = DateTime.UtcNow.AddDays(7),
+            //     SigningCredentials = appSettings.SigningCredentials
+            // };
+
+
+            // var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            // 创建用户身份标识
+
+            // 创建令牌
+            var token = new JwtSecurityToken(
+                issuer: appSettings.Issuer,
+                audience: appSettings.Audience,
+                claims: claims,
+                notBefore: DateTime.Now,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: appSettings.SigningCredentials
+            );
             return tokenHandler.WriteToken(token);
         }
     }

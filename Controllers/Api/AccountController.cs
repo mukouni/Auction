@@ -13,13 +13,19 @@ using Microsoft.AspNetCore.Authorization;
 using Auction.Models.AccountViewModels;
 using Auction.Api.Extensions;
 using Auction.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Auction.Api.Auth;
+using Microsoft.Extensions.Options;
+using System.Security.Claims;
 
 namespace Auction.Controllers.Api
 {
     [Area("api")]
     [Route("[area]/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AccountController : ApiController
     {
+        private readonly AuctionSettings _appSettings;
         private readonly AppIdentityDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -28,15 +34,21 @@ namespace Auction.Controllers.Api
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public AccountController(AppIdentityDbContext context,
-             UserManager<ApplicationUser> userManager,
-             SignInManager<ApplicationUser> signInManager,
-             IMapper mapper,
-             ILoggerFactory loggerFactory)
+        public AccountController(IOptions<AuctionSettings> appSettings,
+        AppIdentityDbContext context,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IEmailSender emailSender,
+            ISmsSender smsSender,
+            IMapper mapper,
+            ILoggerFactory loggerFactory)
         {
+            _appSettings = appSettings.Value;
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailSender = emailSender;
+            _smsSender = smsSender;
             _mapper = mapper;
             _logger = loggerFactory.CreateLogger<AccountController>();
         }
@@ -45,7 +57,6 @@ namespace Auction.Controllers.Api
         // POST: /Account/Login
         [HttpPost("[action]")]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
             var response = ResponseModelFactory.CreateInstance;
@@ -55,10 +66,33 @@ namespace Auction.Controllers.Api
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 string username = _context.Users.Where(u => u.PhoneNumber == model.Phone).Select(u => u.UserName).ToList().First();
-                var result = await _signInManager.PasswordSignInAsync(username, model.Password, model.RememberMe, lockoutOnFailure: false);
+                if (username == null)
+                {
+                    response.SetFailed("没有找到手机号");
+                    return Ok(response);
+                }
+                var user = await _userManager.FindByNameAsync(username);
+                 if (user == null)
+                {
+                    response.SetFailed("没有找到用户");
+                    return Ok(response);
+                }
+                var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+                // var result = await _signInManager.PasswordSignInAsync(username, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
+                    // var claimsIdentity = new ClaimsIdentity(JwtBearerDefaults.AuthenticationScheme);
+
+                    var claims = new Claim[]
+                    {
+                        new Claim(ClaimTypes.Name, username),
+                        new Claim(ClaimTypes.Sid, user.Id.ToString()),
+                        new Claim("avatar", ""),
+                        new Claim("displayName", user.RealName),
+                        new Claim(ClaimTypes.MobilePhone, user.PhoneNumber)
+                    };
+                    response.SetData(JwtBearerAuthenticationExtension.GenerateJwtToken(_appSettings, claims));
                     return Ok(response);
                 }
                 if (result.RequiresTwoFactor)
@@ -84,5 +118,13 @@ namespace Auction.Controllers.Api
             response.SetFailed("需要二次验证登陆");
             return Ok(response);
         }
+
+        [Authorize]
+        [HttpGet]
+        public object Protected()
+        {
+            return "Protected area";
+        }
+
     }
 }

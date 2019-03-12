@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Auction.Identity.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using System.IdentityModel.Tokens.Jwt;
 
 [assembly: HostingStartup(hostingStartupType: typeof(Auction.Identity.IdentityHostingStartup))]
 namespace Auction.Identity
@@ -35,11 +37,29 @@ namespace Auction.Identity
                 });
 
                 services.AddIdentity<ApplicationUser, ApplicationRole>()
-                    .AddEntityFrameworkStores<AppIdentityDbContext>()
-                    // .AddUserManager<UserManager<ApplicationUser>>()
-                    // .AddUserStore<ApplicationUser>()
-                    .AddSignInManager()
-                    .AddDefaultTokenProviders();
+                        .AddEntityFrameworkStores<AppIdentityDbContext>()
+                        // .AddUserManager<UserManager<ApplicationUser>>()
+                        // .AddUserStore<ApplicationUser>()
+                        .AddSignInManager()
+                        .AddDefaultTokenProviders();
+                
+                // IdentityModelEventSource.ShowPII = true;
+
+                // JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+                // services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                //         .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+                //         {
+                //             //认证失败，会自动跳转到这个地址
+                //             options.LoginPath = "/Home/Login";
+                //         });
+
+                // services.Configure<CookiePolicyOptions>(options =>
+                // {
+                //     // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                //     //options.CheckConsentNeeded = context => true;
+                //     options.MinimumSameSitePolicy = SameSiteMode.None;
+                // });
 
                 services.AddTransient<ISmsSender, SmsSender>();
                 services.AddTransient<IEmailSender, EmailSender>();
@@ -79,6 +99,10 @@ namespace Auction.Identity
                 services.ConfigureApplicationCookie(options =>
                 {
                     // Cookie settings
+                    options.ForwardDefaultSelector = ctx =>
+                    {
+                        return ctx.Request.Path.StartsWithSegments("/api") ? JwtBearerDefaults.AuthenticationScheme : null;
+                    };
                     options.Cookie.HttpOnly = true;
                     options.ExpireTimeSpan = TimeSpan.FromHours(1); //FromMinutes(5);
 
