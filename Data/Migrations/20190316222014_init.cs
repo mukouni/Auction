@@ -1,9 +1,10 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Auction.Migrations
 {
-    public partial class identity : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -27,7 +28,7 @@ namespace Auction.Migrations
                     Country = table.Column<string>(type: "nvarchar(50)", nullable: true),
                     City = table.Column<string>(type: "nvarchar(50)", nullable: true),
                     IsSold = table.Column<int>(nullable: true, defaultValue: 0),
-                    IsPurchase = table.Column<string>(type: "nvarchar(50)", nullable: true),
+                    IsPurchase = table.Column<string>(type: "nvarchar(50)", nullable: true, defaultValue: "No"),
                     ProductionDate = table.Column<DateTime>(nullable: true),
                     WorkingTime = table.Column<DateTime>(nullable: true),
                     DealPrice = table.Column<decimal>(type: "decimal(18, 2)", nullable: true),
@@ -97,22 +98,23 @@ namespace Auction.Migrations
                     CreatedByUserName = table.Column<string>(type: "nvarchar(50)", nullable: true),
                     ModifiedByUserGuid = table.Column<Guid>(nullable: true),
                     ModifiedByUserName = table.Column<string>(type: "nvarchar(50)", nullable: true),
-                    StoreDir = table.Column<string>(type: "nvarchar(255)", nullable: true),
+                    RequestPath = table.Column<string>(type: "nvarchar(255)", nullable: true),
+                    SavePath = table.Column<string>(type: "nvarchar(255)", nullable: true),
                     FileName = table.Column<string>(type: "nvarchar(50)", nullable: true),
                     Extension = table.Column<string>(type: "nvarchar(50)", nullable: true),
                     OriginName = table.Column<string>(type: "nvarchar(255)", nullable: true),
                     Ranking = table.Column<int>(nullable: true),
-                    IsHome = table.Column<bool>(nullable: true, defaultValue: false),
+                    IsCover = table.Column<bool>(nullable: true, defaultValue: false),
                     ContentType = table.Column<string>(type: "nvarchar(50)", nullable: true),
-                    FileSize = table.Column<int>(nullable: true),
-                    EquipmentPhotoId = table.Column<Guid>(nullable: true)
+                    FileSize = table.Column<long>(nullable: true),
+                    EquipmentId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ac_photo", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ac_photo_ac_equipment_EquipmentPhotoId",
-                        column: x => x.EquipmentPhotoId,
+                        name: "FK_ac_photo_ac_equipment_EquipmentId",
+                        column: x => x.EquipmentId,
                         principalTable: "ac_equipment",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -123,7 +125,7 @@ namespace Auction.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     RoleId = table.Column<Guid>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -171,7 +173,7 @@ namespace Auction.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<Guid>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -252,9 +254,9 @@ namespace Auction.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ac_photo_EquipmentPhotoId",
+                name: "IX_ac_photo_EquipmentId",
                 table: "ac_photo",
-                column: "EquipmentPhotoId");
+                column: "EquipmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_st_login_log_UserId",
@@ -270,7 +272,8 @@ namespace Auction.Migrations
                 name: "RoleNameIndex",
                 table: "st_roles",
                 column: "NormalizedName",
-                unique: true);
+                unique: true,
+                filter: "[NormalizedName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_st_user_claims_UserId",
@@ -296,7 +299,8 @@ namespace Auction.Migrations
                 name: "UserNameIndex",
                 table: "st_users",
                 column: "NormalizedUserName",
-                unique: true);
+                unique: true,
+                filter: "[NormalizedUserName] IS NOT NULL");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

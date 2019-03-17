@@ -1,0 +1,21 @@
+<div>
+    <input type="text" id="filename" />
+    <button onclick="downLoad()">下载</button>
+</div>
+
+ <script>
+    function downLoad() {
+        var filename = $("#filename").val();
+        $.ajax({
+            type: "post",
+            url: "@Url.Action("DownloadFile")",
+            data: {file: filename},
+            dataType: "application/octet-stream",
+            success: function (response) {
+                
+            }
+        });
+        // window.location.href = "@Url.Action("DownloadFile")?file=" + filename;
+    }
+ </script>
+

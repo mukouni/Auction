@@ -39,12 +39,17 @@ using Auction.Models.ManageViewModels;
 #line default
 #line hidden
 #line 6 "D:\net_project\Auction\Views\_ViewImports.cshtml"
+using Auction.Models.EquipmentViewModels;
+
+#line default
+#line hidden
+#line 7 "D:\net_project\Auction\Views\_ViewImports.cshtml"
 using Microsoft.AspNetCore.Identity;
 
 #line default
 #line hidden
     [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"128a6c27bfbb73b4b8264cba69a867891b7a7848", @"/Views/Home/Index.cshtml")]
-    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"21ff651afec00a2cddd2e84c50901f67034c242f", @"/Views/_ViewImports.cshtml")]
+    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"9b57712bf9e12a79877dfc4eec0a8c0d3ca12647", @"/Views/_ViewImports.cshtml")]
     public class Views_Home_Index : global::Microsoft.AspNetCore.Mvc.Razor.RazorPage<dynamic>
     {
         #pragma warning disable 1998

@@ -170,6 +170,25 @@ namespace Auction.Entities.Enums
             Yes = 1
         }
 
+        /// <summary>
+        /// 是否被拍卖
+        /// </summary>
+        public enum IsPurchase
+        {
+            /// <summary>
+            /// 未指定 -1
+            /// </summary>
+            All = -1,
+            /// <summary>
+            /// 否 0
+            /// </summary>
+            No = 0,
+            /// <summary>
+            /// 是 1
+            /// </summary>
+            Yes = 1
+        }
+
         public enum PhotoVersion
         {
             Normal = 48,

@@ -3,6 +3,7 @@ using System;
 using Auction.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Auction.Migrations
@@ -14,7 +15,9 @@ namespace Auction.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.2-servicing-10034");
+                .HasAnnotation("ProductVersion", "2.2.2-servicing-10034")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Auction.Entities.Equipment", b =>
                 {
@@ -55,7 +58,9 @@ namespace Auction.Migrations
                         .HasDefaultValue(0);
 
                     b.Property<string>("IsPurchase")
-                        .HasColumnType("nvarchar(50)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("No");
 
                     b.Property<int?>("IsSold")
                         .ValueGeneratedOnAdd()
@@ -149,7 +154,7 @@ namespace Auction.Migrations
                     b.Property<string>("CreatedByUserName")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<Guid?>("EquipmentPhotoId");
+                    b.Property<Guid?>("EquipmentId");
 
                     b.Property<string>("Extension")
                         .HasColumnType("nvarchar(50)");
@@ -157,15 +162,15 @@ namespace Auction.Migrations
                     b.Property<string>("FileName")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("FileSize");
+                    b.Property<long?>("FileSize");
+
+                    b.Property<bool?>("IsCover")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(false);
 
                     b.Property<int?>("IsDelete")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(0);
-
-                    b.Property<bool?>("IsHome")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(false);
 
                     b.Property<DateTime?>("LastUpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
@@ -181,12 +186,15 @@ namespace Auction.Migrations
 
                     b.Property<int?>("Ranking");
 
-                    b.Property<string>("StoreDir")
+                    b.Property<string>("RequestPath")
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("SavePath")
                         .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EquipmentPhotoId");
+                    b.HasIndex("EquipmentId");
 
                     b.ToTable("ac_photo");
                 });
@@ -209,7 +217,8 @@ namespace Auction.Migrations
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("RoleNameIndex");
+                        .HasName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("st_roles");
                 });
@@ -268,7 +277,8 @@ namespace Auction.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("UserNameIndex");
+                        .HasName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("st_users");
                 });
@@ -276,7 +286,8 @@ namespace Auction.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ClaimType");
 
@@ -294,7 +305,8 @@ namespace Auction.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ClaimType");
 
@@ -363,9 +375,9 @@ namespace Auction.Migrations
 
             modelBuilder.Entity("Auction.Entities.Photo", b =>
                 {
-                    b.HasOne("Auction.Entities.Equipment", "EquipmentPhoto")
+                    b.HasOne("Auction.Entities.Equipment", "Equipment")
                         .WithMany("Photos")
-                        .HasForeignKey("EquipmentPhotoId");
+                        .HasForeignKey("EquipmentId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

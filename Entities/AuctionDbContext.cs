@@ -97,7 +97,7 @@ namespace Auction.Entities
                     .HasDefaultValueSql("newid()");
                 entity.Property(e => e.IsDelete)
                     .HasDefaultValue(IsDeleted.No);
-                entity.Property(e => e.IsHome)
+                entity.Property(e => e.IsCover)
                     .HasDefaultValue(false);
                 entity.Property(e => e.CreatedAt)
                     .ValueGeneratedOnAdd()
@@ -116,6 +116,8 @@ namespace Auction.Entities
                     .HasDefaultValue(IsDeleted.No);
                 entity.Property(e => e.IsSold)
                      .HasDefaultValue(IsSold.No);
+                entity.Property(e => e.IsPurchase)
+                    .HasDefaultValue(IsPurchase.No);
                 entity.Property(e => e.CreatedAt)
                      .ValueGeneratedOnAdd()
                      .HasDefaultValueSql("getdate()");

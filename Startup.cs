@@ -14,6 +14,9 @@ using Auction.HealthChecks;
 using Swashbuckle.AspNetCore.Swagger;
 using Auction.Api.Auth;
 using System.IO;
+using Microsoft.Extensions.FileProviders;
+using Auction.Data.AutoMapper;
+using Newtonsoft.Json.Serialization;
 
 namespace Auction
 {
@@ -60,12 +63,11 @@ namespace Auction
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
             var auctionSettingsSection = _configuration.GetSection("AuctionSettings");
             services.Configure<AuctionSettings>(auctionSettingsSection);
+            services.AddAntiforgery(options => options.HeaderName = "X-XSRF-TOKEN");
 
             services.AddDbContext<AuctionDbContext>(options =>
             {
-                var connection = "Data Source=Auction.db";
-                options.UseSqlite(connection);
-                // options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"));
                 options.UseLazyLoadingProxies();
                 options.EnableSensitiveDataLogging();
             });
@@ -75,15 +77,21 @@ namespace Auction
 
             services.AddMemoryCache();
 
+            Mapper.Initialize(cfg =>
+            {
+                cfg.AddProfile<MapperProfile>();
+                cfg.ValidateInlineMaps = false;
+            });
             services.AddAutoMapper();
 
             services.AddMvc()
-                    // .AddJsonOptions(options =>
-                    // {
-                    //     options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                    // })
+                    .AddJsonOptions(options =>
+                    {
+                        // options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                        options.SerializerSettings.ContractResolver =  new Newtonsoft.Json.Serialization.DefaultContractResolver(); 
+                    })
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
@@ -119,6 +127,19 @@ namespace Auction
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(_configuration.GetSection("AuctionSettings:FilesRootDir").Value, "images")),
+                RequestPath = "/images"
+            });
+            // app.UseStaticFiles(
+            //     new StaticFileOptions
+            //     {
+            //         FileProvider = new PhysicalFileProvider(Path.Combine("D:\\net_project\\photos")),
+            //         RequestPath = "/"
+            //     }
+            // );
             app.UseCookiePolicy();
             app.UseAuthentication(); // useMvc 上面
             app.UseHttpContextAccessor();

@@ -1,0 +1,155 @@
+@using System.IO;
+@using Newtonsoft.Json;
+@using Microsoft.Extensions.Options;
+@model EquipmentViewModel
+@{
+    ViewData["Title"] = "Edit Equipment";
+}
+@section stylesheet {
+    <link href="~/lib/bootstrap-fileinput/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css"/>
+    <link href="~/lib/bootstrap-fileinput/themes/explorer-fas/theme.css" media="all" rel="stylesheet" type="text/css"/>
+}
+
+<div class="container my-4">
+      <form enctype="multipart/form-data">
+        <div class="form-group">
+            <input type="hidden" class="form-control" name="id" id="id" asp-for="Id" value="@Model.Id" placeholder="">
+        </div>
+        <div class="file-loading">
+            <input id="equipmentPhotoInput" name="photo" type="file" multiple>
+        </div>
+        <br>
+        <br>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="reset" class="btn btn-outline-secondary">Reset</button>
+    </form>
+</div>
+@{
+    var photoJson = JsonConvert.SerializeObject(Model.Photos.OrderBy(p => p.Ranking).ThenBy(p => p.LastUpdatedAt));
+    var CoverPhotoName =  Model.CoverPhoto.FileName;
+}
+@section Scripts {
+    <script src="~/lib/bootstrap-fileinput/js/plugins/sortable.js" type="text/javascript"></script>
+    <script src="~/lib/bootstrap-fileinput/js/fileinput.js" type="text/javascript"></script>
+    <script src="~/lib/bootstrap-fileinput/js/locales/zh.js" type="text/javascript"></script>
+    <script src="~/lib/bootstrap-fileinput/themes/fas/theme.min.js" type="text/javascript"></script>
+    <script src="~/lib/bootstrap-fileinput/themes/explorer-fas/theme.js" type="text/javascript"></script>
+    <script>
+        $(document).ready(function () {
+            var photo = @Html.Raw(photoJson);
+            
+            var initialPreview = []
+            var initialPreviewConfig = []
+            var newPhotos = []
+
+            addData(photo)
+
+            // {'X-XSRF-TOKEN': cookieUtil.getItem("XSRF-TOKEN")}
+            var $fileInput = $("#equipmentPhotoInput")
+            $fileInput.fileinput({
+                "language": 'zh',
+                "theme": 'explorer-fas',
+                uploadUrl: "@Url.Action("UploadPhotoAsync")",
+                ajaxSettings: {
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader('X-XSRF-TOKEN', cookieUtil.getItem("XSRF-TOKEN"));
+                    }
+                },
+                uploadExtraData: {
+                    '__RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val(),
+                    'EquipmentId': '@Model.Id'
+                },
+                allowedFileTypes: ["image"],
+                overwriteInitial: false,
+                initialPreviewAsData: true,
+                initialPreview: initialPreview,
+                initialPreviewConfig: initialPreviewConfig
+            }).on("filebatchselected", function(event, files) {
+               $fileInput.fileinput("upload");
+            }).on('filepreupload', function(event, data, previewId, index) {
+                //data.form.append('IsCover', $("input#" + previewId).is(":checked"))
+            }).on("fileuploaded", function (event, data, previewId, index) {
+                console.log(index)
+                addData([data.response])
+                console.log(data)
+                
+                if(data.response.Message == "操作成功"){
+                    var caption = $("#" + previewId).find(".explorer-caption")
+                    caption.attr("title", data.response.Data.FileName)
+                    caption.text(data.response.Data.FileName)
+                    $('input:radio[name="IsCover"]:visible').on("click", SetCoverPhoto)
+                }
+                console.log(previewId)
+                newPhotos.push({
+                    PreviewId: previewId,
+                    FileName:  data.response.Data.FileName,
+                    PhotoId: data.response.Data.Id
+                })
+                console.log(newPhotos)
+                //console.log(previewId)
+                //console.log(index)
+            }).on('filesorted', function(event, params) {
+                //console.log('File sorted ', params.previewId, params.oldIndex, params.newIndex, params.stack);
+            }).on('filebatchpreupload', function(event, data, jqXHR) {
+                //data.form.append('IsCover', $("input#" + previewId).is(":checked"))
+            }).on("filesuccessremove", function (event, id, fileindex) { 
+                var previewId = $("#"+id).data("previewid")
+                $.each(newPhotos, function(i, p){
+                    if(p.PreviewId == previewId){
+                        console.log(111)
+                        $.ajax({
+                            type: "post",
+                            url: "@Url.Action("DeletePhoto")",
+                            data: { photoName: p.FileName },
+                            success: function(result){
+                                if(result.Message == "操作成功"){
+                                    delete newPhotos[i]
+                                }
+                            }
+                        });
+                        
+                    }
+                })
+            });
+
+            function addData(photo){
+                $.each(photo, function(i, p){
+                    var photo     = { extra: {} }
+                    photo.caption = p.FileName
+                    photo.size    = p.FileSize
+                    photo.key     = p.Id
+                    photo.width   = "120px"
+                    photo.url     = "@Url.Action("DeletePhoto")"
+                    photo.extra.photoName = p.FileName
+                    
+                    initialPreview.push(p.RequestPath)
+                    initialPreviewConfig.push(photo)
+                });
+            }
+
+            
+            var SetCoverPhoto = function(){
+                var that = $(this)
+                var photoName = that.closest("tr").find(".explorer-caption").attr("title")
+                console.log(photoName);
+                $.ajax({
+                    type: "post",
+                    url: "@Url.Action("SetCoverPhoto")",
+                    data: { photoName: photoName, equipmentId: "@Model.Id" },
+                    success: function(result){
+                        console.log(result);
+                    }
+                })
+            }
+            $('input:radio[name="IsCover"]:visible').on("click", SetCoverPhoto);
+
+            (function selectCoverRadio(){
+                var coverPhotoName = "@CoverPhotoName"
+                $(".explorer-caption[title='@CoverPhotoName']")
+                    .closest("tr")
+                    .find('input:radio[name="IsCover"]:visible')
+                    .attr('checked', true)
+            })()
+        })
+    </script>
+}

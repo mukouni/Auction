@@ -1,0 +1,86 @@
+@model IEnumerable<EquipmentViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<p>
+    <a asp-action="New" class="btn btn-primary">新建</a>
+
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Code)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Manufacturer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Model)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductionDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WorkingTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Weight)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Volume)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="edit_link">@Html.DisplayFor(modelItem => item.Name)</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Manufacturer)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Model)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductionDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WorkingTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Weight)
+                    
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Volume)
+                </td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="fa fa-remove fa-lg" style="color: red"></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<style>
+   .edit_link:hover {
+        text-decoration: underline;
+        color: darkcyan;
+    }
+</style>

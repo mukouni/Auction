@@ -22,16 +22,9 @@ namespace Auction.Identity
         {
             builder.ConfigureServices((context, services) =>
             {
-                // services.AddDbContext<AppIdentityDbContext>(options =>
-                // {
-                //     options.UseSqlServer(context.Configuration.GetConnectionString("DefaultConnection"));
-                //     options.UseLazyLoadingProxies();
-                //     options.EnableSensitiveDataLogging();
-                // });
                 services.AddDbContext<AppIdentityDbContext>(options =>
                 {
-                    var connection = "Data Source=Auction.db";
-                    options.UseSqlite(connection);
+                    options.UseSqlServer(context.Configuration.GetConnectionString("DefaultConnection"));
                     options.UseLazyLoadingProxies();
                     options.EnableSensitiveDataLogging();
                 });
@@ -106,8 +99,8 @@ namespace Auction.Identity
                     options.Cookie.HttpOnly = true;
                     options.ExpireTimeSpan = TimeSpan.FromHours(1); //FromMinutes(5);
 
-                    options.LoginPath = "/Identity/Account/Login";
-                    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                    options.LoginPath = "/Account/Login";
+                    options.AccessDeniedPath = "/Account/AccessDenied";
                     options.SlidingExpiration = true;
 
                     options.Cookie = new CookieBuilder

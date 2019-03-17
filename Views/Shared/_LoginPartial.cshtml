@@ -8,11 +8,13 @@
 {
     <form asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">
-            <li>
-                <a asp-controller="Manage" asp-action="Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+            <li class="nav-item">
+                <a asp-controller="Equipment" asp-action="Index" class="nav-link">Equipment Create</a></li>
+            <li class="nav-item">
+                <a asp-controller="Manage" asp-action="Index" title="Manage" class="nav-link">Hello @UserManager.GetUserName(User)!</a>
             </li>
-            <li>
-                <button type="submit" class="btn btn-link navbar-btn navbar-link">Log off</button>
+            <li class="nav-item">
+                <a href="javascript:{}" class="nav-link" onclick="document.getElementById('logoutForm').submit(); return false;">Log off</a>
             </li>
         </ul>
     </form>
@@ -20,7 +22,7 @@
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        <li><a asp-controller="Account" asp-action="Register">Register</a></li>
-        <li><a asp-controller="Account" asp-action="Login" >Log in</a></li>
+        <li class="nav-item"><a asp-controller="Account" asp-action="Register" class="nav-link">Register</a></li>
+        <li class="nav-item"><a asp-controller="Account" asp-action="Login" class="nav-link">Log in</a></li>
     </ul>
 }

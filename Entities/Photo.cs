@@ -1,19 +1,30 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using static Auction.Entities.Enums.CommonEnum;
 
 namespace Auction.Entities
 {
     [Table("ac_photo")]
     public class Photo : BaseEntity
     {
-        /// 存储的相对路径
+        /// <summary>
+        /// 浏览器中请求的路径，包含文件名和后缀
         /// </summary>
         [Column(TypeName = "nvarchar(255)")]
-        public string StoreDir { get; set; }
+        public string RequestPath { get; set; }
 
         /// <summary>
-        /// 上传后名字
+        /// 图片存储的相对路径，包含文件名和后缀, 不包含FilesRootDir
+        /// </summary>
+        [Column(TypeName = "nvarchar(255)")]
+        public string SavePath { get; set; }
+
+        /// <summary>
+        /// 上传后名字(含后缀)
         /// </summary>
         [Column(TypeName = "nvarchar(50)")]
         public string FileName { get; set; }
@@ -30,7 +41,7 @@ namespace Auction.Entities
         [Column(TypeName = "nvarchar(255)")]
         public string OriginName { get; set; }
 
-        /// <summary>
+        /// <summary
         /// 图片排序
         /// </summary>
         public int? Ranking { get; set; }
@@ -38,7 +49,7 @@ namespace Auction.Entities
         /// <summary>
         /// 是否是展示图片
         /// </summary>
-        public Boolean? IsHome { get; set; }
+        public Boolean? IsCover { get; set; }
 
         /// <summary>
         /// 图片格式
@@ -49,9 +60,48 @@ namespace Auction.Entities
         /// <summary>
         /// 图片大小
         /// </summary>
-        public int? FileSize { get; set; }
+        public long? FileSize { get; set; }
+
+        public Guid EquipmentId { get; set; }
 
         //导航属性
-        public virtual Equipment EquipmentPhoto { get; set; }
+        // [JsonIgnore]
+        public virtual Equipment Equipment { get; set; }
+
+        /// IFormFile中的FileName是有后缀名的，数据库中的FileName是没有后缀名的
+        /// <summary>
+        /// 从IFormFile中取数据赋值到Photo中
+        /// <param name="serializaName">序列化后的文件名，包含后缀名</param>
+        /// <param name="ImagesRequestPath">浏览器中请求的路径，包含文件名和后缀</param>
+        /// <param name="ImagesSavePath">图片存储的相对路径，包含文件名和后缀, 不包含FilesRootDir</param>
+        /// </summary>
+        public Photo MapFrom(IFormFile photo, string serializaName, string RequestPath, string SavePath)
+        {
+            this.RequestPath = RequestPath;
+            this.SavePath = SavePath;
+            this.FileName = serializaName;
+            this.Extension = Path.GetExtension(photo.FileName);
+            this.OriginName = photo.FileName;
+            this.ContentType = photo.ContentType;
+            this.FileSize = photo.Length;
+            return this;
+        }
+
+        // public string FullFileName(string size = null)
+        // {
+        //     if (size == null)
+        //     {
+        //         return FileName + "." + Extension;
+        //     }
+        //     return FileName + "_" + size + "x" + size + "_" + "." + Extension;
+        // }
+
+        // public string FileRequestPath(string size = null)
+        // {
+
+        //     return Path.Combine(RequestPath, FullFileName(size));
+        // }
+
+
     }
 }

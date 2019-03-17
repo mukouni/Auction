@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Auction.Models.AccountViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Auction.Identity;
+using Auction.Extensions.Alerts;
 
 namespace Auction.Controllers
 {
@@ -67,26 +68,33 @@ namespace Auction.Controllers
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                String username = _context.Users.Where(u => u.PhoneNumber == model.Phone).Select(u => u.UserName).ToList().First();
+                String username = _context.Users.Where(u => u.PhoneNumber == model.Phone).Select(u => u.UserName).FirstOrDefault();
+                if(username == null){
+                    // model.Message ="没有找到手机号";
+                    // ModelState.AddModelError(string.Empty, "没有找到手机号");
+                    return View(model).WithWarning("错误", "没有找到用户!");;
+                }
                 var result = await _signInManager.PasswordSignInAsync(username, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
-                    return RedirectToLocal(returnUrl);
+                    return RedirectToLocal(returnUrl).WithSuccess("登陆成功", "欢迎回来!");
                 }
                 if (result.RequiresTwoFactor)
                 {
-                    return RedirectToAction(nameof(SendCode), new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                    return RedirectToAction(nameof(SendCode), new { ReturnUrl = returnUrl, RememberMe = model.RememberMe })
+                            .WithInfo("提示", "请重新登陆");
                 }
                 if (result.IsLockedOut)
                 {
+                    // ModelState.AddModelError(string.Empty, "账户被锁定");
                     _logger.LogWarning(2, "User account locked out.");
-                    return View("Lockout");
+                    return View("Lockout").WithDanger("提示", "账户已经被锁定");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return View(model);
+                    // ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return View(model).WithDanger("错误", "密码错误");
                 }
             }
 

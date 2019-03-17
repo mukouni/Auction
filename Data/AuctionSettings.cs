@@ -18,12 +18,14 @@ namespace Auction
         public string SecretKey { get; set; }
 
         //对称秘钥
-        public SymmetricSecurityKey IssuerSigningKey { 
-            get {
+        public SymmetricSecurityKey IssuerSigningKey
+        {
+            get
+            {
                 return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.SecretKey));
             }
-            set{}
-        } 
+            set { }
+        }
 
         //数字签名 对称公钥
         public SigningCredentials SigningCredentials
@@ -45,5 +47,7 @@ namespace Auction
         public string AdminEmailPassword { get; set; }
         public string SMSAppid { get; set; }
         public string SMSsecretKey { get; set; }
+
+        public string FilesRootDir { get; set; }
     }
 }

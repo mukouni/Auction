@@ -51,3 +51,9 @@ D:\net_project\Auction\bin\Debug\netcoreapp2.2\Auction.Views.pdb
 D:\net_project\Auction\obj\Debug\netcoreapp2.2\Auction.Views.pdb
 D:\net_project\Auction\obj\Debug\netcoreapp2.2\Auction.csproj.CopyComplete
 d:\net_project\Auction\obj\Debug\netcoreapp2.2\Razor\Identity\Templates\EmailTemplates.g.cshtml.cs
+D:\net_project\Auction\obj\Debug\netcoreapp2.2\Razor\Views\Home\DownloadFile.g.cshtml.cs
+D:\net_project\Auction\obj\Debug\netcoreapp2.2\Razor\Views\Equipment\Upload Photo.g.cshtml.cs
+d:\net_project\Auction\obj\Debug\netcoreapp2.2\Razor\Views\Equipment\Edit.g.cshtml.cs
+d:\net_project\Auction\obj\Debug\netcoreapp2.2\Razor\Views\Equipment\Index.g.cshtml.cs
+d:\net_project\Auction\obj\Debug\netcoreapp2.2\Razor\Views\Equipment\New.g.cshtml.cs
+d:\net_project\Auction\obj\Debug\netcoreapp2.2\Razor\Views\Shared\_StatusMessage.g.cshtml.cs
