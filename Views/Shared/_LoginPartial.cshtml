@@ -6,23 +6,15 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <form asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm" class="navbar-right">
-        <ul class="nav navbar-nav navbar-right">
-            <li class="nav-item">
-                <a asp-controller="Equipment" asp-action="Index" class="nav-link">Equipment Create</a></li>
-            <li class="nav-item">
-                <a asp-controller="Manage" asp-action="Index" title="Manage" class="nav-link">Hello @UserManager.GetUserName(User)!</a>
-            </li>
-            <li class="nav-item">
-                <a href="javascript:{}" class="nav-link" onclick="document.getElementById('logoutForm').submit(); return false;">Log off</a>
-            </li>
-        </ul>
-    </form>
+        <div class="userinfo offset-9 d-none d-sm-block">
+            <a asp-controller="Manage" asp-action="Index" title="Manage">您好: @UserManager.GetUserName(User)!</a>
+        </div>
+        <div class="userinfo d-none d-sm-block">
+            <a asp-controller="Account" asp-action="LogOff">退出</a>
+        </div>
 }
 else
 {
-    <ul class="nav navbar-nav navbar-right">
-        <li class="nav-item"><a asp-controller="Account" asp-action="Register" class="nav-link">Register</a></li>
-        <li class="nav-item"><a asp-controller="Account" asp-action="Login" class="nav-link">Log in</a></li>
-    </ul>
+    <div class="signin offset-9 d-none d-sm-block"><a asp-controller="Account" asp-action="Login">登陆</a></div>
+    <div class="register d-none d-sm-block"><a asp-controller="Account" asp-action="Register">注册</a></div>
 }

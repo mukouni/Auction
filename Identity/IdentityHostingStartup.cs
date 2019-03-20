@@ -71,12 +71,12 @@ namespace Auction.Identity
                     // options.SignIn.RequireConfirmedEmail = true;
                     options.SignIn.RequireConfirmedPhoneNumber = false; // 需要确认的电话号码进行登录。
                     // Password settings.
-                    options.Password.RequireDigit = true;           // 需要介于 0-9 的密码。
-                    options.Password.RequireLowercase = true;       // 要求密码中的小写字符。
-                    options.Password.RequireUppercase = true;       // 需要大写字符的密码。
-                    options.Password.RequireNonAlphanumeric = true; // 需要在密码中的非字母数字字符。
-                    options.Password.RequiredUniqueChars = 1;       // 要求在密码中非重复字符数。
-                    options.Password.RequiredLength = 6;            // 密码最小长度。
+                    options.Password.RequireDigit = true;            // 需要介于 0-9 的密码。
+                    options.Password.RequireLowercase = false;       // 要求密码中的小写字符。
+                    options.Password.RequireUppercase = false;       // 需要大写字符的密码。
+                    options.Password.RequireNonAlphanumeric = false; // 需要在密码中的非字母数字字符。
+                    options.Password.RequiredUniqueChars = 6;        // 要求在密码中非重复字符数。
+                    options.Password.RequiredLength = 6;             // 密码最小长度。
 
                     // Lockout settings.
                     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
@@ -84,8 +84,8 @@ namespace Auction.Identity
                     options.Lockout.AllowedForNewUsers = true;   // 确定是否新用户会被锁定。
 
                     // User settings.
-                    options.User.AllowedUserNameCharacters =
-                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+"; // 在用户名中允许的字符。
+                    options.User.AllowedUserNameCharacters = null;
+                    // "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+"; // 在用户名中允许的字符。
                     options.User.RequireUniqueEmail = false; // 要求每个用户必须拥有唯一的电子邮件。
                 });
 

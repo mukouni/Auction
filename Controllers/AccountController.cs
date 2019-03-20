@@ -16,6 +16,12 @@ using Auction.Models.AccountViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Auction.Identity;
 using Auction.Extensions.Alerts;
+using Auction.Api.Extensions;
+using Microsoft.AspNetCore.Http;
+using Auction.Extensions.Filters;
+using Auction.Identity.Extensions;
+using Auction.Entities.Enums;
+using Auction.Extensions;
 
 namespace Auction.Controllers
 {
@@ -24,6 +30,7 @@ namespace Auction.Controllers
     {
         private readonly AppIdentityDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
@@ -32,6 +39,7 @@ namespace Auction.Controllers
 
         public AccountController(AppIdentityDbContext context,
             UserManager<ApplicationUser> userManager,
+            RoleManager<ApplicationRole> roleManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             ISmsSender smsSender,
@@ -40,6 +48,7 @@ namespace Auction.Controllers
         {
             _context = context;
             _userManager = userManager;
+            _roleManager = roleManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _smsSender = smsSender;
@@ -75,15 +84,15 @@ namespace Auction.Controllers
                     return View(model).WithWarning("错误", "没有找到用户!");;
                 }
                 var result = await _signInManager.PasswordSignInAsync(username, model.Password, model.RememberMe, lockoutOnFailure: false);
+                if (result.RequiresTwoFactor)
+                {
+                    return RedirectToAction(nameof(SendCode), new { ReturnUrl = returnUrl, RememberMe = model.RememberMe })
+                            .WithInfo("提示", "请双因子登陆");
+                }
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
                     return RedirectToLocal(returnUrl).WithSuccess("登陆成功", "欢迎回来!");
-                }
-                if (result.RequiresTwoFactor)
-                {
-                    return RedirectToAction(nameof(SendCode), new { ReturnUrl = returnUrl, RememberMe = model.RememberMe })
-                            .WithInfo("提示", "请重新登陆");
                 }
                 if (result.IsLockedOut)
                 {
@@ -124,7 +133,35 @@ namespace Auction.Controllers
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { PhoneNumber = model.Phone, UserName = model.UserName };
+                var smsCode = HttpContext.Session.Get<string>("smsCode");
+                var smsTimeoutAt = HttpContext.Session.Get<DateTime>("smsTimeoutAt");
+                if(model.SMSCode != smsCode || smsTimeoutAt >= DateTime.Now){
+                    ModelState.AddModelError(string.Empty, "验证码已过期!");
+                    return View(model);
+                }
+                if(_context.Users.Where(u => u.PhoneNumber == model.Phone).Count() > 0){
+                    ModelState.AddModelError(string.Empty, "手机号已被占用!");
+                    return View(model);
+                }
+
                 var result = await _userManager.CreateAsync(user, model.Password);
+                
+                bool guestRoleExist = await _roleManager.RoleExistsAsync(ApplicationRole.Guest);
+                if (!guestRoleExist)
+                {
+                    _logger.LogInformation("Adding " + ApplicationRole.Guest + " role");
+                    await _roleManager.CreateAsync(new ApplicationRole(){
+                        Name = ApplicationRole.Guest,
+                        NormalizedName = ApplicationRole.Guest.ToUpper()
+                    });
+                }
+
+                await _userManager.AddToRoleAsync(
+                    await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == model.Phone), 
+                    ApplicationRole.Guest);
+                // var securityStamp = await _userManager.GetSecurityStampAsync(user);
+                // var code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, model.Phone);
+                // var validCode = await _userManager.GenerateUserTokenAsync(user, _userManager.Options.Tokens.PasswordResetTokenProvider, "PhotoConfirmation");
                 if (result.Succeeded)
                 {
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
@@ -133,9 +170,9 @@ namespace Auction.Controllers
                     //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
                     //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
                     //    "Please confirm your account by clicking this link: <a href=\"" + callbackUrl + "\">link</a>");
-                    var smsCode = await _userManager.GenerateChangePhoneNumberTokenAsync(user, model.Phone);
-                    await _smsSender.SendSmsAsync(model.Phone, "您的验证码是:" + smsCode + "[Auction]");
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    
+                    // _smsSender.SendSmsAsync(model.Phone, "您的验证码是：" + code);
+                    // await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(3, "User created a new account with password.");
                     return RedirectToLocal(returnUrl);
                 }
@@ -144,10 +181,29 @@ namespace Auction.Controllers
             return View(model);
         }
 
-        //
-        // POST: /Account/LogOff
         [HttpPost("[action]")]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GetSMSCode(RegisterViewModel model, string returnUrl = null)
+        {
+            var response = ResponseModelFactory.CreateInstance;
+
+            var user = new ApplicationUser { PhoneNumber = model.Phone, UserName = model.UserName };
+
+            var smsCode = await _userManager.GeneratePhoneNumberTokenAsync();
+            _smsSender.SendSmsAsync(model.Phone, "您的验证码是:" + smsCode + "【中机电拍卖】");
+
+            HttpContext.Session.Set<string>("smsCode", smsCode);
+            var smsSendAt = DateTime.Now;
+            HttpContext.Session.Set<DateTime>("smsSendAt", smsSendAt);
+            HttpContext.Session.Set<DateTime>("smsTimeoutAt", smsSendAt.AddSeconds(1));
+            response.SetData(new {smsSendAt = smsSendAt, smsCode = smsCode });
+            return Json(response);
+        }
+        //
+        // GET: /Account/LogOff
+        [HttpGet("[action]")]
+        // [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogOff()
         {
             await _signInManager.SignOutAsync();
@@ -299,7 +355,7 @@ namespace Auction.Controllers
                 // Send an email with this link
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-                await _emailSender.SendEmailAsync(model.Email, user.UserName, "Reset Password", callbackUrl);
+                _emailSender.SendEmailAsync(model.Email, user.UserName, "Reset Password", callbackUrl);
                 return View("ForgotPasswordConfirmation");
             }
 
@@ -409,11 +465,11 @@ namespace Auction.Controllers
             var message = "Your security code is: " + code;
             if (model.SelectedProvider == "Email")
             {
-                await _emailSender.SendEmailAsync(await _userManager.GetEmailAsync(user), await _userManager.GetUserNameAsync(user), "Security Code", code);
+                _emailSender.SendEmailAsync(await _userManager.GetEmailAsync(user), await _userManager.GetUserNameAsync(user), "Security Code", code);
             }
             else if (model.SelectedProvider == "Phone")
             {
-                await _smsSender.SendSmsAsync(await _userManager.GetPhoneNumberAsync(user), message);
+                _smsSender.SendSmsAsync(await _userManager.GetPhoneNumberAsync(user), message);
             }
 
             return RedirectToAction(nameof(VerifyCode), new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });

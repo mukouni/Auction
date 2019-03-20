@@ -17,6 +17,7 @@ using System.IO;
 using Microsoft.Extensions.FileProviders;
 using Auction.Data.AutoMapper;
 using Newtonsoft.Json.Serialization;
+using System;
 
 namespace Auction
 {
@@ -84,6 +85,18 @@ namespace Auction
             });
             services.AddAutoMapper();
 
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.Cookie.Name = ".PhoneCode.Session";
+                // Set a short timeout for easy testing.
+                options.IdleTimeout = TimeSpan.FromSeconds(180);
+                options.Cookie.HttpOnly = true;
+                // Make the session cookie essential
+                options.Cookie.IsEssential = true;
+            });
+
             services.AddMvc()
                     .AddJsonOptions(options =>
                     {
@@ -140,6 +153,7 @@ namespace Auction
             //         RequestPath = "/"
             //     }
             // );
+            app.UseSession();
             app.UseCookiePolicy();
             app.UseAuthentication(); // useMvc 上面
             app.UseHttpContextAccessor();

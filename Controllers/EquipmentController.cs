@@ -26,6 +26,7 @@ using Auction.Extensions.Alerts;
 using Auction.Api.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Auction.Models;
+using Auction.Extensions.AuthContext;
 
 namespace Auction.Controllers
 {
@@ -88,6 +89,7 @@ namespace Auction.Controllers
         [HttpGet("{id:Guid}")]
         [HttpGet("{id:Guid}/[action]")]
         [GenerateAntiforgeryTokenCookieForAjax]
+        [CustomAuthorize]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)

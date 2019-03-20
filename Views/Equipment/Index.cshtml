@@ -12,6 +12,9 @@
     <thead>
         <tr>
             <th>
+
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Code)
             </th>
             <th>
@@ -39,9 +42,12 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (EquipmentViewModel item in Model)
         {
             <tr>
+                <td>
+                    <img src="@item.CoverPhoto?.RequestPath" width="80px">
+                </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="edit_link">@Html.DisplayFor(modelItem => item.Name)</a>
                 </td>
