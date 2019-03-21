@@ -18,7 +18,7 @@
     <div class="index container-fluid">
         <header class="fixed-top">
                 <div class="head row d-flex align-content-center">
-                    @await Html.PartialAsync("_LoginPartial")
+                    <partial name="_LoginPartial" />
                 </div>
                 <div class="title row flex-column align-items-center justify-content-center flex-xl-row justify-content-xl-between flex-sm-row justify-content-sm-center">
                     <div class="d-none d-sm-block">
@@ -42,7 +42,7 @@
                     </div>
                 </div>
         </header>
-        @Html.Partial("_StatusMessage")
+        <partial name="_StatusMessage"/>
         @RenderBody()
         <footer class="fixed-bottom d-flex justify-content-sm-between justify-content-center">
             <div class="float-sm-left pl-sm-4">

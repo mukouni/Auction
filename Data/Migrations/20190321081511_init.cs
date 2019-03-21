@@ -107,7 +107,7 @@ namespace Auction.Migrations
                     IsCover = table.Column<bool>(nullable: true, defaultValue: false),
                     ContentType = table.Column<string>(type: "nvarchar(50)", nullable: true),
                     FileSize = table.Column<long>(nullable: true),
-                    EquipmentId = table.Column<Guid>(nullable: true)
+                    EquipmentId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -117,7 +117,7 @@ namespace Auction.Migrations
                         column: x => x.EquipmentId,
                         principalTable: "ac_equipment",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

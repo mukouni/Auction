@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Auction.Entities;
+using Auction.Data;
 using Auction.Extensions.Builder;
 using System.Text;
 using Auction.HealthChecks;
@@ -78,6 +79,7 @@ namespace Auction
 
             services.AddMemoryCache();
 
+            Mapper.Reset();
             Mapper.Initialize(cfg =>
             {
                 cfg.AddProfile<MapperProfile>();
@@ -91,7 +93,7 @@ namespace Auction
             {
                 options.Cookie.Name = ".PhoneCode.Session";
                 // Set a short timeout for easy testing.
-                options.IdleTimeout = TimeSpan.FromSeconds(180);
+                options.IdleTimeout = TimeSpan.FromSeconds(3600);
                 options.Cookie.HttpOnly = true;
                 // Make the session cookie essential
                 options.Cookie.IsEssential = true;
@@ -118,7 +120,7 @@ namespace Auction
                 .AddCheck<ApiHealthCheck>("api_health_check");
 
             services.AddHttpContextAccessor();
-
+    
             _services = services;
         }
 

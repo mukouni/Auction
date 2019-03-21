@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using System;
+using Auction.Data;
 using Auction.Entities.Filters;
 using Auction.Extensions;
 using Microsoft.AspNetCore.Http.Features;
@@ -214,7 +215,7 @@ namespace Auction.Controllers
         // }
 
 
-
+        [Authorize(Roles="Admin, Staff")]
         [HttpPost("[action]")]
         public async Task<IActionResult> UploadPhotoAsync(EquipmentPhotoViewModel equipmentPhoto)
         {

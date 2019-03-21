@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Auction.Data;
 using Auction.Identity.Services;
 using Auction.Identity.Entities;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +13,7 @@ using Auction.Identity.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using System.IdentityModel.Tokens.Jwt;
+using Auction.Entities;
 
 [assembly: HostingStartup(hostingStartupType: typeof(Auction.Identity.IdentityHostingStartup))]
 namespace Auction.Identity
@@ -22,7 +24,7 @@ namespace Auction.Identity
         {
             builder.ConfigureServices((context, services) =>
             {
-                services.AddDbContext<AppIdentityDbContext>(options =>
+                services.AddDbContext<AuctionDbContext>(options =>
                 {
                     options.UseSqlServer(context.Configuration.GetConnectionString("DefaultConnection"));
                     options.UseLazyLoadingProxies();
@@ -30,7 +32,7 @@ namespace Auction.Identity
                 });
 
                 services.AddIdentity<ApplicationUser, ApplicationRole>()
-                        .AddEntityFrameworkStores<AppIdentityDbContext>()
+                        .AddEntityFrameworkStores<AuctionDbContext>()
                         // .AddUserManager<UserManager<ApplicationUser>>()
                         // .AddUserStore<ApplicationUser>()
                         .AddSignInManager()
@@ -75,7 +77,7 @@ namespace Auction.Identity
                     options.Password.RequireLowercase = false;       // 要求密码中的小写字符。
                     options.Password.RequireUppercase = false;       // 需要大写字符的密码。
                     options.Password.RequireNonAlphanumeric = false; // 需要在密码中的非字母数字字符。
-                    options.Password.RequiredUniqueChars = 6;        // 要求在密码中非重复字符数。
+                    options.Password.RequiredUniqueChars = 0;        // 要求在密码中非重复字符数。
                     options.Password.RequiredLength = 6;             // 密码最小长度。
 
                     // Lockout settings.

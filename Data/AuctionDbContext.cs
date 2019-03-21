@@ -3,16 +3,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using static Auction.Entities.Enums.CommonEnum;
+using Auction.Entities;
 using Auction.Identity;
 using Auction.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 
-namespace Auction.Entities
+namespace Auction.Data
 {
     /// <summary>
     /// 
     /// </summary>
-    public class AuctionDbContext : DbContext
+    public class AuctionDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
         /// <summary>
         /// 
@@ -64,13 +65,7 @@ namespace Auction.Entities
         /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            // builder.Entity<ApplicationUser>().ToTable("st_users");
-            // builder.Entity<ApplicationRole>().ToTable("st_roles");
-            // builder.Entity<IdentityUserRole<Guid>>().ToTable("st_user_roles");
-            // builder.Entity<IdentityRoleClaim<Guid>>().ToTable("st_role_claims");
-            // builder.Entity<IdentityUserClaim<Guid>>().ToTable("st_user_claims");
-            // builder.Entity<IdentityUserLogin<Guid>>().ToTable("st_user_logins");
-            // builder.Entity<IdentityUserToken<Guid>>().ToTable("st_user_tokens");
+            base.OnModelCreating(builder);
             // modelBuilder.Entity<User>(entity =>
             // {
             //     entity.Property(e => e.Guid)
@@ -89,6 +84,14 @@ namespace Auction.Entities
             //         .ValueGeneratedOnAddOrUpdate()
             //         .HasDefaultValueSql("getdate()");
             // });
+
+            builder.Entity<ApplicationUser>().ToTable("st_users");
+            builder.Entity<ApplicationRole>().ToTable("st_roles");
+            builder.Entity<IdentityUserRole<Guid>>().ToTable("st_user_roles");
+            builder.Entity<IdentityRoleClaim<Guid>>().ToTable("st_role_claims");
+            builder.Entity<IdentityUserClaim<Guid>>().ToTable("st_user_claims");
+            builder.Entity<IdentityUserLogin<Guid>>().ToTable("st_user_logins");
+            builder.Entity<IdentityUserToken<Guid>>().ToTable("st_user_tokens");
 
             builder.Entity<Photo>(entity =>
             {
@@ -125,8 +128,6 @@ namespace Auction.Entities
                     .ValueGeneratedOnAddOrUpdate()
                     .HasDefaultValueSql("getdate()");
             });
-
-            base.OnModelCreating(builder);
         }
 
         public override int SaveChanges()

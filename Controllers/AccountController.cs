@@ -22,13 +22,14 @@ using Auction.Extensions.Filters;
 using Auction.Identity.Extensions;
 using Auction.Entities.Enums;
 using Auction.Extensions;
+using Auction.Data;
 
 namespace Auction.Controllers
 {
     [Route("[controller]")]
     public class AccountController : Controller
     {
-        private readonly AppIdentityDbContext _context;
+        private readonly AuctionDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -37,7 +38,7 @@ namespace Auction.Controllers
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public AccountController(AppIdentityDbContext context,
+        public AccountController(AuctionDbContext context,
             UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager,
             SignInManager<ApplicationUser> signInManager,
@@ -59,7 +60,7 @@ namespace Auction.Controllers
         // GET: /Account/Login
         [HttpGet("[action]")]
         [AllowAnonymous]
-        public IActionResult Login(string returnUrl = null)
+        public IActionResult LoginAsync(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
             return View();
@@ -191,7 +192,7 @@ namespace Auction.Controllers
             var user = new ApplicationUser { PhoneNumber = model.Phone, UserName = model.UserName };
 
             var smsCode = await _userManager.GeneratePhoneNumberTokenAsync();
-            _smsSender.SendSmsAsync(model.Phone, "您的验证码是:" + smsCode + "【中机电拍卖】");
+            await _smsSender.SendSmsAsync(model.Phone, "您的验证码是:" + smsCode + "【中机电拍卖】");
 
             HttpContext.Session.Set<string>("smsCode", smsCode);
             var smsSendAt = DateTime.Now;
@@ -355,7 +356,7 @@ namespace Auction.Controllers
                 // Send an email with this link
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-                _emailSender.SendEmailAsync(model.Email, user.UserName, "Reset Password", callbackUrl);
+                await _emailSender.SendEmailAsync(model.Email, user.UserName, "Reset Password", callbackUrl);
                 return View("ForgotPasswordConfirmation");
             }
 
@@ -465,11 +466,11 @@ namespace Auction.Controllers
             var message = "Your security code is: " + code;
             if (model.SelectedProvider == "Email")
             {
-                _emailSender.SendEmailAsync(await _userManager.GetEmailAsync(user), await _userManager.GetUserNameAsync(user), "Security Code", code);
+                await _emailSender.SendEmailAsync(await _userManager.GetEmailAsync(user), await _userManager.GetUserNameAsync(user), "Security Code", code);
             }
             else if (model.SelectedProvider == "Phone")
             {
-                _smsSender.SendSmsAsync(await _userManager.GetPhoneNumberAsync(user), message);
+                await _smsSender.SendSmsAsync(await _userManager.GetPhoneNumberAsync(user), message);
             }
 
             return RedirectToAction(nameof(VerifyCode), new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });

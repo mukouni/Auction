@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Auction.Models.AccountViewModels;
 using Auction.Api.Extensions;
+using Auction.Data;
 using Auction.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Auction.Api.Auth;
@@ -26,7 +27,7 @@ namespace Auction.Controllers.Api
     public class AccountController : ApiController
     {
         private readonly AuctionSettings _appSettings;
-        private readonly AppIdentityDbContext _context;
+        private readonly AuctionDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
@@ -35,7 +36,7 @@ namespace Auction.Controllers.Api
         private readonly ILogger _logger;
 
         public AccountController(IOptions<AuctionSettings> appSettings,
-        AppIdentityDbContext context,
+        AuctionDbContext context,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
