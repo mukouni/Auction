@@ -30,7 +30,7 @@ namespace Auction.Migrations
                     IsSold = table.Column<int>(nullable: true, defaultValue: 0),
                     IsPurchase = table.Column<string>(type: "nvarchar(50)", nullable: true, defaultValue: "No"),
                     ProductionDate = table.Column<DateTime>(nullable: true),
-                    WorkingTime = table.Column<DateTime>(nullable: true),
+                    WorkingTime = table.Column<int>(nullable: true),
                     DealPrice = table.Column<decimal>(type: "decimal(18, 2)", nullable: true),
                     DealPriceRMB = table.Column<decimal>(type: "decimal(18, 2)", nullable: true),
                     Long = table.Column<int>(nullable: true),

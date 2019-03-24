@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Auction.Entities.Enums;
 using static Auction.Entities.Enums.CommonEnum;
 
 namespace Auction.Entities
@@ -22,7 +23,7 @@ namespace Auction.Entities
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [Column(Order = 101)]
-        public IsDeleted? IsDelete { get; set; }
+        public IsDeleted? IsDeleted { get; set; } = CommonEnum.IsDeleted.No;
 
         /// <summary>
         /// 创建时间

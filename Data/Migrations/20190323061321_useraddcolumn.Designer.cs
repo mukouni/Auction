@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Auction.Migrations
 {
     [DbContext(typeof(AuctionDbContext))]
-    [Migration("20190321081511_init")]
-    partial class init
+    [Migration("20190323061321_useraddcolumn")]
+    partial class useraddcolumn
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -55,7 +55,7 @@ namespace Auction.Migrations
 
                     b.Property<int?>("Height");
 
-                    b.Property<int?>("IsDelete")
+                    b.Property<int?>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(0);
 
@@ -118,7 +118,7 @@ namespace Auction.Migrations
 
                     b.Property<string>("Ip");
 
-                    b.Property<int?>("IsDelete");
+                    b.Property<int?>("IsDeleted");
 
                     b.Property<DateTime?>("LastUpdatedAt")
                         .ValueGeneratedOnAddOrUpdate();
@@ -170,7 +170,7 @@ namespace Auction.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(false);
 
-                    b.Property<int?>("IsDelete")
+                    b.Property<int?>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(0);
 
@@ -238,6 +238,10 @@ namespace Auction.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
+                    b.Property<DateTime?>("CreatedAt");
+
+                    b.Property<DateTime?>("DeadlineAt");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(800)");
 
@@ -245,6 +249,11 @@ namespace Auction.Migrations
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed");
+
+                    b.Property<int?>("IsDeleted");
+
+                    b.Property<DateTime?>("LastUpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<bool>("LockoutEnabled");
 

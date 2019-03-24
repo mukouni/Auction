@@ -28,6 +28,11 @@ using Auction.Api.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Auction.Models;
 using Auction.Extensions.AuthContext;
+using Auction.Entities.Enums;
+using Microsoft.EntityFrameworkCore.Internal;
+using Castle.Core.Internal;
+using X.PagedList;
+using AutoMapper.QueryableExtensions;
 
 namespace Auction.Controllers
 {
@@ -62,13 +67,35 @@ namespace Auction.Controllers
 
         [HttpGet("[action]")]
         [HttpGet("")]
-        public IActionResult Index()
+        [Authorize(Roles = "Admin, Staff, Develpment")]
+        public IActionResult Index(SearchEquipmentViewModel searchEquipment)
         {
-            var equipmentVMs = _mapper.Map<IList<EquipmentViewModel>>(_context.Equipments);
-            return View(equipmentVMs);
+            var query = _context.Equipments.AsQueryable<Equipment>();
+            if (!string.IsNullOrEmpty(searchEquipment.Kw))
+            {
+                query = query.Where(x => x.Name.Contains(searchEquipment.Kw.Trim()) || x.Code.Contains(searchEquipment.Kw.Trim()));
+            }
+            query.OrderBy(e => e.LastUpdatedAt).ThenBy(e => e.CreatedAt).ThenBy(e => e.Name);
+
+            var list = query.Paged(searchEquipment.CurrentPage, searchEquipment.PageSize)
+                            // .Select(equipment =>  _mapper.Map<EquipmentViewModel>(equipment)) //因为设置了延迟加载会报错
+                            .ProjectTo<EquipmentViewModel>();
+                            // .Project().To<EquipmentViewModel>()
+
+            var totalCount = query.Count();
+
+            searchEquipment.Equipments = new StaticPagedList<EquipmentViewModel>(
+                    list,
+                    searchEquipment.CurrentPage,
+                    searchEquipment.PageSize,
+                    totalCount);
+            var response = ResponseModelFactory.CreateResultInstance;
+            response.SetData(searchEquipment, totalCount);
+            return View(searchEquipment);
         }
 
         [HttpGet("[action]")]
+        [Authorize(Roles = "Admin, Staff, Develpment")]
         public IActionResult New()
         {
 
@@ -76,6 +103,7 @@ namespace Auction.Controllers
         }
 
         [HttpPost("[action]")]
+        [Authorize(Roles = "Admin, Staff, Develpment")]
         public async Task<IActionResult> Create(EquipmentViewModel EquipmentVM)
         {
 
@@ -89,6 +117,7 @@ namespace Auction.Controllers
 
         [HttpGet("{id:Guid}")]
         [HttpGet("{id:Guid}/[action]")]
+        [Authorize(Roles = "Admin, Staff, Develpment")]
         [GenerateAntiforgeryTokenCookieForAjax]
         [CustomAuthorize]
         public async Task<IActionResult> Edit(Guid? id)
@@ -99,6 +128,66 @@ namespace Auction.Controllers
             }
             var equipment = await _context.Equipments.FirstOrDefaultAsync(e => e.Id == id);
             var equipmentVM = _mapper.Map<EquipmentViewModel>(equipment);
+            return View(equipmentVM);
+        }
+
+        [HttpPost("[action]")]
+        [Authorize(Roles = "Admin, Staff, Develpment")]
+        public async Task<IActionResult> Delete(Guid? id)
+        {
+            var response = ResponseModelFactory.CreateInstance;
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var equipment = await _context.Equipments.FindAsync(id);
+            equipment.IsDeleted = CommonEnum.IsDeleted.Yes;
+            _context.Equipments.Attach(equipment);
+            _context.Entry(equipment).Property(x => x.IsDeleted).IsModified = true;
+            await _context.SaveChangesAsync();
+            response.SetData(new { id = id });
+            return Ok(response);
+        }
+
+        [HttpPost("{id:Guid}/[action]")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Staff, Develpment")]
+        public async Task<IActionResult> Update(EquipmentViewModel equipmentVM, Guid id)
+        {
+            if (id != equipmentVM.Id)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(_mapper.Map<EquipmentViewModel, Equipment>(equipmentVM));
+                    // var list = new List<Equipment>();
+                    // for (int i = 9; i < 20; i++)
+                    // {
+                    //     var enew = new Equipment();
+                    //     enew = _mapper.Map<EquipmentViewModel, Equipment>(equipmentVM);
+                    //     enew.Id = Guid.NewGuid();
+                    //     enew.Name = enew.Name.Split("新设备")[0] + ((int.Parse(enew.Name.Split("新设备")[1]) + 100+ i));
+                    //     enew.Code = "Code" + i;
+                    //     enew.ProductionDate = ((DateTime)(enew.ProductionDate)).AddMonths(i);
+                    //     list.Add(enew);
+                    // }
+                    // await _context.AddRangeAsync(list);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException /* ex */)
+                {
+                    //Log the error (uncomment ex variable name and write a log.)
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                        "Try again, and if the problem persists, " +
+                        "see your system administrator.");
+                }
+                var equipment = await _context.Equipments.FirstOrDefaultAsync(e => e.Id == id);
+            }
             return View(equipmentVM);
         }
 
@@ -215,7 +304,7 @@ namespace Auction.Controllers
         // }
 
 
-        [Authorize(Roles="Admin, Staff")]
+        [Authorize(Roles = "Admin, Staff, Develpment")]
         [HttpPost("[action]")]
         public async Task<IActionResult> UploadPhotoAsync(EquipmentPhotoViewModel equipmentPhoto)
         {
@@ -276,6 +365,7 @@ namespace Auction.Controllers
         /// <param name="photoName">包含图片名字和后缀</param>
         /// </summary>
         [HttpPost("[action]")]
+        [Authorize(Roles = "Admin, Staff, Develpment")]
         public async Task<IActionResult> DeletePhoto(string photoName, Guid key)
         {
             var response = ResponseModelFactory.CreateInstance;
@@ -313,6 +403,7 @@ namespace Auction.Controllers
         /// <param name="photoName">包含图片名字和后缀</param>
         /// </summary>
         [HttpPost("[action]")]
+        [Authorize(Roles = "Admin, Staff, Develpment")]
         public async Task<IActionResult> SetCoverPhoto(string photoName, Guid equipmentId)
         {
             var response = ResponseModelFactory.CreateInstance;
@@ -337,6 +428,122 @@ namespace Auction.Controllers
 
             return Ok(response);
         }
+
+
+        /// <summary>
+        /// 为拍卖设备
+        /// </summary>
+        [HttpGet("[action]")]
+        public IActionResult NoAuction(SearchEquipmentViewModel searchEquipment)
+        {
+            using (_context)
+            {
+                var query = _context.Equipments.AsQueryable<Equipment>();
+                query = query.Where(x => x.IsSold == CommonEnum.IsSold.No || x.IsSold == null);
+                query = query.Where(x => x.IsDeleted == CommonEnum.IsDeleted.No || x.IsDeleted == null);
+
+                if (!string.IsNullOrEmpty(searchEquipment.Kw))
+                {
+                    query = query.Where(x => x.Name.Contains(searchEquipment.Kw.Trim()) || x.Code.Contains(searchEquipment.Kw.Trim()));
+                }
+                if (!string.IsNullOrEmpty(searchEquipment.Manufacturers.Join(",")))
+                {
+                    query = query.Where(x => searchEquipment.Manufacturers.Contains(x.Manufacturer));
+                }
+                if (!string.IsNullOrEmpty(searchEquipment.Models.Join(",")))
+                {
+                    query = query.Where(x => searchEquipment.Models.Contains(x.Model));
+                }
+                if (!string.IsNullOrEmpty(searchEquipment.AuctionHouses.Join(",")))
+                {
+                    query = query.Where(x => searchEquipment.AuctionHouses.Contains(x.AuctionHouse));
+                }
+                if (!string.IsNullOrEmpty(searchEquipment.Countries.Join(",")))
+                {
+                    query = query.Where(x => searchEquipment.Countries.Contains(x.Country));
+                }
+                if (!string.IsNullOrEmpty(searchEquipment.cities.Join(",")))
+                {
+                    query = query.Where(x => searchEquipment.cities.Contains(x.City));
+                }
+                if (!string.IsNullOrEmpty(searchEquipment.cities.Join(",")))
+                {
+                    query = query.Where(x => searchEquipment.cities.Contains(x.City));
+                }
+                if ((searchEquipment.ProductionDateRang.Length > 1))
+                {
+                    if (searchEquipment.ProductionDateRang[0] != null)
+                    {
+                        query = query.Where(x => x.ProductionDate >= searchEquipment.ProductionDateRang[0]);
+                    }
+                    if (searchEquipment.ProductionDateRang[1] != null)
+                    {
+                        query = query.Where(x => x.ProductionDate <= searchEquipment.ProductionDateRang[0]);
+                    }
+                }
+                if ((searchEquipment.WorkingTimeRang.Length > 1))
+                {
+                    if (searchEquipment.ProductionDateRang[0] != null)
+                    {
+                        query = query.Where(x => x.WorkingTime >= searchEquipment.WorkingTimeRang[0]);
+                    }
+                    if (searchEquipment.WorkingTimeRang[1] != null)
+                    {
+                        query = query.Where(x => x.WorkingTime <= searchEquipment.WorkingTimeRang[0]);
+                    }
+                }
+                if ((searchEquipment.WorkingTimeRang.Length > 1))
+                {
+                    if (searchEquipment.ProductionDateRang[0] != null)
+                    {
+                        query = query.Where(x => x.WorkingTime >= searchEquipment.WorkingTimeRang[0]);
+                    }
+                    if (searchEquipment.WorkingTimeRang[1] != null)
+                    {
+                        query = query.Where(x => x.WorkingTime <= searchEquipment.WorkingTimeRang[0]);
+                    }
+                }
+                if ((searchEquipment.DealPriceRang.Length > 1))
+                {
+                    if (searchEquipment.DealPriceRang[0] >= 0)
+                    {
+                        query = query.Where(x => x.DealPrice >= searchEquipment.DealPriceRang[0]);
+                    }
+                    if (searchEquipment.DealPriceRang[1] >= 0)
+                    {
+                        query = query.Where(x => x.DealPrice <= searchEquipment.DealPriceRang[0]);
+                    }
+                }
+                var result = query.Paged(searchEquipment.CurrentPage, searchEquipment.PageSize);
+                var list = result.ToListAsync().Result;
+                var totalCount = query.Count();
+                var data = list.Select(_mapper.Map<Equipment, EquipmentViewModel>);
+                var response = ResponseModelFactory.CreateResultInstance;
+                response.SetData(data, totalCount);
+                return Ok(response);
+            }
+            // return View(new EquipmentViewModel());
+        }
+
+        /// <summary>
+        /// 已拍卖设备
+        /// </summary>
+        [HttpGet("[action]")]
+        public IActionResult Auctioned()
+        {
+            return View(new EquipmentViewModel());
+        }
+
+        /// <summary>
+        /// 代采购设备
+        /// </summary>
+        [HttpGet("[action]")]
+        [Authorize(Roles = "Admin, Development, Staff, Member")]
+        public IActionResult InsteadAuction()
+        {
+            return View(new EquipmentViewModel());
+        }
+
         private static Encoding GetEncoding(MultipartSection section)
         {
             MediaTypeHeaderValue mediaType;

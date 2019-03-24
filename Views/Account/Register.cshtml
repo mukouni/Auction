@@ -70,8 +70,12 @@
                 type: "post",
                 url: "@Url.Action("GetSMSCode")",
                 data: { Phone: $("#Phone").val(), 
+                        SMSType: "Register",
                         '__RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val(), },
                 success: function(result){
+                    if(result.Code != 200){
+                        $(".validation-summary-valid li").text(result.Message).show();
+                    }
                     console.log(result);
                 }
             })

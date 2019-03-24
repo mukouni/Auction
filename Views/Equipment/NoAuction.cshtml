@@ -1,0 +1,38 @@
+@using System.IO;
+@using Newtonsoft.Json;
+@using Microsoft.Extensions.Options;
+@model EquipmentViewModel
+@{
+    ViewData["Title"] = "未拍卖设备";
+}
+@section stylesheet {
+    
+}
+
+<div class="bodyinfo row">
+    <div class="condition">
+        
+    </div>
+    <div class="info d-flex"> 
+        <div class="search">
+            
+        </div>
+        <div class="show flex-grow-1">
+            <div class="sort">
+
+            </div>
+            <div class="data">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+          $(".js-range-slider").ionRangeSlider({
+        skin: "round"
+    });
+    </script>
+}

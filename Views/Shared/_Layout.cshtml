@@ -26,12 +26,14 @@
                     </div>
                     <div id="navbar" class="d-none d-sm-block d-sm-flex align-self-end">
                         <ul class="nav">
-                            <li class="nav-item"><a href="" class="nav-link">未拍卖设备</a></li>
-                            <li class="nav-item"><a href="" class="nav-link">已拍卖设备</a></li>
-                            <li class="nav-item"><a href="" class="nav-link">代采购设备</a></li>
+                            <li class="nav-item"><a asp-controller="Equipment" asp-action="NoAuction" class="nav-link">未拍卖设备</a></li>
+                            <li class="nav-item"><a asp-controller="Equipment" asp-action="Auctioned" class="nav-link">已拍卖设备</a></li>
+                            <li class="nav-item"><a asp-controller="Equipment" asp-action="InsteadAuction" class="nav-link">代采购设备</a></li>
                             @if (SignInManager.IsSignedIn(User) && User.IsInRole(ApplicationRole.Admin))
                             {
-                            <li class="nav-item"><a href="" class="nav-link">系统管理</a></li>
+                            <li class="nav-item">
+                                <a a asp-controller="Manage" asp-action="System" class="nav-link">系统管理</a>
+                            </li>
                             }
                         </ul>
                     </div>

@@ -38,7 +38,7 @@ namespace Auction
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                // var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+                var loggerFactory = services.GetRequiredService<ILoggerFactory>();
                 var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                 var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
                 try
@@ -48,8 +48,8 @@ namespace Auction
                 }
                 catch (Exception ex)
                 {
-                    // var logger = loggerFactory.CreateLogger<Program>();
-                    // logger.LogError(ex, "An error occurred seeding the DB.");
+                    var logger = loggerFactory.CreateLogger<Program>();
+                    logger.LogError(ex, "An error occurred seeding the DB.");
                 }
             }
 

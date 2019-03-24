@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 using Auction.Entities;
+using static Auction.Entities.Enums.CommonEnum;
 
 namespace Auction.Identity.Entities
 {
@@ -68,6 +69,33 @@ namespace Auction.Identity.Entities
         /// </summary>
         [Column(TypeName = "nvarchar(50)")]
         public string AvatorPath { get; set; }
+
+
+        /// <summary>
+        /// 会员到期日期
+        /// </summary>
+        public DateTime? DeadlineAt { get; set; }
+
+        [Column(Order = 101)]
+        public IsDeleted? IsDeleted { get; set; }
+
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        [Column(Order = 102)]
+        // [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+
+
+        /// <summary>
+        /// 最近修改时间
+        /// EF.Property<DateTime>(b, "LastUpdated")
+        /// context.Entry(myBlog).Property("LastUpdated").CurrentValue
+        /// EF Code Model 中定义的shadow(隐藏、卷影，直译阴影)属性LastUpdated和这个字段是同一个作用。两者不确定相同，但是可以肯定时间相近
+        /// </summary>
+        [Column(Order = 103)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTime? LastUpdatedAt { get; set; }
 
         // 导航属性
         /// <summary>

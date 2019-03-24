@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Auction.Migrations
 {
     [DbContext(typeof(AuctionDbContext))]
-    [Migration("20190321081511_init")]
-    partial class init
+    [Migration("20190323122708_IsPurchasechangeLength")]
+    partial class IsPurchasechangeLength
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -53,16 +53,15 @@ namespace Auction.Migrations
                     b.Property<decimal?>("DealPriceRMB")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.Property<int?>("Height");
+                    b.Property<long?>("Height");
 
-                    b.Property<int?>("IsDelete")
+                    b.Property<int?>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(0);
 
-                    b.Property<string>("IsPurchase")
+                    b.Property<int?>("IsPurchase")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(50)")
-                        .HasDefaultValue("No");
+                        .HasDefaultValue(0);
 
                     b.Property<int?>("IsSold")
                         .ValueGeneratedOnAdd()
@@ -72,7 +71,7 @@ namespace Auction.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasDefaultValueSql("getdate()");
 
-                    b.Property<int?>("Long");
+                    b.Property<long?>("Long");
 
                     b.Property<string>("Manufacturer")
                         .HasColumnType("nvarchar(50)");
@@ -95,9 +94,9 @@ namespace Auction.Migrations
 
                     b.Property<double?>("Weight");
 
-                    b.Property<int?>("Width");
+                    b.Property<long?>("Width");
 
-                    b.Property<int?>("WorkingTime");
+                    b.Property<long?>("WorkingTime");
 
                     b.HasKey("Id");
 
@@ -118,7 +117,7 @@ namespace Auction.Migrations
 
                     b.Property<string>("Ip");
 
-                    b.Property<int?>("IsDelete");
+                    b.Property<int?>("IsDeleted");
 
                     b.Property<DateTime?>("LastUpdatedAt")
                         .ValueGeneratedOnAddOrUpdate();
@@ -170,7 +169,7 @@ namespace Auction.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(false);
 
-                    b.Property<int?>("IsDelete")
+                    b.Property<int?>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(0);
 
@@ -238,6 +237,10 @@ namespace Auction.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
+                    b.Property<DateTime?>("CreatedAt");
+
+                    b.Property<DateTime?>("DeadlineAt");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(800)");
 
@@ -245,6 +248,11 @@ namespace Auction.Migrations
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed");
+
+                    b.Property<int?>("IsDeleted");
+
+                    b.Property<DateTime?>("LastUpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<bool>("LockoutEnabled");
 

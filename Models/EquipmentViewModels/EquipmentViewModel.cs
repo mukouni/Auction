@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Auction.Entities;
+using Auction.Entities.Enums;
 using Microsoft.Extensions.Options;
 using static Auction.Entities.Enums.CommonEnum;
 
@@ -11,6 +12,8 @@ namespace Auction.Models.EquipmentViewModels
 {
     public class EquipmentViewModel
     {
+        private EquipmentPhotoViewModel _coverPhoto;
+
         [Required]
         public Guid Id { get; set; } = Guid.NewGuid();
 
@@ -58,15 +61,20 @@ namespace Auction.Models.EquipmentViewModels
         ///<summary>
         /// 是否被拍卖
         /// </summary>
-        [Display(Name = "是否被拍卖")]
-        public IsSold? IsSold { get; set; }
+        [Display(Name = "已被拍卖")]
+        public IsSold? IsSold { get; set; } = CommonEnum.IsSold.No;
 
         ///<summary>
         /// 是否是采购设备
         /// </summary>
-        [Display(Name = "是否是采购设备")]
+        [Display(Name = "是采购设备")]
+        public IsPurchase? IsPurchase { get; set; } = CommonEnum.IsPurchase.No;
 
-        public string IsPurchase { get; set; }
+        ///<summary>
+        /// 是否被删除
+        /// </summary>
+        [Display(Name = "已删除")]
+        public IsDeleted? IsDeleted { get; set; } = CommonEnum.IsDeleted.No;
 
         ///<summary>
         /// 生产年份
@@ -81,7 +89,7 @@ namespace Auction.Models.EquipmentViewModels
         /// </summary>
         [Display(Name = "工作小时")]
         [Required]
-        public int? WorkingTime { get; set; }
+        public long? WorkingTime { get; set; }
 
         ///<summary>
         /// 成交价格
@@ -100,19 +108,19 @@ namespace Auction.Models.EquipmentViewModels
         /// 长(毫米)
         /// </summary>
         [Display(Name = "长(毫米)")]
-        public int? Long { get; set; }
+        public long? Long { get; set; }
 
         ///<summary>
         /// 宽(毫米)
         /// </summary>
         [Display(Name = "宽(毫米)")]
-        public int? Width { get; set; }
+        public long? Width { get; set; }
 
         ///<summary>
         /// 高(毫米)
         /// </summary>
         [Display(Name = "高(毫米)")]
-        public int? Height { get; set; }
+        public long? Height { get; set; }
 
         ///<summary>
         /// 重量(kg) 
@@ -126,8 +134,35 @@ namespace Auction.Models.EquipmentViewModels
         [Display(Name = "体积(立方米) ")]
         public Decimal? Volume { get; set; }
 
-        
-        public Photo CoverPhoto { get; set; }
+
+        public EquipmentPhotoViewModel CoverPhoto
+        {
+            get
+            {
+                if(_coverPhoto != null){
+                    return _coverPhoto;
+                }
+                _coverPhoto = Photos.FirstOrDefault(p => p.IsCover == true);
+                if (_coverPhoto == null)
+                {
+                    _coverPhoto = Photos.LastOrDefault();
+                }
+                if (_coverPhoto == null)
+                {
+                    _coverPhoto = new EquipmentPhotoViewModel()
+                    {
+                        SavePath = "\\images\\Equipment\\default.jpg",
+                        RequestPath = "/images/Equipment/5af6c17b-a58f-4134-80ca-7b7134f697e5.jpg",
+                        FileName = "default.jpg"
+                    };
+                }
+                return _coverPhoto;
+            }
+            set {
+                _coverPhoto = value;
+            }
+        }
+
 
         public ICollection<EquipmentPhotoViewModel> Photos { get; set; } = new List<EquipmentPhotoViewModel>();
     }

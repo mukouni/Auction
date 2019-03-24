@@ -60,7 +60,7 @@ namespace Auction.Controllers
         // GET: /Account/Login
         [HttpGet("[action]")]
         [AllowAnonymous]
-        public IActionResult LoginAsync(string returnUrl = null)
+        public IActionResult Login(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
             return View();
@@ -79,10 +79,11 @@ namespace Auction.Controllers
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 String username = _context.Users.Where(u => u.PhoneNumber == model.Phone).Select(u => u.UserName).FirstOrDefault();
-                if(username == null){
+                if (username == null)
+                {
                     // model.Message ="没有找到手机号";
                     // ModelState.AddModelError(string.Empty, "没有找到手机号");
-                    return View(model).WithWarning("错误", "没有找到用户!");;
+                    return View(model).WithWarning("错误", "没有找到用户!"); ;
                 }
                 var result = await _signInManager.PasswordSignInAsync(username, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.RequiresTwoFactor)
@@ -134,31 +135,34 @@ namespace Auction.Controllers
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { PhoneNumber = model.Phone, UserName = model.UserName };
-                var smsCode = HttpContext.Session.Get<string>("smsCode");
-                var smsTimeoutAt = HttpContext.Session.Get<DateTime>("smsTimeoutAt");
-                if(model.SMSCode != smsCode || smsTimeoutAt >= DateTime.Now){
+                if (model.SMSCode != HttpContext.Session.Get<string>("smsCode") ||
+                    DateTime.Now <= HttpContext.Session.Get<DateTime>("smsTimeoutAt"))
+                {
                     ModelState.AddModelError(string.Empty, "验证码已过期!");
                     return View(model);
                 }
-                if(_context.Users.Where(u => u.PhoneNumber == model.Phone).Count() > 0){
+
+                if (_context.Users.Where(u => u.PhoneNumber == model.Phone).Count() > 0)
+                {
                     ModelState.AddModelError(string.Empty, "手机号已被占用!");
                     return View(model);
                 }
 
                 var result = await _userManager.CreateAsync(user, model.Password);
-                
+
                 bool guestRoleExist = await _roleManager.RoleExistsAsync(ApplicationRole.Guest);
                 if (!guestRoleExist)
                 {
                     _logger.LogInformation("Adding " + ApplicationRole.Guest + " role");
-                    await _roleManager.CreateAsync(new ApplicationRole(){
+                    await _roleManager.CreateAsync(new ApplicationRole()
+                    {
                         Name = ApplicationRole.Guest,
                         NormalizedName = ApplicationRole.Guest.ToUpper()
                     });
                 }
 
                 await _userManager.AddToRoleAsync(
-                    await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == model.Phone), 
+                    await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == model.Phone),
                     ApplicationRole.Guest);
                 // var securityStamp = await _userManager.GetSecurityStampAsync(user);
                 // var code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, model.Phone);
@@ -171,7 +175,7 @@ namespace Auction.Controllers
                     //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
                     //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
                     //    "Please confirm your account by clicking this link: <a href=\"" + callbackUrl + "\">link</a>");
-                    
+
                     // _smsSender.SendSmsAsync(model.Phone, "您的验证码是：" + code);
                     // await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(3, "User created a new account with password.");
@@ -189,22 +193,30 @@ namespace Auction.Controllers
         {
             var response = ResponseModelFactory.CreateInstance;
 
-            var user = new ApplicationUser { PhoneNumber = model.Phone, UserName = model.UserName };
+            var code = await _userManager.GeneratePhoneNumberTokenAsync(6);
 
-            var smsCode = await _userManager.GeneratePhoneNumberTokenAsync();
-            await _smsSender.SendSmsAsync(model.Phone, "您的验证码是:" + smsCode + "【中机电拍卖】");
+            await _smsSender.SendSmsAsync(model.Phone, "您的验证码是:" + code + "【中机电拍卖】");
 
-            HttpContext.Session.Set<string>("smsCode", smsCode);
+            HttpContext.Session.Set<string>("smsCode", code);
             var smsSendAt = DateTime.Now;
             HttpContext.Session.Set<DateTime>("smsSendAt", smsSendAt);
-            HttpContext.Session.Set<DateTime>("smsTimeoutAt", smsSendAt.AddSeconds(1));
-            response.SetData(new {smsSendAt = smsSendAt, smsCode = smsCode });
+            HttpContext.Session.Set<DateTime>("smsTimeoutAt", smsSendAt.AddSeconds(3)); // 有效时间3分钟
+            response.SetData(new { smsSendAt = smsSendAt, code = code });
             return Json(response);
         }
+
+        // 未授权页面
+        // GET: /Account/AccessDenied
+        [HttpGet("[action]")]
+        public IActionResult AccessDenied()
+        {
+           
+            return View();
+        }
+        
         //
         // GET: /Account/LogOff
         [HttpGet("[action]")]
-        // [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogOff()
         {
             await _signInManager.SignOutAsync();
@@ -344,20 +356,31 @@ namespace Auction.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                // var user = _context.Users.Where(u => u.NormalizedEmail == model.Email).ToList().FirstOrDefault();
-                // if (user == null ) // || !(await _userManager.IsEmailConfirmedAsync(user)))
-                // {
-                //     // Don't reveal that the user does not exist or is not confirmed
-                //     return View("ForgotPasswordConfirmation");
-                // }
+                var user = _userManager.FindByPhoneNumber(_context, model.Phone);
+                if (model.SMSCode != HttpContext.Session.Get<string>("smsCode") ||
+                    DateTime.Now <= HttpContext.Session.Get<DateTime>("smsTimeoutAt"))
+                {
+                    ModelState.AddModelError(string.Empty, "验证码已过期!");
+                    return View(model);
+                }
 
-                // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
-                // Send an email with this link
-                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-                await _emailSender.SendEmailAsync(model.Email, user.UserName, "Reset Password", callbackUrl);
-                return View("ForgotPasswordConfirmation");
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "请确认手机号是否正确!");
+                    return View(model);
+                }
+
+                await _userManager.RemovePasswordAsync(user);
+
+                await _userManager.AddPasswordAsync(user, model.Password);
+                
+                var result = await _userManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+                AddErrors(result);
+                return View();
             }
 
             // If we got this far, something failed, redisplay form

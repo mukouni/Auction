@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Auction.Migrations
 {
     [DbContext(typeof(AuctionDbContext))]
-    [Migration("20190321081511_init")]
-    partial class init
+    [Migration("20190322075921_DeadLineAt")]
+    partial class DeadLineAt
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -237,6 +237,8 @@ namespace Auction.Migrations
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
+
+                    b.Property<DateTime?>("DeadlineAt");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(800)");

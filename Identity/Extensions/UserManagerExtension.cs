@@ -4,6 +4,10 @@ using System.Threading.Tasks;
 using Auction.Entities.Enums;
 using Auction.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Auction.Data;
 
 namespace Auction.Identity.Extensions
 {
@@ -16,6 +20,11 @@ namespace Auction.Identity.Extensions
              {
                  return GenerateToken(strLength);
              });
+        }
+        
+        public static ApplicationUser FindByPhoneNumber(this UserManager<ApplicationUser> userManager, AuctionDbContext context, string phoneNumber)
+        {
+                return context.Users.SingleOrDefault(u => u.PhoneNumber == phoneNumber);
         }
 
         private static string GenerateToken(int? VcodeNum)

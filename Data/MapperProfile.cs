@@ -16,27 +16,27 @@ namespace Auction.Data.AutoMapper
     {
         public MapperProfile()
         {
-            CreateMap<Equipment, EquipmentViewModel>()
-                .ForMember(x => x.CoverPhoto, opt =>
-                    opt.MapFrom((src, dest, destMember, context) =>
-                                    {
-                                        destMember = src.Photos.FirstOrDefault(p => p.IsCover == true);
-                                        if (destMember == null)
-                                        {
-                                            destMember = src.Photos.LastOrDefault();
-                                        }
-                                        if (destMember == null)
-                                        {
-                                            destMember = new Photo()
-                                            {
-                                                SavePath = "\\images\\Equipment\\default.jpg",
-                                                RequestPath = "/images/Equipment/5af6c17b-a58f-4134-80ca-7b7134f697e5.jpg",
-                                                FileName = "default.jpg"
-                                            };
-                                        }
-                                        return destMember;
-                                    }
-                                ));
+            CreateMap<Equipment, EquipmentViewModel>();
+                // .ForMember(x => x.CoverPhoto, opt =>
+                //     opt.MapFrom((src, dest, destMember, context) =>
+                //                     {
+                //                         destMember = src.Photos.FirstOrDefault(p => p.IsCover == true);
+                //                         if (destMember == null)
+                //                         {
+                //                             destMember = src.Photos.LastOrDefault();
+                //                         }
+                //                         if (destMember == null)
+                //                         {
+                //                             destMember = new Photo()
+                //                             {
+                //                                 SavePath = "\\images\\Equipment\\default.jpg",
+                //                                 RequestPath = "/images/Equipment/5af6c17b-a58f-4134-80ca-7b7134f697e5.jpg",
+                //                                 FileName = "default.jpg"
+                //                             };
+                //                         }
+                //                         return destMember;
+                //                     }
+                //                 ));
             CreateMap<EquipmentViewModel, Equipment>();
 
             CreateMap<Photo, PhotoViewModel>()
@@ -48,6 +48,14 @@ namespace Auction.Data.AutoMapper
                 .ForMember(x => x.Equipment, opt => opt.Ignore());
             CreateMap<EquipmentPhotoViewModel, Photo>()
                 .ForMember(x => x.Equipment, opt => opt.Ignore());
+
+
+            CreateMap<ApplicationUser, ForgotPasswordViewModel>();
+            CreateMap<ForgotPasswordViewModel, ApplicationUser>();
+
+
+            CreateMap<ApplicationUser, Models.ManageViewModels.IndexViewModel>();
+            CreateMap<Models.ManageViewModels.IndexViewModel, ApplicationUser>();
         }
     }
 }

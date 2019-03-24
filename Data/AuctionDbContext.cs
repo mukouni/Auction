@@ -98,7 +98,7 @@ namespace Auction.Data
                 entity.Property(e => e.Id)
                     .ValueGeneratedNever()
                     .HasDefaultValueSql("newid()");
-                entity.Property(e => e.IsDelete)
+                entity.Property(e => e.IsDeleted)
                     .HasDefaultValue(IsDeleted.No);
                 entity.Property(e => e.IsCover)
                     .HasDefaultValue(false);
@@ -115,7 +115,7 @@ namespace Auction.Data
                 entity.Property(e => e.Id)
                      .ValueGeneratedNever()
                      .HasDefaultValueSql("newid()");
-                entity.Property(e => e.IsDelete)
+                entity.Property(e => e.IsDeleted)
                     .HasDefaultValue(IsDeleted.No);
                 entity.Property(e => e.IsSold)
                      .HasDefaultValue(IsSold.No);

@@ -62,6 +62,15 @@ namespace Auctions.Controllers
             return View(model);
         }
 
+
+        //
+        // GET: /Manage/System
+        [HttpGet]
+        public IActionResult System()
+        {
+            return View();
+        }
+
         //
         // POST: /Manage/RemoveLogin
         [HttpPost]
@@ -235,8 +244,9 @@ namespace Auctions.Controllers
         // POST: /Manage/ChangePassword
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        public async Task<IActionResult> ChangePassword(IndexViewModel model)
         {
+            ChangePasswordViewModel changePassword = model.ChangePassword;
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -245,7 +255,7 @@ namespace Auctions.Controllers
             if (user != null)
             {
                 
-                var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                var result = await _userManager.ChangePasswordAsync(user, changePassword.OldPassword, changePassword.NewPassword);
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);

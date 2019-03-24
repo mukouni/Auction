@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using Auction.Entities.Enums;
 using static Auction.Entities.Enums.CommonEnum;
 
 namespace Auction.Entities
@@ -50,14 +51,12 @@ namespace Auction.Entities
         ///<summary>
         /// 是否被拍卖
         /// </summary>
-        public IsSold? IsSold { get; set; }
+        public IsSold? IsSold { get; set; } = CommonEnum.IsSold.No;
 
         ///<summary>
         /// 是否是采购设备
         /// </summary>
-
-        [Column(TypeName = "nvarchar(50)")]
-        public string IsPurchase { get; set; }
+        public IsPurchase? IsPurchase { get; set; } = CommonEnum.IsPurchase.No;
 
         ///<summary>
         /// 生产年份
@@ -67,7 +66,7 @@ namespace Auction.Entities
         ///<summary>
         /// 工作小时
         /// </summary>
-        public DateTime? WorkingTime { get; set; }
+        public long? WorkingTime { get; set; }
 
         ///<summary>
         /// 成交价格
@@ -84,17 +83,17 @@ namespace Auction.Entities
         ///<summary>
         /// 长(毫米)
         /// </summary>
-        public int? Long { get; set; }
+        public long? Long { get; set; }
 
         ///<summary>
         /// 宽(毫米)
         /// </summary>
-        public int? Width { get; set; }
+        public long? Width { get; set; }
 
         ///<summary>
         /// 高(毫米)
         /// </summary>
-        public int? Height { get; set; }
+        public long? Height { get; set; }
 
         ///<summary>
         /// 重量(kg) 

@@ -62,7 +62,6 @@ namespace Auction.Data
 
                 var defaultUser = new ApplicationUser
                 {
-                    Id = Guid.NewGuid(),
                     RealName = "康元",
                     UserName = "15510455963",
                     PhoneNumber = "15510455963",
@@ -71,7 +70,6 @@ namespace Auction.Data
 
                 var User1 = new ApplicationUser
                 {
-                    Id = Guid.NewGuid(),
                     RealName = "dmzsz",
                     UserName = "18501255963",
                     PhoneNumber = "18501255963",
@@ -80,7 +78,6 @@ namespace Auction.Data
 
                 var User2 = new ApplicationUser
                 {
-                    Id = Guid.NewGuid(),
                     RealName = "mukouni",
                     UserName = "15618308191",
                     PhoneNumber = "15618308191",
