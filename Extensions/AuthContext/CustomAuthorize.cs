@@ -35,7 +35,7 @@ namespace Auction.Extensions.AuthContext
                 // this also makes redirect to a login page work properly
                 //context.Result = new UnauthorizedResult();
                 //return;
-                throw new UnauthorizeException();
+                // throw new UnauthorizeException();
             }
 
             // you can also use registered services

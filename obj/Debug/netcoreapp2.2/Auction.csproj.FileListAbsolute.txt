@@ -62,3 +62,7 @@ d:\net_project\Auction\obj\Debug\netcoreapp2.2\Razor\Views\Equipment\InsteadAuct
 d:\net_project\Auction\obj\Debug\netcoreapp2.2\Razor\Views\Equipment\NoAuction.g.cshtml.cs
 d:\net_project\Auction\obj\Debug\netcoreapp2.2\Razor\Views\Account\AccessDenied.g.cshtml.cs
 D:\net_project\Auction\obj\Debug\netcoreapp2.2\Razor\Views\Manage\System.g.cshtml.cs
+d:\net_project\Auction\obj\Debug\netcoreapp2.2\Razor\Views\Equipment\_IndexTablePartial.g.cshtml.cs
+d:\net_project\Auction\obj\Debug\netcoreapp2.2\Razor\Views\Equipment\_IndexBodyPartial.g.cshtml.cs
+d:\net_project\Auction\obj\Debug\netcoreapp2.2\Razor\Views\Equipment\_EquipmentFormPartial.g.cshtml.cs
+d:\net_project\Auction\obj\Debug\netcoreapp2.2\Razor\Views\Shared\_ManageLayout.g.cshtml.cs

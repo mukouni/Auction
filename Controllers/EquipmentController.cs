@@ -33,6 +33,9 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Castle.Core.Internal;
 using X.PagedList;
 using AutoMapper.QueryableExtensions;
+using System.Collections;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Auction.Controllers
 {
@@ -67,9 +70,31 @@ namespace Auction.Controllers
 
         [HttpGet("[action]")]
         [HttpGet("")]
+        [HttpPost("[action]")]
+        [HttpPost("")]
         [Authorize(Roles = "Admin, Staff, Develpment")]
         public IActionResult Index(SearchEquipmentViewModel searchEquipment)
         {
+            var breadcrumb = new List<IDictionary<string, string>>();
+            breadcrumb.Add(new Dictionary<string, string>()
+            {
+                { "text", "系统管理"},
+                { "href", "/manage/system"}
+            });
+            breadcrumb.Add(new Dictionary<string, string>
+            {
+                { "text", "设备列表"},
+                { "href", "/manage/system"}
+            });
+            ViewData["breadcrumb"] = breadcrumb;
+            searchEquipment.PageSizeOptions = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "20", Text = "每页20条" },
+                new SelectListItem { Value = "50", Text = "每页50条" },
+                new SelectListItem { Value = "100", Text = "每页100"  },
+                new SelectListItem { Value = "1000", Text = "每页1000"  },
+            };
+
             var query = _context.Equipments.AsQueryable<Equipment>();
             if (!string.IsNullOrEmpty(searchEquipment.Kw))
             {
@@ -80,7 +105,7 @@ namespace Auction.Controllers
             var list = query.Paged(searchEquipment.CurrentPage, searchEquipment.PageSize)
                             // .Select(equipment =>  _mapper.Map<EquipmentViewModel>(equipment)) //因为设置了延迟加载会报错
                             .ProjectTo<EquipmentViewModel>();
-                            // .Project().To<EquipmentViewModel>()
+            // .Project().To<EquipmentViewModel>()
 
             var totalCount = query.Count();
 
@@ -89,16 +114,52 @@ namespace Auction.Controllers
                     searchEquipment.CurrentPage,
                     searchEquipment.PageSize,
                     totalCount);
+            searchEquipment.Count = totalCount;
+
             var response = ResponseModelFactory.CreateResultInstance;
             response.SetData(searchEquipment, totalCount);
-            return View(searchEquipment);
+
+            // var myViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) { { "SearchEquipmentViewModel", searchEquipment } };
+            // myViewData.Model = searchEquipment;
+
+            // PartialViewResult result = new PartialViewResult()
+            // {
+            //     ViewName = "searchEquipmentPartial",
+            //     ViewData = myViewData,
+            // };
+            // var ref = HttpContext.Request.Headers;
+            // Console.WriteLine(Request.Headers["Referer"]);
+            // Console.WriteLine(Request.Headers["Referer"].Contains("/manage/system"));
+            if (Request.Headers["Referer"].ToString().Contains("manage/system"))
+            {
+                return (IActionResult)PartialView("_IndexBodyPartial", searchEquipment);
+            }
+            return Request.IsAjaxRequest()
+                ? (IActionResult)PartialView("_IndexTablePartial", searchEquipment)
+                : View(searchEquipment);
         }
 
         [HttpGet("[action]")]
         [Authorize(Roles = "Admin, Staff, Develpment")]
         public IActionResult New()
         {
-
+            var breadcrumb = new List<IDictionary<string, string>>();
+            breadcrumb.Add(new Dictionary<string, string>()
+            {
+                { "text", "系统管理"},
+                { "href", "/manage/system"}
+            });
+            breadcrumb.Add(new Dictionary<string, string>
+            {
+                { "text", "设备列表"},
+                { "href", "/equipment/index"}
+            });
+            breadcrumb.Add(new Dictionary<string, string>
+            {
+                { "text", "新建设备"},
+                { "href", "/equipment/new"}
+            });
+            ViewData["breadcrumb"] = breadcrumb;
             return View(new EquipmentViewModel());
         }
 
@@ -122,6 +183,26 @@ namespace Auction.Controllers
         [CustomAuthorize]
         public async Task<IActionResult> Edit(Guid? id)
         {
+            var breadcrumb = new List<IDictionary<string, string>>();
+            breadcrumb.Add(new Dictionary<string, string>()
+            {
+                { "text", "系统管理"},
+                { "href", "/manage/system"}
+            });
+            breadcrumb.Add(new Dictionary<string, string>
+            {
+                { "text", "设备列表"},
+                { "href", "/equipment/index"}
+            });
+            ViewData["breadcrumb"] = breadcrumb;
+            breadcrumb.Add(new Dictionary<string, string>
+            {
+                { "text", "新建设备"},
+                { "href", "/equipment/"+id+"/edit"}
+            });
+            ViewData["breadcrumb"] = breadcrumb;
+            return View(new EquipmentViewModel());
+
             if (id == null)
             {
                 return NotFound();

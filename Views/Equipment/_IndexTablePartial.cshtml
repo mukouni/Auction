@@ -1,0 +1,164 @@
+@using System.Web.Optimization
+@using X.PagedList
+@using X.PagedList.Mvc
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Mvc.Common
+@model SearchEquipmentViewModel
+<div class="row pt-3 d-flex align-items-center">
+    
+    <nav aria-label="Page navigation" class="flex-grow-1 d-flex justify-content-center">
+        @Html.PagedListPager(
+            (IPagedList)Model?.Equipments, 
+            page => Url.Action("Index", 
+                new SearchEquipmentViewModel{ 
+                    CurrentPage = page, 
+                    PageSize = @Model.PageSize, 
+                    Kw = @Model.Kw}),
+            PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+                new PagedListRenderOptions()
+                {
+                    DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                    DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                    Display = PagedListDisplayMode.IfNeeded,
+                    LiElementClasses = new List<string> { "page-item" },
+                    PageClasses = new string[] { "page-link" },
+                    MaximumPageNumbersToDisplay = 20
+                },
+                new AjaxOptions() { 
+                    HttpMethod = "GET", 
+                    UpdateTargetId = "equipment—index-table",
+                    OnSuccess = "onSearchEquipmentSuccess",
+                    OnFailure = "onSearchEquipmentFailure" })
+            
+        )
+        <div class="form-group pl-2">
+            <select asp-for="@Model.PageSize" asp-items="@Model.PageSizeOptions" 
+                class="form-control"
+                onchange="selectPageSizeChange(this)"></select>
+        </div>
+        <div class="form-group pl-2 d-flex align-items-end text-dark">
+            <label>共 @Model.Count 条</label>
+        </div>
+    </nav>
+</div>
+
+<div class="row pt-3" style="padding-bottom:40px;">
+    <table class="table" data-toggle="table" data-classes="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th data-field="Name" data-sortable="true" class="sortClass">
+                    @Html.DisplayNameFor(model => Model.Equipments.First().Name)
+                </th>
+                <th data-field="Code" data-sortable="true">
+                    @Html.DisplayNameFor(model => Model.Equipments.First().Code)
+                </th>
+                <th data-field="DealPrice" data-sortable="true">
+                    @Html.DisplayNameFor(model => Model.Equipments.First().DealPrice)
+                </th>
+                <th data-field="AuctionHouse" data-sortable="true">
+                    @Html.DisplayNameFor(model => Model.Equipments.First().AuctionHouse)
+                </th>
+                <th data-field="Manufacturer" data-sortable="true">
+                    @Html.DisplayNameFor(model => Model.Equipments.First().Manufacturer)
+                </th>
+                <th data-field="Model" data-sortable="true">
+                    @Html.DisplayNameFor(model => Model.Equipments.First().Model)
+                </th>
+                <th data-field="ProductionDate" data-sortable="true">
+                    @Html.DisplayNameFor(model => Model.Equipments.First().ProductionDate)
+                </th>
+                <th data-field="WorkingTime" data-sortable="true">
+                    @Html.DisplayNameFor(model => Model.Equipments.First().WorkingTime)
+                </th>
+                <th data-field="IsDeleted" data-sortable="true">
+                    @Html.DisplayNameFor(model => Model.Equipments.First().IsDeleted)
+                </th>
+                <th style="min-width: 85px;">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (EquipmentViewModel item in Model?.Equipments)
+            {
+                <tr id="@item.Id">
+                    <td>
+                        <img src="@item.CoverPhoto?.RequestPath" width="80px">
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" 
+                            class="edit_link">@Html.DisplayFor(modelItem => item.Name)</a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Code)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DealPrice)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AuctionHouse)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Manufacturer)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Model)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProductionDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.WorkingTime)
+                    </td>
+                    <td class="isDeleted">
+                        @Html.DisplayFor(modelItem => item.IsDeleted)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="fa fa-remove fa-lg" style="color: green">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form asp-action="Delete" asp-route-id="@item.Id"
+                            data-ajax="true" data-ajax-confirm="确认删除 @item.Name 吗?" 
+                            data-ajax-success="deleteItem(this)" class="d-inline">
+                            <button type="submit" class="fa fa-remove fa-lg link" 
+                                style="color: red; border: none; background: none;">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation example" class="flex-grow-1 d-flex justify-content-center">
+        @Html.PagedListPager(
+            (IPagedList)Model?.Equipments, 
+            page => Url.Action("Index", 
+                new SearchEquipmentViewModel{ 
+                    CurrentPage = page, 
+                    PageSize = @Model.PageSize, 
+                    Kw = @Model.Kw}),
+            PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+                new PagedListRenderOptions()
+                {
+                    DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                    DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                    Display = PagedListDisplayMode.IfNeeded,
+                    LiElementClasses = new List<string> { "page-item" },
+                    PageClasses = new string[] { "page-link" },
+                    MaximumPageNumbersToDisplay = 20
+                },
+                new AjaxOptions() { 
+                    HttpMethod = "GET", 
+                    UpdateTargetId = "equipment—index-table",
+                    OnSuccess = "onSearchEquipmentSuccess",
+                    OnFailure = "onSearchEquipmentFailure" }))
+        <div class="form-group pl-2">
+            <select asp-for="@Model.PageSize" asp-items="@Model.PageSizeOptions" 
+                class="form-control"
+                onchange="selectPageSizeChange(this)"></select>
+        </div>
+        <div class="form-group pl-2 d-flex align-items-end text-dark">
+            <label>共 @Model.Count 条</label>
+        </div>           
+    </nav>
+</div>

@@ -17,7 +17,7 @@
 <body>
     <div class="index container-fluid">
         <header class="fixed-top">
-                <div class="head row d-flex align-content-center">
+                <div class="head row d-flex align-content-center justify-content-end">
                     <partial name="_LoginPartial" />
                 </div>
                 <div class="title row flex-column align-items-center justify-content-center flex-xl-row justify-content-xl-between flex-sm-row justify-content-sm-center">
@@ -62,7 +62,7 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/menu.js" asp-append-version="true"></script>
 
-    @RenderSection("scripts", required: false)
+    @RenderSection("script", required: false)
 </body>
 
 </html>

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Auction.Models
 {
@@ -8,6 +9,7 @@ namespace Auction.Models
     /// </summary>
     public class RequestPayload
     {
+
         /// <summary>
         /// 
         /// </summary>
@@ -16,6 +18,8 @@ namespace Auction.Models
             Sort = new List<Sort>();
             Kw = "";
         }
+
+        public List<SelectListItem> PageSizeOptions { get; set; }
 
         /// <summary>
         /// 分页大小
@@ -52,6 +56,8 @@ namespace Auction.Models
         /// 搜索关键字
         /// </summary>
         public string Kw { get; set; }
+
+        public int Count { get; set; }
     }
 
     /// <summary>

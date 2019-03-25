@@ -42,3 +42,16 @@ var cookieUtil = {
         return cookieArr;
     }
 };
+
+
+function selectPageSizeChange(obj){
+    $.ajax({
+        type: "get",
+        url: "/equipment/index",
+        data: {PageSize: $(obj).val()},
+        success: function (response) {
+            $('#equipment—index-table').html(response);
+            $('[data-toggle="table"]').bootstrapTable(); 
+        }
+    });
+}

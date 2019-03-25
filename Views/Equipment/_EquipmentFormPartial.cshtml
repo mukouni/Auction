@@ -1,0 +1,154 @@
+@using Auction.Entities.Enums
+@model EquipmentViewModel
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            @foreach(var item in ViewData["breadcrumb"] as List<IDictionary<string, string>> ){
+                <li class="breadcrumb-item">
+                    <a href=@item["href"]>@item["text"]</a>
+                </li>
+            }
+        </ol>
+    </nav>  
+<form asp-controller="Equipment" asp-action='@ViewData["Action"]' asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Code" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Code" class="form-control" />
+                    <span asp-validation-for="Code" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+                <div class="form-group">
+                <label asp-for="Manufacturer" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Manufacturer" class="form-control" />
+                    <span asp-validation-for="Manufacturer" class="text-danger"></span>
+                </div>
+            </div>
+                <div class="form-group">
+                <label asp-for="Model" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Model" class="form-control" />
+                    <span asp-validation-for="Model" class="text-danger"></span>
+                </div>
+            </div>
+                <div class="form-group">
+                <label asp-for="AuctionHouse" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="AuctionHouse" class="form-control" />
+                    <span asp-validation-for="AuctionHouse" class="text-danger"></span>
+                </div>
+            </div>
+                <div class="form-group">
+                <label asp-for="Country" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Country" class="form-control" />
+                    <span asp-validation-for="Country" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="City" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="City" class="form-control" />
+                    <span asp-validation-for="City" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <div class="checkbox">
+                        <label asp-for="IsSold">
+                            <input name="IsSold" value=@CommonEnum.IsSold.Yes id="IsSold" type="checkbox" />
+                            @Html.DisplayNameFor(m => m.IsSold)
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <div class="checkbox">
+                        <label name="IsPurchase">
+                            <input name="IsPurchase" id="IsPurchase" value=@CommonEnum.IsPurchase.Yes type="checkbox" />
+                            @Html.DisplayNameFor(m => m.IsPurchase)
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductionDate" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="ProductionDate" class="form-control" />
+                    <span asp-validation-for="ProductionDate" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="WorkingTime" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="WorkingTime" class="form-control" type="number"/>
+                    <span asp-validation-for="WorkingTime" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="DealPrice" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="DealPrice" class="form-control" />
+                    <span asp-validation-for="DealPrice" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="DealPriceRMB" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="DealPriceRMB" class="form-control" />
+                    <span asp-validation-for="DealPriceRMB" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Long" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Long" class="form-control" />
+                    <span asp-validation-for="Long" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Width" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Width" class="form-control" />
+                    <span asp-validation-for="Width" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Height" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Height" class="form-control" />
+                    <span asp-validation-for="Height" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Weight" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Weight" class="form-control" />
+                    <span asp-validation-for="Weight" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Volume" class="col-md-3 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Volume" class="form-control" />
+                    <span asp-validation-for="Volume" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <button type="submit" class="btn btn-primary">创建设备</button>
+                    <button type="reset" class="btn btn-outline-secondary">清空</button>
+                </div>
+            </div>
+
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="fa fa-remove fa-lg" style="color: red"></a>
+        </form>

@@ -6,7 +6,7 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-        <div class="userinfo offset-9 d-none d-sm-block">
+        <div class="userinfo d-none d-sm-block">
             <a asp-controller="Manage" asp-action="Index" title="Manage">您好: @UserManager.GetUserName(User)!</a>
         </div>
         <div class="userinfo d-none d-sm-block">
