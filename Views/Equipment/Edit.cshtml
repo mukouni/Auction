@@ -4,23 +4,16 @@
 @using Microsoft.Extensions.Options;
 @model EquipmentViewModel
 @{
-    ViewData["Title"] = "创建设备";
+    ViewData["Title"] = "修改设备";
     ViewData["Action"] = "Update";
+    Layout = "_ManageLayout";
 }
 @section stylesheet {
     <link href="~/lib/bootstrap-fileinput/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css"/>
     <link href="~/lib/bootstrap-fileinput/themes/explorer-fas/theme.css" media="all" rel="stylesheet" type="text/css"/>
-    <style>
-        .bodyinfo{
-            min-width: auto;
-            width: auto;
-        }
-    </style>
-}
-<div class="bodyinfo text-dark">
-    
+}   
     <div class="container my-4">
-        <h4>创建设备</h4>
+        <h4>@ViewData["Title"]</h4>
         <hr />
         <div class="row">
             <div class="col-lg-6">
@@ -40,11 +33,6 @@
             </div>
         </div>
     </div>
-
-    <div class="row my-4 col-xl-4">
-        
-    </div>
-</div>
 @{
     var photoJson = JsonConvert.SerializeObject(Model.Photos.OrderBy(p => p.Ranking).ThenBy(p => p.LastUpdatedAt));
     var CoverPhotoName =  Model.CoverPhoto?.FileName;
@@ -171,6 +159,10 @@
                     .find('input:radio[name="IsCover"]:visible')
                     .attr('checked', true)
             })()
+
+            $(document).ready(function(){
+                $(".search .nav-link[href='/equipment/index']").addClass("active");
+            })
         })
     </script>
 }

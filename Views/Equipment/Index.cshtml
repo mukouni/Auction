@@ -15,9 +15,6 @@
                                  {})
     
 @section script {
-    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
-    <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js" async></script>
-    <script src="~/lib/bootstrap-table/dist/locale/bootstrap-table-zh-CN.min.js" async></script>
     <script>
         function deleteItem(form) {
             $(form).closest("tr").find(".isDeleted").text("Yes");
@@ -28,5 +25,9 @@
         function onSearchEquipmentFailure(){
             $('[data-toggle="table"]').bootstrapTable();
         }
+        $( document ).ready(function() {
+            $(".search .nav-link[href='/equipment/index']").addClass("active");
+            $("header .nav-link[aria-controls='manage']").addClass("active");
+        })
     </script>
 }

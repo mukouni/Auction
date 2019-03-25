@@ -25,14 +25,14 @@
                         <img class="" src="~/images/logo.svg">
                     </div>
                     <div id="navbar" class="d-none d-sm-block d-sm-flex align-self-end">
-                        <ul class="nav">
-                            <li class="nav-item"><a asp-controller="Equipment" asp-action="NoAuction" class="nav-link">未拍卖设备</a></li>
-                            <li class="nav-item"><a asp-controller="Equipment" asp-action="Auctioned" class="nav-link">已拍卖设备</a></li>
-                            <li class="nav-item"><a asp-controller="Equipment" asp-action="InsteadAuction" class="nav-link">代采购设备</a></li>
+                        <ul class="nav nav-pills">
+                            <li class="nav-item"><a asp-controller="Equipment" asp-action="NoAuction" class="nav-link" aria-controls="no-auction">未拍卖设备</a></li>
+                            <li class="nav-item"><a asp-controller="Equipment" asp-action="Auctioned" class="nav-link"aria-controls="auctioned">已拍卖设备</a></li>
+                            <li class="nav-item"><a asp-controller="Equipment" asp-action="InsteadAuction" class="nav-link" aria-controls="instead-auction">代采购设备</a></li>
                             @if (SignInManager.IsSignedIn(User) && User.IsInRole(ApplicationRole.Admin))
                             {
                             <li class="nav-item">
-                                <a a asp-controller="Manage" asp-action="System" class="nav-link">系统管理</a>
+                                <a a asp-controller="Equipment" asp-action="Index" class="nav-link" aria-controls="manage">系统管理</a>
                             </li>
                             }
                         </ul>

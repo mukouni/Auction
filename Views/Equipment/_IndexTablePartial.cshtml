@@ -6,40 +6,42 @@
 @model SearchEquipmentViewModel
 <div class="row pt-3 d-flex align-items-center">
     
-    <nav aria-label="Page navigation" class="flex-grow-1 d-flex justify-content-center">
-        @Html.PagedListPager(
-            (IPagedList)Model?.Equipments, 
-            page => Url.Action("Index", 
-                new SearchEquipmentViewModel{ 
-                    CurrentPage = page, 
-                    PageSize = @Model.PageSize, 
-                    Kw = @Model.Kw}),
-            PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
-                new PagedListRenderOptions()
-                {
-                    DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
-                    DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
-                    Display = PagedListDisplayMode.IfNeeded,
-                    LiElementClasses = new List<string> { "page-item" },
-                    PageClasses = new string[] { "page-link" },
-                    MaximumPageNumbersToDisplay = 20
-                },
-                new AjaxOptions() { 
-                    HttpMethod = "GET", 
-                    UpdateTargetId = "equipment—index-table",
-                    OnSuccess = "onSearchEquipmentSuccess",
-                    OnFailure = "onSearchEquipmentFailure" })
-            
-        )
-        <div class="form-group pl-2">
-            <select asp-for="@Model.PageSize" asp-items="@Model.PageSizeOptions" 
-                class="form-control"
-                onchange="selectPageSizeChange(this)"></select>
-        </div>
-        <div class="form-group pl-2 d-flex align-items-end text-dark">
-            <label>共 @Model.Count 条</label>
-        </div>
-    </nav>
+    
+@{
+    // <nav aria-label="Page navigation" class="flex-grow-1 d-flex justify-content-center">
+    //     Html.PagedListPager(
+    //     (IPagedList)Model?.Equipments, 
+    //     page => Url.Action("Index", 
+    //         new SearchEquipmentViewModel{ 
+    //             CurrentPage = page, 
+    //             PageSize = @Model.PageSize, 
+    //             Kw = @Model.Kw}),
+    //     PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+    //         new PagedListRenderOptions()
+    //         {
+    //             DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+    //             DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+    //             Display = PagedListDisplayMode.IfNeeded,
+    //             LiElementClasses = new List<string> { "page-item" },
+    //             PageClasses = new string[] { "page-link" },
+    //             MaximumPageNumbersToDisplay = 20
+    //         },
+    //         new AjaxOptions() { 
+    //             HttpMethod = "GET", 
+    //             UpdateTargetId = "equipment—index-table",
+    //             OnSuccess = "onSearchEquipmentSuccess",
+    //             OnFailure = "onSearchEquipmentFailure" }))
+    
+    //     <div class="form-group pl-2">
+    //         <select asp-for="@Model.PageSize" asp-items="@Model.PageSizeOptions" 
+    //             class="form-control"
+    //             onchange="selectPageSizeChange(this)"></select>
+    //     </div>
+    //     <div class="form-group pl-2 d-flex align-items-end text-dark">
+    //         <label>共 @Model.Count 条</label>
+    //     </div>
+    // </nav>
+    }
 </div>
 
 <div class="row pt-3" style="padding-bottom:40px;">

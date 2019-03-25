@@ -8,21 +8,25 @@
         .body{
             background-image: none;
         }
-        .bodyinfo{
-            width: 90%;
+        .bodyinfo {
+            width: 93%;
         }
-        .bodyinfo .info .search{
-            width: 200px;
+        .bodyinfo .info .search {
+            width: 150px;
+            min-width: 150px;
             border-right: none;
             padding-bottom: 0; 
         }
-        .bodyinfo .info .show .data{
+        .bodyinfo .info .show .data {
             min-height: 100%;
             padding-bottom: 0;
         }
         .breadcrumb{
             height: 40px;
             padding: 0.6rem 0.8rem;
+        }
+        .manage-content{
+            max-width: 1025px;
         }
     </style>
     @RenderSection("stylesheet", required: false)
@@ -33,20 +37,13 @@
     <div class="info d-flex"> 
         <div class="search">
             <div class="nav flex-column nav-pills pt-4" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                <a class="nav-link" 
-                    data-ajax="true" 
-                    data-ajax-method="GET" 
-                    data-ajax-mode="Replace" 
-                    data-ajax-update="#equipment—index-table" 
-                    data-ajax-success="changeEquipmentTab"
-                    data-toggle="pill"
-                    href="/equipment/index">设备列表</a>
+                <a class="nav-link" data-toggle="pill" href="/equipment/index">设备列表</a>
                 <a class="nav-link" id="user-search-history" data-toggle="pill" href="#v-pills-messages" role="tab" aria-selected="false">用户搜索记录</a>
                 <a class="nav-link" id="user-login-history" data-toggle="pill" href="#v-pills-messages" role="tab" aria-selected="false">用户登陆记录</a>
                 <a class="nav-link" id="user-list-history" data-toggle="pill" href="#v-pills-settings" role="tab" aria-selected="false">用户列表</a>
             </div>
         </div>
-        <div class="show flex-grow-1 pl-4 pt-4" id="equipment—index-table">
+        <div class="show flex-grow-1 pl-4 pt-4 manage-content text-dark">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     @foreach(var item in ViewData["breadcrumb"] as List<IDictionary<string, string>> ){
@@ -66,6 +63,6 @@
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
     <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js" async></script>
     <script src="~/lib/bootstrap-table/dist/locale/bootstrap-table-zh-CN.min.js" async></script>
-    @RenderSection("script", required: false);
+    @RenderSection("script", required: false)
 
 }

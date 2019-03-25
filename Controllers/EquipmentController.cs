@@ -78,13 +78,13 @@ namespace Auction.Controllers
             var breadcrumb = new List<IDictionary<string, string>>();
             breadcrumb.Add(new Dictionary<string, string>()
             {
-                { "text", "系统管理"},
-                { "href", "/manage/system"}
+                { "text", "系统管理" },
+                { "href", "javascript: void(0)" }
             });
             breadcrumb.Add(new Dictionary<string, string>
             {
-                { "text", "设备列表"},
-                { "href", "/manage/system"}
+                { "text", "设备列表" },
+                { "href", "javascript: void(0)" }
             });
             ViewData["breadcrumb"] = breadcrumb;
             searchEquipment.PageSizeOptions = new List<SelectListItem>
@@ -146,18 +146,18 @@ namespace Auction.Controllers
             var breadcrumb = new List<IDictionary<string, string>>();
             breadcrumb.Add(new Dictionary<string, string>()
             {
-                { "text", "系统管理"},
-                { "href", "/manage/system"}
+                { "text", "系统管理" },
+                { "href", "javascript: void(0)" }
             });
             breadcrumb.Add(new Dictionary<string, string>
             {
-                { "text", "设备列表"},
-                { "href", "/equipment/index"}
+                { "text", "设备列表" },
+                { "href", "/equipment/index" }
             });
             breadcrumb.Add(new Dictionary<string, string>
             {
-                { "text", "新建设备"},
-                { "href", "/equipment/new"}
+                { "text", "新建设备" },
+                { "href", "/equipment/new" }
             });
             ViewData["breadcrumb"] = breadcrumb;
             return View(new EquipmentViewModel());
@@ -186,22 +186,21 @@ namespace Auction.Controllers
             var breadcrumb = new List<IDictionary<string, string>>();
             breadcrumb.Add(new Dictionary<string, string>()
             {
-                { "text", "系统管理"},
-                { "href", "/manage/system"}
+                { "text", "系统管理" },
+                { "href", "javascript: void(0)" }
             });
             breadcrumb.Add(new Dictionary<string, string>
             {
-                { "text", "设备列表"},
-                { "href", "/equipment/index"}
+                { "text", "设备列表" },
+                { "href", "/equipment/index" }
             });
             ViewData["breadcrumb"] = breadcrumb;
             breadcrumb.Add(new Dictionary<string, string>
             {
-                { "text", "新建设备"},
+                { "text", "修改设备"},
                 { "href", "/equipment/"+id+"/edit"}
             });
             ViewData["breadcrumb"] = breadcrumb;
-            return View(new EquipmentViewModel());
 
             if (id == null)
             {

@@ -3,13 +3,19 @@
 @{
     ViewData["Title"] = "新建设备";
     ViewData["Action"] = "Create";
+    Layout = "_ManageLayout";
 }
-<div class="bodyinfo text-dark">
-    <div class="container my-4">
+
         <h4>@ViewData["Title"]</h4>
         <hr />
         @await Html.PartialAsync("_EquipmentFormPartial", Model,
                                  new ViewDataDictionary(ViewData)
                                  {});
-    </div>
-</div>
+
+@section script {
+    <script>
+        $(document).ready(function(){
+            $(".search .nav-link[href='/equipment/index']").addClass("active");
+        })
+    </script>
+}
