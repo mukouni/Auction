@@ -54,6 +54,11 @@ namespace Auction.Entities
         public IsSold? IsSold { get; set; } = CommonEnum.IsSold.No;
 
         ///<summary>
+        /// 拍卖时间，用于区分是否被拍卖
+        /// </summary>
+        public DateTime SoldAt { get; set; }
+
+        ///<summary>
         /// 是否是采购设备
         /// </summary>
         public IsPurchase? IsPurchase { get; set; } = CommonEnum.IsPurchase.No;

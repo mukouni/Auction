@@ -87,6 +87,8 @@ namespace Auction.Migrations
 
                     b.Property<DateTime?>("ProductionDate");
 
+                    b.Property<DateTime>("SoldAt");
+
                     b.Property<decimal?>("Volume")
                         .HasColumnType("decimal(18, 3)");
 

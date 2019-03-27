@@ -13,6 +13,7 @@ namespace Auctions.Controllers
 {
 
     [Authorize]
+    [Route("[controller]")]
     public class ManageController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -37,7 +38,7 @@ namespace Auctions.Controllers
 
         //
         // GET: /Manage/Index
-        [HttpGet]
+        [HttpGet("[action]")]
         public async Task<IActionResult> Index(ManageMessageId? message = null)
         {
             ViewData["StatusMessage"] =
@@ -65,7 +66,7 @@ namespace Auctions.Controllers
 
         //
         // GET: /Manage/System
-        [HttpGet]
+        [HttpGet("[action]")]
         public IActionResult System()
         {
             return View();
@@ -73,7 +74,7 @@ namespace Auctions.Controllers
 
         //
         // POST: /Manage/RemoveLogin
-        [HttpPost]
+        [HttpPost("[action]")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveLogin(RemoveLoginViewModel account)
         {
@@ -93,6 +94,7 @@ namespace Auctions.Controllers
 
         //
         // GET: /Manage/AddPhoneNumber
+        [HttpGet("[action]")]
         public IActionResult AddPhoneNumber()
         {
             return View();
@@ -100,7 +102,7 @@ namespace Auctions.Controllers
 
         //
         // POST: /Manage/AddPhoneNumber
-        [HttpPost]
+        [HttpPost("[action]")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddPhoneNumber(AddPhoneNumberViewModel model)
         {
@@ -117,7 +119,7 @@ namespace Auctions.Controllers
 
         //
         // POST: /Manage/ResetAuthenticatorKey
-        [HttpPost]
+        [HttpPost("[action]")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetAuthenticatorKey()
         {
@@ -132,7 +134,7 @@ namespace Auctions.Controllers
 
         //
         // POST: /Manage/GenerateRecoveryCode
-        [HttpPost]
+        [HttpPost("[action]")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GenerateRecoveryCode()
         {
@@ -148,7 +150,7 @@ namespace Auctions.Controllers
 
         //
         // POST: /Manage/EnableTwoFactorAuthentication
-        [HttpPost]
+        [HttpPost("[action]")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EnableTwoFactorAuthentication()
         {
@@ -164,7 +166,7 @@ namespace Auctions.Controllers
 
         //
         // POST: /Manage/DisableTwoFactorAuthentication
-        [HttpPost]
+        [HttpPost("[action]")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DisableTwoFactorAuthentication()
         {
@@ -180,7 +182,7 @@ namespace Auctions.Controllers
 
         //
         // GET: /Manage/VerifyPhoneNumber
-        [HttpGet]
+        [HttpGet("[action]")]
         public async Task<IActionResult> VerifyPhoneNumber(string phoneNumber)
         {
             var code = await _userManager.GenerateChangePhoneNumberTokenAsync(await GetCurrentUserAsync(), phoneNumber);
@@ -190,7 +192,7 @@ namespace Auctions.Controllers
 
         //
         // POST: /Manage/VerifyPhoneNumber
-        [HttpPost]
+        [HttpPost("[action]")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> VerifyPhoneNumber(VerifyPhoneNumberViewModel model)
         {
@@ -215,7 +217,7 @@ namespace Auctions.Controllers
 
         //
         // GET: /Manage/RemovePhoneNumber
-        [HttpPost]
+        [HttpPost("[action]")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemovePhoneNumber()
         {
@@ -234,7 +236,7 @@ namespace Auctions.Controllers
 
         //
         // GET: /Manage/ChangePassword
-        [HttpGet]
+        [HttpGet("[action]")]
         public IActionResult ChangePassword()
         {
             return View();
@@ -242,7 +244,7 @@ namespace Auctions.Controllers
 
         //
         // POST: /Manage/ChangePassword
-        [HttpPost]
+        [HttpPost("[action]")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword(IndexViewModel model)
         {
@@ -270,7 +272,7 @@ namespace Auctions.Controllers
 
         //
         // GET: /Manage/SetPassword
-        [HttpGet]
+        [HttpGet("[action]")]
         public IActionResult SetPassword()
         {
             return View();
@@ -278,7 +280,7 @@ namespace Auctions.Controllers
 
         //
         // POST: /Manage/SetPassword
-        [HttpPost]
+        [HttpPost("[action]")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SetPassword(SetPasswordViewModel model)
         {
@@ -303,7 +305,7 @@ namespace Auctions.Controllers
         }
 
         //GET: /Manage/ManageLogins
-        [HttpGet]
+        [HttpGet("[action]")]
         public async Task<IActionResult> ManageLogins(ManageMessageId? message = null)
         {
             ViewData["StatusMessage"] =
@@ -329,7 +331,7 @@ namespace Auctions.Controllers
 
         //
         // POST: /Manage/LinkLogin
-        [HttpPost]
+        [HttpPost("[action]")]
         [ValidateAntiForgeryToken]
         public IActionResult LinkLogin(string provider)
         {
@@ -341,7 +343,7 @@ namespace Auctions.Controllers
 
         //
         // GET: /Manage/LinkLoginCallback
-        [HttpGet]
+        [HttpGet("[action]")]
         public async Task<ActionResult> LinkLoginCallback()
         {
             var user = await GetCurrentUserAsync();

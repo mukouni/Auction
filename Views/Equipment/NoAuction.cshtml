@@ -1,21 +1,142 @@
 @using System.IO;
 @using Newtonsoft.Json;
 @using Microsoft.Extensions.Options;
-@model EquipmentViewModel
+@model SearchEquipmentViewModel
 @{
     ViewData["Title"] = "未拍卖设备";
 }
 @section stylesheet {
-    
+    <link href="~/lib/ion-rangeslider/css/ion.rangeSlider.min.css" media="all" rel="stylesheet" type="text/css"/>
 }
 
-<div class="bodyinfo row">
+<div class="bodyinfo row text-dark">
     <div class="condition">
         
     </div>
     <div class="info d-flex"> 
         <div class="search">
-            
+            <form asp-controller="Equipment" asp-action='NoAuction' method="post">
+                <div class="form-group" id="models-form-group">
+                    <label asp-for="Models" class="col-md-4 control-label"></label>
+                    <div class="col-md-10">
+                        @for (var i = 0; i < Model.Models?.Length; i++)
+                        {
+                            <div class="form-check">
+                                <input type="checkbox" asp-for="@Model.Models[i].Selected" class="form-check-input"/>
+                                
+                                <label asp-for="@Model.Models[i].Selected" class="form-check-label">
+                                    @Model.Models[i].Name (@Model.Models[i].Count)
+                                </label>
+                                <input type="hidden" asp-for="@Model.Models[i].Name" />
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="form-group" id="names-form-group">
+                    <label asp-for="Names" class="col-md-4 control-label"></label>
+                    <div class="col-md-10">
+                        @for (var i = 0; i < Model.Names?.Length; i++)
+                        {
+                            <div class="form-check">
+                                <input type="checkbox" asp-for="@Model.Names[i].Selected" class="form-check-input"/>
+                                
+                                <label asp-for="@Model.Names[i].Selected" class="form-check-label">
+                                    @Model.Names[i].Name (@Model.Names[i].Count)
+                                </label>
+                                <input type="hidden" asp-for="@Model.Names[i].Name" />  
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="form-group" id="auction-house-form-group">
+                    <label asp-for="AuctionHouses" class="col-md-4 control-label"></label>
+                    <div class="col-md-10">
+                        @for (var i = 0; i < Model.AuctionHouses?.Length; i++)
+                        {
+                            <div class="form-check">
+                                <input type="checkbox" asp-for="@Model.AuctionHouses[i].Selected" class="form-check-input"/>
+                                
+                                <label asp-for="@Model.AuctionHouses[i].Selected" class="form-check-label">
+                                    @Model.AuctionHouses[i].Name (@Model.AuctionHouses[i].Count)
+                                </label>
+                                <input type="hidden" asp-for="@Model.AuctionHouses[i].Name" />  
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="form-group" id="countries-form-group">
+                    <label asp-for="Countries" class="col-md-4 control-label"></label>
+                    <div class="col-md-10">
+                        @for (var i = 0; i < Model.Countries?.Length; i++)
+                        {
+                            <div class="form-check">
+                                <input type="checkbox" asp-for="@Model.Countries[i].Selected" class="form-check-input"/>
+                                
+                                <label asp-for="@Model.Countries[i].Selected" class="form-check-label">
+                                    @Model.Countries[i].Name (@Model.Countries[i].Count)
+                                </label>
+                                <input type="hidden" asp-for="@Model.Countries[i].Name" />  
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                 <div class="form-group" id="manufacturers-form-group">
+                    <label asp-for="Manufacturers" class="col-md-4 control-label"></label>
+                    <div class="col-md-10">
+                        @for (var i = 0; i < Model.Manufacturers?.Length; i++)
+                        {
+                            <div class="form-check">
+                                <input type="checkbox" asp-for="@Model.Manufacturers[i].Selected" class="form-check-input"/>
+                                
+                                <label asp-for="@Model.Manufacturers[i].Selected" class="form-check-label">
+                                    @Model.Manufacturers[i].Name (@Model.Manufacturers[i].Count)
+                                </label>
+                                <input type="hidden" asp-for="@Model.Manufacturers[i].Name" />  
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="form-group" id="cities-form-group">
+                    <label asp-for="Cities" class="col-md-4 control-label"></label>
+                    <div class="col-md-10">
+                        @for (var i = 0; i < Model.Cities?.Length; i++)
+                        {
+                            <div class="form-check">
+                                <input type="checkbox" asp-for="@Model.Cities[i].Selected" class="form-check-input"/>
+                                
+                                <label asp-for="@Model.Cities[i].Selected" class="form-check-label">
+                                    @Model.Cities[i].Name (@Model.Cities[i].Count)
+                                </label>
+                                <input type="hidden" asp-for="@Model.Cities[i].Name" />  
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                @if(@Model.WorkingTimeMax > 0){
+                    <div class="form-group working-time-range-slider">
+                        <label asp-for="WorkingTimeRange" class="col-md-6 control-label"></label>
+                        <div class="col-md-12"><div id="working-time-range-slider"></div></div>
+                        <input type="hidden" asp-for="@Model.WorkingTimeRange[0]"/>
+                        <input type="hidden" asp-for="@Model.WorkingTimeRange[1]"/>
+                    </div>
+                }
+                
+                @if(@Model.DealPriceMax > 0){
+                    <div class="form-group deal-price-range-range-slider">
+                        <label asp-for="DealPriceRange" class="col-md-6 control-label"></label>
+                        <div class="col-md-12"><div id="deal-price-range-range-slider"></div></div>
+                        <input type="hidden" asp-for="@Model.DealPriceRange[0]"/>
+                        <input type="hidden" asp-for="@Model.DealPriceRange[1]"/>
+                    </div>
+                }
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
         </div>
         <div class="show flex-grow-1">
             <div class="sort">
@@ -30,9 +151,130 @@
 
 
 @section script {
+    <script src="~/lib/ion-rangeslider/js/ion.rangeSlider.min.js"></script>
     <script>
-          $(".js-range-slider").ionRangeSlider({
-        skin: "round"
-    });
+        function searchEquipments(){
+            $.ajax({
+                type: "get",
+                url: "@Url.Action("NoAuction")",
+                data: $("form").serialize(),
+                success: function (response) {
+                    
+                }
+            });
+        }
+        function addRemoveElement(parentNode, chipElementId, resetValue){
+            var span = document.createElement("span");
+                span.className ="closebtn";
+                span.innerHTML = "&times;";
+                console.log(chipElementId);
+                span.onclick = function(e){
+                    var elem = document.getElementById(chipElementId);
+                    elem.parentNode.removeChild(elem);
+                    if(resetValue.length == 0){
+                        resetValue();
+                    }else{
+                        resetValue(chipElementId.split("-chip")[0])
+                    }
+                    searchEquipments();
+                }
+            parentNode.appendChild(span);
+        }
+
+        function addOrUpdateChip(resetValue, ...args){
+            var existChip = document.getElementById(args[0]);
+            
+            if(existChip) {
+                if(args.length == 3 ){
+                    existChip.innerText = args[1] + "—" + args[2];
+                } else {
+                    existChip.innerText = args[1];
+                }
+                addRemoveElement(existChip, args[0], resetValue);
+            } else {            
+                var chip = document.createElement("div");
+                    chip.className = "chip";
+                    chip.id = args[0].toString();
+                if(args.length == 3 ){
+                    chip.innerHTML = args[1] + "—" + args[2];
+                }else{
+                    chip.innerHTML = args[1];
+                }
+                addRemoveElement(chip, args[0], resetValue);
+                document.getElementsByClassName("condition")[0].appendChild(chip);
+            }  
+            searchEquipments();
+        }
+        
+        if(@Model.WorkingTimeMax > 0){
+            $("#working-time-range-slider").ionRangeSlider({
+                skin: "round",
+                type: "double",
+                min: @Model.WorkingTimeMin,
+                max: @Model.WorkingTimeMax,
+                from: @Model.WorkingTimeMin,
+                to: @Model.WorkingTimeMax,
+                grid: false,
+                grid_snap: true,
+                from_fixed: false,  // fix position of FROM handle
+                to_fixed: false,
+                onFinish: function (data) {
+                    $("input[name='WorkingTimeRange[0]'").val(data.from);
+                    $("input[name='WorkingTimeRange[1]'").val(data.to);
+                    addOrUpdateChip(resetWorkingTimeRangeSlider, "working-time-chip", data.from, data.to);
+                }
+            });
+            function resetWorkingTimeRangeSlider(){
+                $("#working-time-range-slider").data("ionRangeSlider").reset();
+            }
+        }
+        
+
+        if(@Model.DealPriceMax > 0){
+            $("#deal-price-range-range-slider").ionRangeSlider({
+                skin: "round",
+                type: "double",
+                min: @Model.DealPriceMin,
+                max: @Model.DealPriceMax,
+                from: @Model.DealPriceMin,
+                to: @Model.DealPriceMax,
+                grid: false,
+                grid_snap: true,
+                from_fixed: false,  // fix position of FROM handle
+                to_fixed: false,
+                onFinish: function (data) {
+                    $("input[name='DealPriceRange[0]'").val(data.from);
+                    $("input[name='DealPriceRange[1]'").val(data.to);
+                    addOrUpdateChip(resetDealPriceRangeRangeSlider, "deal-price-chip", data.from, data.to);
+                }
+            });
+            function resetDealPriceRangeRangeSlider(){
+                $("#deal-price-range-range-slider").data("ionRangeSlider").reset();
+            }
+        }
+        
+        (function BindCheckBox(){
+            //$("#models-form-group").find("input[type='checkbox']:visible").each(function(i, ele){
+            $("input[type='checkbox']:visible").each(function(i, ele){
+                $(ele).on("change", function(){
+                    var chipId = $(this).attr("id") + "-chip";
+                    if($(this).is(':checked')){
+                        var checkboxArrayId = $(this).attr("id").split("_").slice(0,2).join("_");  
+                        var hiddenInputId = checkboxArrayId + "__Name";
+                        var valueInput = $("#" + hiddenInputId);
+                        
+                        addOrUpdateChip(resetCheckboxStatus, chipId, valueInput.val());
+                    }else{
+                        $("#" + chipId).remove();
+                        searchEquipments();
+                    }
+                    
+                })
+            });
+        })();
+        function resetCheckboxStatus(id){
+            $("#" + id.toString()).prop('checked', false);     
+        }
+        
     </script>
 }
