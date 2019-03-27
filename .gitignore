@@ -246,3 +246,6 @@ paket-files/
 \.vscode/
 
 *.db
+
+appsettings.json
+secrets.json
