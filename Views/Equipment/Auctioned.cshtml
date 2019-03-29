@@ -23,7 +23,8 @@
 
             </div>
             <div class="data">
-
+                @await Html.PartialAsync("_NoAuctionListPartial", Model,
+                                        new ViewDataDictionary(ViewData){})
             </div>
         </div>
     </div>

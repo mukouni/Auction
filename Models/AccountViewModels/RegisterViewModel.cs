@@ -52,6 +52,9 @@ namespace Auction.Models.AccountViewModels
         [Display(Name = "合同到期日期")]
         public DateTime? DeadlineAt { get; set; }
 
+         /// <summary>
+        /// 发送类型： Register ResetPassword
+        /// </summary>
         public string SMSType { get; set; }
     }
 }

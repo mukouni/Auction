@@ -176,7 +176,7 @@ namespace Auction.Controllers
                     //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
                     //    "Please confirm your account by clicking this link: <a href=\"" + callbackUrl + "\">link</a>");
 
-                    // _smsSender.SendSmsAsync(model.Phone, "您的验证码是：" + code);
+                    // _smsSender.SendSmsAsync(model.Phone, code, "register");
                     // await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(3, "User created a new account with password.");
                     return RedirectToLocal(returnUrl);
@@ -193,15 +193,15 @@ namespace Auction.Controllers
         {
             var response = ResponseModelFactory.CreateInstance;
 
-            var code = await _userManager.GeneratePhoneNumberTokenAsync(6);
+            var code = await _userManager.GeneratePhoneNumberTokenAsync(5);
 
-            await _smsSender.SendSmsAsync(model.Phone, "您的验证码是:" + code + "【中机电拍卖】");
+            await _smsSender.SendSmsAsync(model.Phone, code, model.SMSType);
 
             HttpContext.Session.Set<string>("smsCode", code);
             var smsSendAt = DateTime.Now;
             HttpContext.Session.Set<DateTime>("smsSendAt", smsSendAt);
             HttpContext.Session.Set<DateTime>("smsTimeoutAt", smsSendAt.AddSeconds(3)); // 有效时间3分钟
-            response.SetData(new { smsSendAt = smsSendAt, code = code });
+            response.SetData(new { smsSendAt = smsSendAt });
             return Json(response);
         }
 
@@ -486,14 +486,13 @@ namespace Auction.Controllers
                 return View("Error");
             }
 
-            var message = "Your security code is: " + code;
             if (model.SelectedProvider == "Email")
             {
                 await _emailSender.SendEmailAsync(await _userManager.GetEmailAsync(user), await _userManager.GetUserNameAsync(user), "Security Code", code);
             }
             else if (model.SelectedProvider == "Phone")
             {
-                await _smsSender.SendSmsAsync(await _userManager.GetPhoneNumberAsync(user), message);
+                await _smsSender.SendSmsAsync(await _userManager.GetPhoneNumberAsync(user), code, "register");
             }
 
             return RedirectToAction(nameof(VerifyCode), new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });

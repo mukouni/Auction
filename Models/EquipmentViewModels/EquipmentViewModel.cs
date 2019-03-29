@@ -17,8 +17,19 @@ namespace Auction.Models.EquipmentViewModels
         [Required]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [Required]
+
+        /// <summary>
+        /// 序列号
+        /// </summary>
+        [Display(Name = "序列号")]
         public string Code { get; set; }
+
+
+        /// <summary>
+        /// 第三方序列号
+        /// </summary>
+        [Display(Name = "第三方序列号")]
+        public string RBCode { get; set; }
 
         /// <summary>
         /// 设备名称
@@ -62,19 +73,19 @@ namespace Auction.Models.EquipmentViewModels
         /// 是否被拍卖
         /// </summary>
         [Display(Name = "已被拍卖")]
-        public IsSold? IsSold { get; set; } = CommonEnum.IsSold.No;
+        public IsSold? IsSold { get; set; }
 
         ///<summary>
         /// 是否是采购设备
         /// </summary>
         [Display(Name = "是采购设备")]
-        public IsPurchase? IsPurchase { get; set; } = CommonEnum.IsPurchase.No;
+        public IsPurchase? IsPurchase { get; set; }
 
         ///<summary>
         /// 是否被删除
         /// </summary>
         [Display(Name = "已删除")]
-        public IsDeleted? IsDeleted { get; set; } = CommonEnum.IsDeleted.No;
+        public IsDeleted? IsDeleted { get; set; }
 
         ///<summary>
         /// 生产年份
@@ -85,11 +96,33 @@ namespace Auction.Models.EquipmentViewModels
         public DateTime? ProductionDate { get; set; }
 
         ///<summary>
+        /// 拍卖日期
+        /// </summary>
+        [Display(Name = "拍卖日期")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? SoldAt { get; set; }
+
+        ///<summary>
         /// 工作小时
         /// </summary>
         [Display(Name = "工作小时")]
-        [Required]
         public long? WorkingTime { get; set; }
+
+
+        ///<summary>
+        /// 工作里程
+        /// </summary>
+        [Display(Name = "工作里程")]
+        public long? WorkingDistance { get; set; }
+
+        ///<summary>
+        /// 工作里程
+        /// </summary>
+        [Display(Name = "里程单位")]
+        public string WorkingDistanceUnit { get; set; } = "km";
+
+
 
         ///<summary>
         /// 成交价格
@@ -131,15 +164,24 @@ namespace Auction.Models.EquipmentViewModels
         ///<summary>
         /// 体积(立方米)
         /// </summary>
-        [Display(Name = "体积(立方米) ")]
+        [Display(Name = "体积(立方米)")]
         public Decimal? Volume { get; set; }
+
+
+        ///<summary>
+        /// 备注
+        /// </summary>
+        [DataType(DataType.MultilineText)]
+        [Display(Name = "备注 ")]
+        public string Remark { get; set; }
 
 
         public EquipmentPhotoViewModel CoverPhoto
         {
             get
             {
-                if(_coverPhoto != null){
+                if (_coverPhoto != null)
+                {
                     return _coverPhoto;
                 }
                 _coverPhoto = Photos.FirstOrDefault(p => p.IsCover == true);
@@ -158,7 +200,8 @@ namespace Auction.Models.EquipmentViewModels
                 }
                 return _coverPhoto;
             }
-            set {
+            set
+            {
                 _coverPhoto = value;
             }
         }

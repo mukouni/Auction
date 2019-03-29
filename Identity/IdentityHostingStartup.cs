@@ -66,7 +66,7 @@ namespace Auction.Identity
                 // })
                 // .AddIdentityCookies(o => { });
 
-                services.Configure<AuthMessageSenderOptions>(context.Configuration);
+                services.Configure<AuthMessageSenderOptions>(context.Configuration.GetSection("AuctionSettings"));
 
                 services.Configure<IdentityOptions>(options =>
                 {

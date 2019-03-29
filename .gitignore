@@ -248,4 +248,3 @@ paket-files/
 *.db
 
 appsettings.json
-secrets.json

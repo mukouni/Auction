@@ -30,7 +30,7 @@ namespace Auction.Identity.Extensions
         private static string GenerateToken(int? VcodeNum)
         {
             //验证码可以显示的字符集合  
-            string Vchar = "0,1,2,3,4,5,6,7,8,9";
+            string Vchar = "1,2,3,4,5,6,7,8,9";
             string[] VcArray = Vchar.Split(new Char[] { ',' }); //拆分成数组   
             string code = ""; //产生的随机数  
             int temp = -1; //记录上次随机数值，尽量避避免生产几个一样的随机数  
@@ -43,7 +43,7 @@ namespace Auction.Identity.Extensions
                 {
                     rand = new Random(i * temp * unchecked((int)DateTime.Now.Ticks)); //初始化随机类  
                 }
-                int t = rand.Next(9); //获取随机数  
+                int t = rand.Next(8); //获取随机数  
                 if (temp != -1 && temp == t)
                 {
                     return GenerateToken(VcodeNum); //如果获取的随机数重复，则递归调用 

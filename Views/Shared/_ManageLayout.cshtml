@@ -26,9 +26,6 @@
             height: 40px;
             padding: 0.6rem 0.8rem;
         }
-        .manage-content{
-            max-width: 1025px;
-        }
     </style>
     @RenderSection("stylesheet", required: false)
 }
@@ -62,6 +59,7 @@
 
 @section script{
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    
     <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
     <script src="~/lib/bootstrap-table/dist/locale/bootstrap-table-zh-CN.min.js"></script>
     <script src="~/lib/ion-rangeslider/js/ion.rangeSlider.min.js"></script>

@@ -1,0 +1,46 @@
+@model SearchEquipmentViewModel
+<p>Sort By:</p>
+<ul class="list-inline mt-3 ml-3 order-ul">
+   <li class="list-inline-item">
+      <p>清除排序</p>
+   </li>
+   <li class="list-inline-item">
+      <div class="order-by" data-order-by="WorkingTime" data-direction="asc">
+         <p>使用时间：从低到高 <i class="fas fa-sort-amount-up"></i></i>
+         </p>
+      </div>
+      <div class="order-by d-none" data-order-by="WorkingTime" data-direction="desc">
+         <p>使用时间：从高到低 <i class="fas fa-sort-amount-down"></i></p>
+      </div>
+   </li>
+   
+   <li class="list-inline-item">
+      <div class="order-by" data-order-by="ProductionDate" data-direction="desc">
+         <p>年份：从新到旧 <i class="fas fa-sort-amount-down"></i></p>
+      </div>
+      <div class="order-by d-none" data-order-by="ProductionDate" data-direction="asc">
+         <p>年份：从旧到新 <i class="fas fa-sort-amount-up"></i></p>
+      </div>
+   </li>
+
+   <li class="list-inline-item">
+      <div class="order-by" data-order-by="SoldAt" data-direction="desc">
+         <p class="">拍卖日期：时间最近优先 <i class="fas fa-sort-amount-down"></i></p>
+      </div>
+      <div class="order-by d-none" data-order-by="SoldAt" data-direction="asc">
+         <p class="">拍卖日期：时间最近排后 <i class="fas fa-sort-amount-up"></i></p>
+      </div>
+   </li>
+
+   <li class="list-inline-item">
+      <div class="order-by" data-order-by="Name" data-direction="asc">
+         <p class="">设备：A 到 Z <i class="fas fa-sort-amount-up"></i></p>
+      </div>
+      <div class="order-by d-none" data-order-by="Name" data-direction="desc">
+         <p class="">设备：Z 到 A <i class="fas fa-sort-amount-down"></i></p>
+      </div>
+   </li>
+   
+   <input type="hidden" asp-for="@Model.Sort.Field">
+   <input type="hidden" asp-for="@Model.Sort.Direction">   
+</ul>

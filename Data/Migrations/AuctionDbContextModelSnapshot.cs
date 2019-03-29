@@ -87,7 +87,13 @@ namespace Auction.Migrations
 
                     b.Property<DateTime?>("ProductionDate");
 
-                    b.Property<DateTime>("SoldAt");
+                    b.Property<string>("RBCode")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Remark")
+                        .HasMaxLength(5000);
+
+                    b.Property<DateTime?>("SoldAt");
 
                     b.Property<decimal?>("Volume")
                         .HasColumnType("decimal(18, 3)");
@@ -95,6 +101,11 @@ namespace Auction.Migrations
                     b.Property<double?>("Weight");
 
                     b.Property<long?>("Width");
+
+                    b.Property<long?>("WorkingDistance");
+
+                    b.Property<string>("WorkingDistanceUnit")
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<long?>("WorkingTime");
 

@@ -15,7 +15,7 @@ namespace Auction.Models
         /// </summary>
         public RequestPayload()
         {
-            Sort = new List<Sort>();
+            Sorts = new Sort[]{};
             Kw = "";
         }
 
@@ -34,7 +34,12 @@ namespace Auction.Models
         /// <summary>
         /// 排序对象集合(支持多个字段排序)
         /// </summary>
-        public List<Sort> Sort { get; set; }
+        public Sort[] Sorts { get; set; }
+
+        /// <summary>
+        /// 排序对象集合(支持多个字段排序)
+        /// </summary>
+        public Sort Sort { get; set; }
 
         /// <summary>
         /// 组合后的排序字符串
@@ -44,14 +49,15 @@ namespace Auction.Models
             get
             {
                 var orderBy = "";
-                var sort = Sort.Where(x => string.IsNullOrEmpty(x.Field) && string.IsNullOrEmpty(x.Direction)).ToList();
-                if (sort.Count > 0)
+                var sorts = Sorts.Where(x => string.IsNullOrEmpty(x.Field) && string.IsNullOrEmpty(x.Direction)).ToList();
+                if (sorts.Count > 0)
                 {
-                    orderBy = "ORDER BY " + string.Join(",", sort.Select(x => $"{x.Field} {x.Direction}"));
+                    orderBy = "ORDER BY " + string.Join(",", sorts.Select(x => $"{x.Field} {x.Direction}"));
                 }
                 return orderBy;
             }
         }
+
         /// <summary>
         /// 搜索关键字
         /// </summary>
@@ -72,6 +78,7 @@ namespace Auction.Models
         {
             Direction = "DESC";
         }
+        
         /// <summary>
         /// 排序字段
         /// </summary>
@@ -80,5 +87,29 @@ namespace Auction.Models
         /// 排序方向
         /// </summary>
         public string Direction { get; set; }
+    }
+
+    public class Filter
+    {
+        /// <summary>
+        /// 筛选字符串
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// 匹配字符串的总行数
+        /// </summary>
+        public int Count { get; set; }
+
+        /// <summary>
+        /// 条件是否选中
+        /// </summary>
+        public bool Selected { get; set; }
+
+        
+        /// <summary>
+        /// 再filter[]中的排序
+        /// </summary>
+        public int SortNumber { get; set; }
     }
 }

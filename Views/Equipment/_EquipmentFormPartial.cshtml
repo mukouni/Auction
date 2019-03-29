@@ -1,15 +1,32 @@
 @using Auction.Entities.Enums
 @model EquipmentViewModel
+@{
+    var workingDistanceUnits = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "km", Text = "Km" },
+        new SelectListItem { Value = "mi", Text = "Mi" }
+    };
+}
 
-<form asp-controller="Equipment" asp-action='@ViewData["Action"]' asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
+<form asp-controller="Equipment" asp-action='@ViewData["Action"]' asp-route-id="@Model.Id" asp-route-returnurl='@ViewData["ReturnUrl"]' method="post" class="form-horizontal" role="form">
     <div asp-validation-summary="All" class="text-danger"></div>
+    
     <div class="form-group">
         <label asp-for="Code" class="col-md-4 control-label"></label>
         <div class="col-md-10">
-            <input asp-for="Code" class="form-control"/>
+            <input asp-for="Code" class="form-control" readonly/>
             <span asp-validation-for="Code" class="text-danger"></span>
         </div>
     </div>
+
+    <div class="form-group">
+        <label asp-for="RBCode" class="col-md-4 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="RBCode" class="form-control"/>
+            <span asp-validation-for="RBCode" class="text-danger"></span>
+        </div>
+    </div>
+    
     <div class="form-group">
         <label asp-for="Name" class="col-md-4 control-label"></label>
         <div class="col-md-10">
@@ -17,34 +34,39 @@
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
     </div>
-        <div class="form-group">
+    
+    <div class="form-group">
         <label asp-for="Manufacturer" class="col-md-4 control-label"></label>
         <div class="col-md-10">
             <input asp-for="Manufacturer" class="form-control" />
             <span asp-validation-for="Manufacturer" class="text-danger"></span>
         </div>
     </div>
-        <div class="form-group">
+    
+    <div class="form-group">
         <label asp-for="Model" class="col-md-4 control-label"></label>
         <div class="col-md-10">
             <input asp-for="Model" class="form-control" />
             <span asp-validation-for="Model" class="text-danger"></span>
         </div>
     </div>
-        <div class="form-group">
+    
+    <div class="form-group">
         <label asp-for="AuctionHouse" class="col-md-4 control-label"></label>
         <div class="col-md-10">
             <input asp-for="AuctionHouse" class="form-control" />
             <span asp-validation-for="AuctionHouse" class="text-danger"></span>
         </div>
     </div>
-        <div class="form-group">
+    
+    <div class="form-group">
         <label asp-for="Country" class="col-md-4 control-label"></label>
         <div class="col-md-10">
             <input asp-for="Country" class="form-control" />
             <span asp-validation-for="Country" class="text-danger"></span>
         </div>
     </div>
+   
     <div class="form-group">
         <label asp-for="City" class="col-md-4 control-label"></label>
         <div class="col-md-10">
@@ -52,26 +74,19 @@
             <span asp-validation-for="City" class="text-danger"></span>
         </div>
     </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <div class="checkbox">
-                <label asp-for="IsSold">
-                    <input name="IsSold" value=@CommonEnum.IsSold.Yes id="IsSold" type="checkbox" />
-                    @Html.DisplayNameFor(m => m.IsSold)
-                </label>
-            </div>
-        </div>
-    </div>
+    
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <div class="checkbox">
                 <label name="IsPurchase">
-                    <input name="IsPurchase" id="IsPurchase" value=@CommonEnum.IsPurchase.Yes type="checkbox" />
+                    <input name="IsPurchase" id="IsPurchase" value=@CommonEnum.IsPurchase.Yes type="checkbox"
+                        @if(@Model.IsPurchase == CommonEnum.IsPurchase.Yes){@Html.DisplayName("checked")} />
                     @Html.DisplayNameFor(m => m.IsPurchase)
                 </label>
             </div>
         </div>
     </div>
+    
     <div class="form-group">
         <label asp-for="ProductionDate" class="col-md-4 control-label"></label>
         <div class="col-md-10">
@@ -79,6 +94,7 @@
             <span asp-validation-for="ProductionDate" class="text-danger"></span>
         </div>
     </div>
+    
     <div class="form-group">
         <label asp-for="WorkingTime" class="col-md-4 control-label"></label>
         <div class="col-md-10">
@@ -86,6 +102,20 @@
             <span asp-validation-for="WorkingTime" class="text-danger"></span>
         </div>
     </div>
+
+    <div class="form-group">
+        <label asp-for="WorkingDistance" class="col-md-4 control-label"></label>
+        <div class="input-group col-md-10">
+            <input asp-for="WorkingDistance" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+                <select asp-for="WorkingDistanceUnit" asp-items="workingDistanceUnits" class="custom-select"></select> 
+                
+            </div>
+            <input type="hidden" asp-for="WorkingDistanceUnit">
+            
+        </div>
+    </div>
+
     <div class="form-group">
         <label asp-for="DealPrice" class="col-md-4 control-label"></label>
         <div class="col-md-10">
@@ -93,6 +123,7 @@
             <span asp-validation-for="DealPrice" class="text-danger"></span>
         </div>
     </div>
+    
     <div class="form-group">
         <label asp-for="DealPriceRMB" class="col-md-4 control-label"></label>
         <div class="col-md-10">
@@ -100,6 +131,7 @@
             <span asp-validation-for="DealPriceRMB" class="text-danger"></span>
         </div>
     </div>
+   
     <div class="form-group">
         <label asp-for="Long" class="col-md-4 control-label"></label>
         <div class="col-md-10">
@@ -107,6 +139,7 @@
             <span asp-validation-for="Long" class="text-danger"></span>
         </div>
     </div>
+    
     <div class="form-group">
         <label asp-for="Width" class="col-md-4 control-label"></label>
         <div class="col-md-10">
@@ -114,6 +147,7 @@
             <span asp-validation-for="Width" class="text-danger"></span>
         </div>
     </div>
+    
     <div class="form-group">
         <label asp-for="Height" class="col-md-4 control-label"></label>
         <div class="col-md-10">
@@ -121,6 +155,7 @@
             <span asp-validation-for="Height" class="text-danger"></span>
         </div>
     </div>
+    
     <div class="form-group">
         <label asp-for="Weight" class="col-md-4 control-label"></label>
         <div class="col-md-10">
@@ -128,6 +163,7 @@
             <span asp-validation-for="Weight" class="text-danger"></span>
         </div>
     </div>
+    
     <div class="form-group">
         <label asp-for="Volume" class="col-md-4 control-label"></label>
         <div class="col-md-10">
@@ -135,6 +171,15 @@
             <span asp-validation-for="Volume" class="text-danger"></span>
         </div>
     </div>
+    
+    <div class="form-group">
+        <label asp-for="Remark" class="col-md-4 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Remark" class="form-control" />
+            <span asp-validation-for="Remark" class="text-danger"></span>
+        </div>
+    </div>
+    
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <button type="submit" class="btn btn-primary">@ViewData["Title"]</button>

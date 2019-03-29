@@ -7,6 +7,9 @@ body {
   color: white;
 }
 
+ul, li{
+  
+}
 .irs--round .irs-bar {
   background-color: #e87511 !important;
 }
@@ -30,7 +33,6 @@ body {
 .irs--round .irs-single {
   background-color: #e87511 !important;
 }
-
 
 .chip {
   display: inline-block;

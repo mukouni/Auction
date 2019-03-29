@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Auction.Entities.Enums;
 using static Auction.Entities.Enums.CommonEnum;
@@ -9,6 +10,15 @@ namespace Auction.Entities
     [Table("ac_equipment")]
     public class Equipment : BaseEntity
     {
+        /// <summary>
+        /// 利氏兄弟序列号
+        /// </summary>
+        [Column(TypeName = "nvarchar(50)")]
+        public string RBCode { get; set; }
+
+        /// <summary>
+        /// 序列号
+        /// </summary>
         [Column(TypeName = "nvarchar(50)")]
         public string Code { get; set; }
 
@@ -51,17 +61,17 @@ namespace Auction.Entities
         ///<summary>
         /// 是否被拍卖
         /// </summary>
-        public IsSold? IsSold { get; set; } = CommonEnum.IsSold.No;
+        public IsSold? IsSold { get; set; }
 
         ///<summary>
         /// 拍卖时间，用于区分是否被拍卖
         /// </summary>
-        public DateTime SoldAt { get; set; }
+        public DateTime? SoldAt { get; set; }
 
         ///<summary>
         /// 是否是采购设备
         /// </summary>
-        public IsPurchase? IsPurchase { get; set; } = CommonEnum.IsPurchase.No;
+        public IsPurchase? IsPurchase { get; set; }
 
         ///<summary>
         /// 生产年份
@@ -72,6 +82,17 @@ namespace Auction.Entities
         /// 工作小时
         /// </summary>
         public long? WorkingTime { get; set; }
+
+        ///<summary>
+        /// 工作里程数
+        /// </summary>
+        public long? WorkingDistance { get; set; }
+
+        ///<summary>
+        /// 工作里程数单位
+        /// </summary>
+        [Column(TypeName = "nvarchar(20)")]
+        public string WorkingDistanceUnit { get; set; }
 
         ///<summary>
         /// 成交价格
@@ -110,6 +131,13 @@ namespace Auction.Entities
         /// </summary>
         [Column(TypeName = "decimal(18, 3)")]
         public Decimal? Volume { get; set; }
+
+        ///<summary>
+        /// 备注
+        /// </summary>
+
+        [MaxLength(5000)]
+        public string Remark { get; set; }
 
         // 导航属性
         public virtual ICollection<Photo> Photos { get; set; } = new List<Photo>();

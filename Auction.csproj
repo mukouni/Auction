@@ -27,4 +27,11 @@
     <PackageReference Include="X.PagedList.Mvc.Core" Version="7.6.0" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Reference Include="aliyun-net-sdk-core">
+      <HintPath>lib\aliyun-net-sdk-Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

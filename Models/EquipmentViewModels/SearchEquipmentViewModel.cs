@@ -13,7 +13,10 @@ namespace Auction.Models.EquipmentViewModels
     public class SearchEquipmentViewModel : RequestPayload
     {
 
-        [Display(Name = "外部序列号")]
+        [Display(Name = "第三方序列号")]
+        public string RBCode { get; set; }
+        
+        [Display(Name = "序列号")]
         public string Code { get; set; }
 
         /// <summary>
@@ -39,11 +42,13 @@ namespace Auction.Models.EquipmentViewModels
         /// </summary>
         [Display(Name = "拍卖行")]
         public Filter[] AuctionHouses { get; set; }
+        
         /// <summary>
         /// 国家
         /// </summary>
         [Display(Name = "国家")]
         public Filter[] Countries { get; set; }
+        
         /// <summary>
         /// 城市
         /// </summary>
@@ -54,24 +59,23 @@ namespace Auction.Models.EquipmentViewModels
         /// 是否删除
         /// </summary>
         [Display(Name = "是否已删除")]
-        public IsDeleted IsDeleted { get; set; }
-
+        public IsDeleted? IsDeleted { get; set; }
 
         /// <summary>
         /// 是否被拍卖
         /// </summary>
         [Display(Name = "拍卖时间")]
-        public IsSold IsSold { get; set; }
+        public IsSold? IsSold { get; set; }
 
 
         [Display(Name = "拍卖时间")]
-        public DateTime SoldAt { get; set; }
+        public DateTime? SoldAt { get; set; }
 
         /// <summary>
         /// 是否是采购设备
         /// </summary>
         [Display(Name = "是否是采购设备")]
-        public IsPurchase IsPurchase { get; set; }
+        public IsPurchase? IsPurchase { get; set; }
 
         /// <summary>
         /// 生产年份范围
@@ -86,47 +90,25 @@ namespace Auction.Models.EquipmentViewModels
         [Display(Name = "工作小时范围")]
         public long[] WorkingTimeRange { get; set; }
 
+        /// <summary>
+        /// 拍卖日期范围
+        /// </summary>
+        [Display(Name = "拍卖日期")]
+        public int[] SoldAtRange { get; set; }
 
-        private long? _workingTimeMin;
+        public int? SoldAtMax { get; set; }
+
+        public int? SoldAtMin { get; set; }
+
         /// <summary>
         /// 工作小时最小值
         /// </summary>
-        public long? WorkingTimeMin
-        {
-            get { return _workingTimeMin; }
-            set
-            {
-                if (value == null)
-                {
-                    _workingTimeMin = 0;
-                }
-                else
-                {
-                    _workingTimeMin = value;
-                }
-            }
-        }
+        public long? WorkingTimeMin { get; set; }
 
-
-        private long? _workingTimeMax;
         /// <summary>
         /// 工作小时最大值
         /// </summary>
-        public long? WorkingTimeMax
-        {
-            get { return _workingTimeMax; }
-            set
-            {
-                if (value == null)
-                {
-                    _workingTimeMax = 0;
-                }
-                else
-                {
-                    _workingTimeMax = value;
-                }
-            }
-        }
+        public long? WorkingTimeMax { get; set; }
 
         /// <summary>
         /// 成交价格范围
@@ -134,46 +116,15 @@ namespace Auction.Models.EquipmentViewModels
         [Display(Name = "成交价格范围")]
         public Decimal[] DealPriceRange { get; set; }
 
-
-        private Decimal? _dealPriceMin;
         /// <summary>
         /// 成交价最小值
         /// </summary>
-        public Decimal? DealPriceMin
-        {
-            get { return _dealPriceMin; }
-            set
-            {
-                if (value == null)
-                {
-                    _dealPriceMin = 0;
-                }
-                else
-                {
-                    _dealPriceMin = value;
-                }
-            }
-        }
+        public Decimal? DealPriceMin { get; set; }
 
-        private Decimal? _dealPriceMax;
         /// <summary>
         /// 成交价最大值
         /// </summary>
-        public Decimal? DealPriceMax
-        {
-            get { return _dealPriceMax; }
-            set
-            {
-                if (value == null)
-                {
-                    _dealPriceMax = 0;
-                }
-                else
-                {
-                    _dealPriceMax = value;
-                }
-            }
-        }
+        public Decimal? DealPriceMax { get; set; }
 
         /// <summary>
         /// 折合人民币
@@ -183,18 +134,5 @@ namespace Auction.Models.EquipmentViewModels
         public Decimal DealPriceRMB { get; set; }
 
         public virtual StaticPagedList<EquipmentViewModel> Equipments { get; set; }
-    }
-
-    public class Filter
-    {
-        public string Name { get; set; }
-
-        public int Count { get; set; }
-
-        public int SelectedCount { get; set; }
-
-        public bool Selected { get; set; }
-
-        public int SortNumber { get; set; }
     }
 }

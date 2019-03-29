@@ -157,7 +157,11 @@ namespace Auction.Controllers
                 { "href", "/equipment/new" }
             });
             ViewData["breadcrumb"] = breadcrumb;
-            return View(new EquipmentViewModel());
+
+            var equipment = new EquipmentViewModel();
+            equipment.Code = "A" + GenerateCode();
+
+            return View(equipment);
         }
 
         [HttpPost("[action]")]
@@ -517,7 +521,7 @@ namespace Auction.Controllers
             using (_context)
             {
                 var query = _context.Equipments.AsQueryable<Equipment>();
-                query = query.Where(x => x.IsSold == CommonEnum.IsSold.No || x.IsSold == null);
+                query = query.Where(x => x.SoldAt != null);
                 query = query.Where(x => x.IsDeleted == CommonEnum.IsDeleted.No || x.IsDeleted == null);
 
                 query = SearchCondition(query, searchEquipment);
@@ -529,16 +533,38 @@ namespace Auction.Controllers
                 var totalCount = query.Count();
 
                 searchEquipment.Equipments = new StaticPagedList<EquipmentViewModel>(
-                        list,
-                        searchEquipment.CurrentPage,
-                        searchEquipment.PageSize,
-                        totalCount);
+                    list,
+                    searchEquipment.CurrentPage,
+                    searchEquipment.PageSize,
+                    totalCount);
                 searchEquipment.Count = totalCount;
 
-                searchEquipment.WorkingTimeMax = query.Max(e => e.WorkingTime);
                 searchEquipment.WorkingTimeMin = query.Min(e => e.WorkingTime);
-                searchEquipment.DealPriceMax = query.Max(e => e.DealPrice);
+                searchEquipment.WorkingTimeMax = query.Max(e => e.WorkingTime);
+                if (searchEquipment.WorkingTimeRange == null)
+                {
+                    searchEquipment.WorkingTimeRange = new long[2];
+                    searchEquipment.WorkingTimeRange[0] = searchEquipment.WorkingTimeMin ?? 0;
+                    searchEquipment.WorkingTimeRange[1] = searchEquipment.WorkingTimeMax ?? 0;
+                }
+
                 searchEquipment.DealPriceMin = query.Min(e => e.DealPrice);
+                searchEquipment.DealPriceMax = query.Max(e => e.DealPrice);
+                if (searchEquipment.DealPriceRange == null)
+                {
+                    searchEquipment.DealPriceRange = new decimal[2];
+                    searchEquipment.DealPriceRange[0] = searchEquipment.DealPriceMin ?? 0;
+                    searchEquipment.DealPriceRange[1] = searchEquipment.DealPriceMax ?? 0;
+                }
+
+                searchEquipment.SoldAtMin = query.Min(e => e.SoldAt) == null ? 0 : ((DateTime)query.Min(e => e.SoldAt)).Year;
+                searchEquipment.SoldAtMax = query.Max(e => e.SoldAt) == null ? 0 : ((DateTime)query.Max(e => e.SoldAt)).Year;
+                if (searchEquipment.SoldAtRange == null)
+                {
+                    searchEquipment.SoldAtRange = new int[2];
+                    searchEquipment.SoldAtRange[0] = searchEquipment.SoldAtMin ?? 0;
+                    searchEquipment.SoldAtRange[1] = searchEquipment.SoldAtMax ?? 0;
+                }
 
                 //  long?[] WorkingTimeRangeTemp = query.GroupBy(r => 1)
                 //                                     .Select(grp => new[]
@@ -559,7 +585,21 @@ namespace Auction.Controllers
                 // searchEquipment.DealPriceMin = DealPriceRangeTemp[0];
                 // searchEquipment.DealPriceMax = DealPriceRangeTemp[1];
 
-
+                if (searchEquipment.Sort?.Field != null && searchEquipment.Sort?.Direction != null)
+                {
+                    if (searchEquipment.Sort.Direction == "desc")
+                    {
+                        query.OrderByDescending(e => searchEquipment.Sort.Field);
+                    }
+                    else
+                    {
+                        query.OrderBy(e => searchEquipment.Sort.Field);
+                    }
+                }
+                else
+                {
+                    query.OrderBy(e => e.CreatedAt).ThenBy(e => e.LastUpdatedAt);
+                }
 
                 searchEquipment.Models = query.GroupBy(e => e.Model).Select(grp => new Filter()
                 {
@@ -617,8 +657,9 @@ namespace Auction.Controllers
                                               .ToArray();
 
 
-
-                return View(searchEquipment);
+                return Request.IsAjaxRequest()
+                    ? (IActionResult)PartialView("_NoAuctionListPartial", searchEquipment)
+                    : View(searchEquipment);
             }
         }
 
@@ -660,27 +701,27 @@ namespace Auction.Controllers
             {
                 query = query.Where(x => x.Name.Contains(searchEquipment.Kw.Trim()) || x.Code.Contains(searchEquipment.Kw.Trim()));
             }
-            if (searchEquipment.Names != null && searchEquipment.Names.Any(n => n.Selected == true ))
+            if (searchEquipment.Names != null && searchEquipment.Names.Any(n => n.Selected == true))
             {
                 query = query.Where(x => searchEquipment.Names.Any(f => x.Name == f.Name));
             }
-            if (searchEquipment.Manufacturers != null && searchEquipment.Manufacturers.Any(n => n.Selected == true ))
+            if (searchEquipment.Manufacturers != null && searchEquipment.Manufacturers.Any(n => n.Selected == true))
             {
                 query = query.Where(x => searchEquipment.Manufacturers.Any(f => x.Manufacturer == f.Name));
             }
-            if (searchEquipment.Models != null && searchEquipment.Models.Any(n => n.Selected == true ))
+            if (searchEquipment.Models != null && searchEquipment.Models.Any(n => n.Selected == true))
             {
                 query = query.Where(x => searchEquipment.Models.Any(f => x.Model == f.Name));
             }
-            if (searchEquipment.AuctionHouses != null && searchEquipment.AuctionHouses.Any(n => n.Selected == true ))
+            if (searchEquipment.AuctionHouses != null && searchEquipment.AuctionHouses.Any(n => n.Selected == true))
             {
                 query = query.Where(x => searchEquipment.AuctionHouses.Any(f => x.AuctionHouse == f.Name));
             }
-            if (searchEquipment.Countries != null && searchEquipment.Countries.Any(n => n.Selected == true ))
+            if (searchEquipment.Countries != null && searchEquipment.Countries.Any(n => n.Selected == true))
             {
                 query = query.Where(x => searchEquipment.Countries.Any(f => x.Country == f.Name));
             }
-            if (searchEquipment.Cities != null && searchEquipment.Cities.Any(n => n.Selected == true ))
+            if (searchEquipment.Cities != null && searchEquipment.Cities.Any(n => n.Selected == true))
             {
                 query = query.Where(x => searchEquipment.Cities.Any(f => x.City == f.Name));
             }
@@ -740,6 +781,26 @@ namespace Auction.Controllers
             }
 
             return query;
+        }
+
+        private string GenerateCode()
+        {
+            var query = _context.Equipments.AsQueryable<Equipment>();
+
+
+            int DayCount = query.Where(e =>
+                DateTime.Now.Year == ((DateTime)e.CreatedAt).Year &&
+                DateTime.Now.Month == ((DateTime)e.CreatedAt).Month &&
+                DateTime.Now.Day == ((DateTime)e.CreatedAt).Day).Count() + 1;
+
+            //   DayCount ""+ id.ToString().Split("-").;
+            var s = new StringBuilder();
+            s.Append(DateTime.Now.Year.ToString().Substring(2, 2));
+            s.Append(DateTime.Now.Month.ToString().PadLeft(2, '0'));
+            s.Append(DateTime.Now.Day.ToString().PadLeft(2, '0'));
+            s.Append(DayCount.ToString().PadLeft(3, '0'));
+
+            return s.ToString();
         }
     }
 }
