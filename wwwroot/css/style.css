@@ -7,9 +7,6 @@ body {
   color: white;
 }
 
-ul, li{
-  
-}
 .irs--round .irs-bar {
   background-color: #e87511 !important;
 }
@@ -318,7 +315,7 @@ table[data-toggle="table"] tbody td:last-child {
 }
 
 .bodyinfo {
-  width: 70%;
+  width: 80%;
   min-width: 1000px;
   height: calc(100% - 190px);
   margin: 150px auto 0;
@@ -370,4 +367,28 @@ footer {
   footer {
     line-height: 40px;
   }
+}
+
+
+.data .equipment-list {
+  border-bottom: 1px dotted #8f8f8f;
+}
+
+.data .equipment-list .work-time-label {
+  font-size: 20px;
+}
+
+.sort p:first-child{
+  margin: 15px 0  0 15px;
+}
+.sort ul.order-ul{
+  margin-top: 0;
+}
+.search .form-group {
+  border-bottom: 1px dotted #8f8f8f;
+}
+
+.search .form-group .control-label{
+  font-size: 18px;
+  font-weight: bold;
 }

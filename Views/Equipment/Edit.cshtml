@@ -78,9 +78,7 @@
             }).on('filepreupload', function(event, data, previewId, index) {
                 //data.form.append('IsCover', $("input#" + previewId).is(":checked"))
             }).on("fileuploaded", function (event, data, previewId, index) {
-                console.log(index)
                 addData([data.response])
-                console.log(data)
                 
                 if(data.response.Message == "操作成功"){
                     var caption = $("#" + previewId).find(".explorer-caption")
@@ -88,24 +86,17 @@
                     caption.text(data.response.Data.FileName)
                     $('input:radio[name="IsCover"]:visible').on("click", SetCoverPhoto)
                 }
-                console.log(previewId)
                 newPhotos.push({
                     PreviewId: previewId,
                     FileName:  data.response.Data.FileName,
                     PhotoId: data.response.Data.Id
                 })
-                console.log(newPhotos)
-                //console.log(previewId)
-                //console.log(index)
             }).on('filesorted', function(event, params) {
-                //console.log('File sorted ', params.previewId, params.oldIndex, params.newIndex, params.stack);
             }).on('filebatchpreupload', function(event, data, jqXHR) {
-                //data.form.append('IsCover', $("input#" + previewId).is(":checked"))
             }).on("filesuccessremove", function (event, id, fileindex) { 
                 var previewId = $("#"+id).data("previewid")
                 $.each(newPhotos, function(i, p){
                     if(p.PreviewId == previewId){
-                        console.log(111)
                         $.ajax({
                             type: "post",
                             url: "@Url.Action("DeletePhoto")",
@@ -116,7 +107,6 @@
                                 }
                             }
                         });
-                        
                     }
                 })
             });
@@ -140,13 +130,11 @@
             var SetCoverPhoto = function(){
                 var that = $(this)
                 var photoName = that.closest("tr").find(".explorer-caption").attr("title")
-                console.log(photoName);
                 $.ajax({
                     type: "post",
                     url: "@Url.Action("SetCoverPhoto")",
                     data: { photoName: photoName, equipmentId: "@Model.Id" },
                     success: function(result){
-                        console.log(result);
                     }
                 })
             }

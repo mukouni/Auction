@@ -119,6 +119,7 @@ namespace Auction
                 .AddCheck<HomePageHealthCheck>("home_page_health_check")
                 .AddCheck<ApiHealthCheck>("api_health_check");
 
+            // https://docs.microsoft.com/zh-cn/aspnet/core/fundamentals/http-context?view=aspnetcore-2.2
             services.AddHttpContextAccessor();
     
             _services = services;

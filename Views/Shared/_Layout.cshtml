@@ -1,5 +1,7 @@
 ﻿@inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@inject IHttpContextAccessor HttpContextAccessor
+
 <!DOCTYPE html>
 <html>
 
@@ -29,7 +31,7 @@
                             <li class="nav-item"><a asp-controller="Equipment" asp-action="NoAuction" class="nav-link" aria-controls="no-auction">未拍卖设备</a></li>
                             <li class="nav-item"><a asp-controller="Equipment" asp-action="Auctioned" class="nav-link"aria-controls="auctioned">已拍卖设备</a></li>
                             <li class="nav-item"><a asp-controller="Equipment" asp-action="InsteadAuction" class="nav-link" aria-controls="instead-auction">代采购设备</a></li>
-                            @if (SignInManager.IsSignedIn(User) && User.IsInRole(ApplicationRole.Admin))
+                            @if (SignInManager.IsSignedIn(User) && (User.IsInRole(ApplicationRole.Admin) || User.IsInRole(ApplicationRole.Staff)))
                             {
                             <li class="nav-item">
                                 <a a asp-controller="Equipment" asp-action="Index" class="nav-link" aria-controls="manage">系统管理</a>

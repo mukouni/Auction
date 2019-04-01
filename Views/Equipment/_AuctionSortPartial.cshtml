@@ -1,6 +1,6 @@
 @model SearchEquipmentViewModel
 <p>Sort By:</p>
-<ul class="list-inline mt-3 ml-3 order-ul">
+<ul class="list-inline ml-3 order-ul">
    <li class="list-inline-item">
       <p>清除排序</p>
    </li>
@@ -39,8 +39,5 @@
       <div class="order-by d-none" data-order-by="Name" data-direction="desc">
          <p class="">设备：Z 到 A <i class="fas fa-sort-amount-down"></i></p>
       </div>
-   </li>
-   
-   <input type="hidden" asp-for="@Model.Sort.Field">
-   <input type="hidden" asp-for="@Model.Sort.Direction">   
+   </li> 
 </ul>

@@ -1,0 +1,24 @@
+@model SearchEquipmentViewModel
+
+@foreach (var item in @Model.Equipments){
+    <div class="media mb-3 equipment-list">
+        <img class="mr-3" src="@item.CoverPhoto.RequestPath" alt="@item.CoverPhoto.FileName" style="width: 240px">
+        <div class="media-body">
+            <h3 class="font-weight-bold"> 
+                @item.Manufacturer  @item.Model @item.Name  
+            </h3>
+            <p>
+                @Html.DisplayNameFor(model => item.WorkingTime):
+                <b>@item.WorkingTime Hr*</b>
+            </p>
+            <p>
+                @Html.DisplayNameFor(model => item.ProductionDate):
+                <b>@(((DateTime)item.ProductionDate).Year)</b>
+            </p>
+            <p>
+                @Html.DisplayNameFor(model => item.Code):
+                <b>@item.Code</b>
+            </p>
+        </div>
+    </div>
+}

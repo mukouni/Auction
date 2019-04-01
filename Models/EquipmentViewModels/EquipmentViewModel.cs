@@ -90,6 +90,7 @@ namespace Auction.Models.EquipmentViewModels
         ///<summary>
         /// 生产年份
         /// </summary>
+        [Required]
         [Display(Name = "生产年份")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]

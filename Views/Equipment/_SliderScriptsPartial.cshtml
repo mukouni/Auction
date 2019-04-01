@@ -1,0 +1,121 @@
+<script id="slider-script">
+    var workingTimeMin = parseInt("@Model.WorkingTimeMin") || 0;
+    var workingTimeMax = parseInt("@Model.WorkingTimeMax") || 0;
+    var workingTimeFrom = parseInt("@(Model.WorkingTimeRange == null ? 0 : Model.WorkingTimeRange[0])") || workingTimeMin;
+    var workingTimeTo = parseInt("@(Model.WorkingTimeRange == null ? 0 : Model.WorkingTimeRange[1])") || workingTimeMax;
+    if(workingTimeMax > 0){
+        $("#working-time-range-slider").ionRangeSlider({
+            skin: "round",
+            type: "double",
+            min: workingTimeMin,
+            max: workingTimeMax,
+            from: workingTimeFrom,
+            to: workingTimeTo,
+            grid: false,
+            grid_snap: true,
+            from_fixed: false,  // fix position of FROM handle
+            to_fixed: false,
+            onFinish: function (data) {
+                $("input[name='WorkingTimeRange[0]'").val(data.from);
+                $("input[name='WorkingTimeRange[1]'").val(data.to);
+                //addOrUpdateChip(resetWorkingTimeRangeSlider, "working-time-chip", "工作时长(小时)：" + data.from, data.to);
+                searchEquipments();
+            }
+        });
+        function resetWorkingTimeRangeSlider(){
+            $("#working-time-range-slider").data("ionRangeSlider").reset();
+            $("input[name='WorkingTimeRange[0]'").val("");
+            $("input[name='WorkingTimeRange[1]'").val("");
+        }
+    }
+
+    var dealPriceMin = parseInt("@Model.DealPriceMin") || 0;
+    var dealPriceMax = parseInt("@Model.DealPriceMax") || 0;
+    var dealPriceFrom = parseInt("@(Model.DealPriceRange == null ? 0 : Model.DealPriceRange[0])") || dealPriceMin;
+    var dealPriceTo = parseInt("@(Model.DealPriceRange == null ? 0 : Model.DealPriceRange[1])") || dealPriceMax;
+    if(dealPriceMax > 0){
+        $("#deal-price-range-slider").ionRangeSlider({
+            skin: "round",
+            type: "double",
+            min: dealPriceMin,
+            max: dealPriceMax,
+            from: dealPriceFrom,
+            to: dealPriceTo,
+            grid: false,
+            grid_snap: true,
+            from_fixed: false,  // fix position of FROM handle
+            to_fixed: false,
+            onFinish: function (data) {
+                $("input[name='DealPriceRange[0]'").val(data.from);
+                $("input[name='DealPriceRange[1]'").val(data.to);
+                //addOrUpdateChip(resetDealPriceRangeSlider, "deal-price-chip", "成交价格(美元):" + data.from, data.to);
+                searchEquipments();
+            }
+        });
+        function resetDealPriceRangeSlider(){
+            $("#deal-price-range-slider").data("ionRangeSlider").reset();
+            $("input[name='DealPriceRange[0]'").val("");
+            $("input[name='DealPriceRange[1]'").val("");
+        }
+    }
+
+    var soldAtMin = parseInt("@Model.SoldAtMin") || 0;
+    var soldAtMax = parseInt("@Model.SoldAtMax") || 0;
+    var soldAtFrom = parseInt("@(Model.SoldAtRange == null ? 0 : Model.SoldAtRange[0])") || soldAtMin;
+    var soldAtTo = parseInt("@(Model.SoldAtRange == null ? 0 : Model.SoldAtRange[1])") || soldAtMax;
+    if(soldAtMax > 0){
+        $("#sold-at-range-slider").ionRangeSlider({
+            skin: "round",
+            type: "double",
+            min: soldAtMin,
+            max: soldAtMax,
+            from: soldAtFrom,
+            to: soldAtTo,
+            grid: false,
+            grid_snap: true,
+            from_fixed: false,  // fix position of FROM handle
+            to_fixed: false,
+            onFinish: function (data) {
+                $("input[name='SoldAtRange[0]'").val(data.from);
+                $("input[name='SoldAtRange[1]'").val(data.to);
+                //addOrUpdateChip(resetSoldAtRangeSlider, "sold-at-chip", "拍卖日期:" + data.from, data.to);
+                searchEquipments();
+            }
+        });
+        function resetSoldAtRangeSlider(){
+            $("#sold-at-range-slider").data("ionRangeSlider").reset();
+            $("input[name='SoldAtRange[0]'").val("");
+            $("input[name='SoldAtRange[1]'").val("");
+        }
+    }
+
+    var productionDateMin = parseInt("@Model.ProductionDateMin") || 0;
+    var productionDateMax = parseInt("@Model.ProductionDateMax") || 0;
+    var productionDateFrom = parseInt("@(Model.ProductionDateRange == null ? 0 : Model.ProductionDateRange[0])") || productionDateMin;
+    var productionDateTo = parseInt("@(Model.ProductionDateRange == null ? 0 : Model.ProductionDateRange[1])") || productionDateMax;
+    if(productionDateMax > 0){
+        $("#production-date-range-slider").ionRangeSlider({
+            skin: "round",
+            type: "double",
+            min: productionDateMin,
+            max: productionDateMax,
+            from: productionDateFrom,
+            to: productionDateTo,
+            grid: false,
+            grid_snap: true,
+            from_fixed: false,  // fix position of FROM handle
+            to_fixed: false,
+            onFinish: function (data) {
+                $("input[name='ProductionDateRange[0]'").val(data.from);
+                $("input[name='ProductionDateRange[1]'").val(data.to);
+                //addOrUpdateChip(resetProductionDateRangeSlider, "production-date-chip", "生产年份:" + data.from, data.to);
+                searchEquipments();
+            }
+        });
+        function resetProductionDateRangeSlider(){
+            $("#production-date-range-slider").data("ionRangeSlider").reset();
+            $("input[name='ProductionDateRange[0]'").val("");
+            $("input[name='ProductionDateRange[1]'").val("");
+        }
+    }
+</script>

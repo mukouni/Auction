@@ -1,0 +1,86 @@
+@model SearchEquipmentViewModel
+
+<div class="search">
+    @await Html.PartialAsync("_AuctionSearchPartial", Model,
+                                new ViewDataDictionary(ViewData){})
+</div>
+<div class="show flex-grow-1">
+    <div class="sort">
+        @await Html.PartialAsync("_AuctionSortPartial", Model,
+                                new ViewDataDictionary(ViewData){})
+    </div>
+    <div class="data pl-3 pt-3">
+        @await Html.PartialAsync("_AuctionListPartial", Model,
+                                new ViewDataDictionary(ViewData){})
+    </div>
+</div>
+
+@if(Context.Request.IsAjaxRequest()){
+    await Html.RenderPartialAsync("_SliderScriptsPartial");
+
+    <script>
+        function checkOrderBy(){
+            var selectedOrderBy = "@Model.Sort?.Field";
+            var selectedDirection = "@Model.Sort?.Direction";
+            var className = "text-warning";
+
+            $(".sort .list-inline-item").each(function(i, ele){
+                var $orderBys = $(ele).find(".order-by");
+                $orderBys.each(function(i, ele){
+                    var orderBy = $(ele).data("order-by");
+                    var direction = $(ele).data("direction");
+                
+                    if(orderBy == selectedOrderBy){
+                        $(ele).find("p").addClass(className);
+                        if(direction == selectedDirection && $(ele).is(":hidden")){
+                            $orderBys.toggleClass("d-none");
+                        }
+                    }
+                })
+            })
+        }
+        checkOrderBy();
+        
+        function checkedValue(){
+            $(".condition").html("");
+
+            $(".search input[type='checkbox']:visible:checked").each(function(i, ele){
+                var chipId = $(ele).attr("id") + "-chip";
+                var checkboxArrayId = $(ele).attr("id").split("_").slice(0,2).join("_");  
+                var hiddenInputId = checkboxArrayId + "__Name";
+                var valueInput = $("#" + hiddenInputId);
+                addOrUpdateChip(resetCheckboxStatus, chipId, valueInput.val());
+            })
+
+
+            if($("#SoldAtRangeRange_0_").val() != undefined && $("#SoldAtRangeRange_0_").val() != ""){
+                addOrUpdateChip(resetSoldAtRangeSlider, 
+                                "sold-at-chip", 
+                                "拍卖日期:" + $("#SoldAtRangeRange_0_").val(), 
+                                $("#SoldAtRangeRange_1_").val());
+            }
+
+             if($("#WorkingTimeRange_0_").val() != undefined && $("#WorkingTimeRange_0_").val() != ""){
+                addOrUpdateChip(resetWorkingTimeRangeSlider, 
+                                "working-time-chip", 
+                                "工作小时:" + $("#WorkingTimeRange_0_").val(), 
+                                $("#WorkingTimeRange_1_").val());
+            }
+
+            if($("#ProductionDateRange_0_").val() != undefined && $("#ProductionDateRange_0_").val() != ""){
+                addOrUpdateChip(resetProductionDateRangeSlider, 
+                                "production-date-chip", 
+                                "生产年份:" + $("#ProductionDateRange_0_").val(), 
+                                $("#ProductionDateRange_1_").val());
+            }
+            
+            if($("#DealPriceRange_0_").val() != undefined && $("#DealPriceRange_0_").val() != ""){
+                addOrUpdateChip(resetDealPriceRangeSlider, 
+                                "deal-price-chip", 
+                                "成交价格:" + $("#DealPriceRange_0_").val(), 
+                                $("#DealPriceRange_1_").val());
+            }
+        }
+        checkedValue();
+    </script>
+}

@@ -15,7 +15,7 @@ namespace Auction.Models.EquipmentViewModels
 
         [Display(Name = "第三方序列号")]
         public string RBCode { get; set; }
-        
+
         [Display(Name = "序列号")]
         public string Code { get; set; }
 
@@ -26,7 +26,7 @@ namespace Auction.Models.EquipmentViewModels
         public Filter[] Names { get; set; }
 
         /// <summary>
-        /// 生产商
+        /// 生产商 品牌
         /// </summary>
         [Display(Name = "生产商")]
         public Filter[] Manufacturers { get; set; }
@@ -42,13 +42,13 @@ namespace Auction.Models.EquipmentViewModels
         /// </summary>
         [Display(Name = "拍卖行")]
         public Filter[] AuctionHouses { get; set; }
-        
+
         /// <summary>
         /// 国家
         /// </summary>
         [Display(Name = "国家")]
         public Filter[] Countries { get; set; }
-        
+
         /// <summary>
         /// 城市
         /// </summary>
@@ -81,24 +81,16 @@ namespace Auction.Models.EquipmentViewModels
         /// 生产年份范围
         /// </summary>
         [Display(Name = "生产年份范围")]
-        public DateTime[] ProductionDateRange { get; set; }
+        public int?[] ProductionDateRange { get; set; }
+        public int? ProductionDateMax { get; set; }
 
+        public int? ProductionDateMin { get; set; }
 
         /// <summary>
         /// 工作小时范围
         /// </summary>
         [Display(Name = "工作小时范围")]
-        public long[] WorkingTimeRange { get; set; }
-
-        /// <summary>
-        /// 拍卖日期范围
-        /// </summary>
-        [Display(Name = "拍卖日期")]
-        public int[] SoldAtRange { get; set; }
-
-        public int? SoldAtMax { get; set; }
-
-        public int? SoldAtMin { get; set; }
+        public long?[] WorkingTimeRange { get; set; }
 
         /// <summary>
         /// 工作小时最小值
@@ -111,10 +103,20 @@ namespace Auction.Models.EquipmentViewModels
         public long? WorkingTimeMax { get; set; }
 
         /// <summary>
+        /// 拍卖日期范围
+        /// </summary>
+        [Display(Name = "拍卖日期")]
+        public int?[] SoldAtRange { get; set; }
+
+        public int? SoldAtMax { get; set; }
+
+        public int? SoldAtMin { get; set; }
+
+        /// <summary>
         /// 成交价格范围
         /// </summary>
         [Display(Name = "成交价格范围")]
-        public Decimal[] DealPriceRange { get; set; }
+        public Decimal?[] DealPriceRange { get; set; }
 
         /// <summary>
         /// 成交价最小值

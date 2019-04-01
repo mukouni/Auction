@@ -1,132 +1,205 @@
 @model SearchEquipmentViewModel
 
-        <form asp-controller="Equipment" asp-action='NoAuction' method="post">
-                <div class="form-group" id="models-form-group">
-                    <label asp-for="Models" class="col-md-4 control-label"></label>
-                    <div class="col-md-10">
-                        @for (var i = 0; i < Model.Models?.Length; i++)
-                        {
-                            <div class="form-check">
-                                <input type="checkbox" asp-for="@Model.Models[i].Selected" class="form-check-input"/>
-                                
-                                <label asp-for="@Model.Models[i].Selected" class="form-check-label">
-                                    @Model.Models[i].Name (@Model.Models[i].Count)
-                                </label>
-                                <input type="hidden" asp-for="@Model.Models[i].Name" />
-                            </div>
-                        }
-                    </div>
+<form asp-controller="Equipment" asp-action='NoAuction' method="post">
+    
+    <div class="form-group mt-3 mr-3 pb-3" id="names-form-group">
+        <label asp-for="Names" class="col-md-4 control-label"></label>
+        <div class="col-md-10">
+            @for (var i = 0; i < Model.Names?.Length; i++)
+            {
+                <div class="form-check">
+                    @{
+                        var idSelected = "Names_" + @i + "__Selected";
+                        var nameSelected = "Names[" + @i + "].Selected";
+                        var isChecked = @Model.Names[i].Selected ? "checked=\"checked\"" : "";
+                    }
+                    <input value="true" id="@idSelected" name="@nameSelected" class="form-check-input" type="checkbox" @isChecked />
+                    <label asp-for="@Model.Names[i].Selected" class="form-check-label">
+                        @Model.Names[i].Name (@Model.Names[i].Count)
+                    </label>
+                    @{
+                        var value = @Model.Names[i].Name;
+                        var id = "Names_" + @i + "__Name";
+                        var name = "Names[" + @i + "].Name";
+                    }
+                    <input type="hidden" value="@value" id="@id" name="@name" />
                 </div>
+            }
+        </div>
+    </div>
 
-                <div class="form-group" id="names-form-group">
-                    <label asp-for="Names" class="col-md-4 control-label"></label>
-                    <div class="col-md-10">
-                        @for (var i = 0; i < Model.Names?.Length; i++)
-                        {
-                            <div class="form-check">
-                                <input type="checkbox" asp-for="@Model.Names[i].Selected" class="form-check-input"/>
-                                
-                                <label asp-for="@Model.Names[i].Selected" class="form-check-label">
-                                    @Model.Names[i].Name (@Model.Names[i].Count)
-                                </label>
-                                <input type="hidden" asp-for="@Model.Names[i].Name" />  
-                            </div>
-                        }
-                    </div>
+    <div class="form-group mr-3 pb-3" id="manufacturers-form-group">
+        <label asp-for="Manufacturers" class="col-md-4 control-label"></label>
+        <div class="col-md-10">
+            @for (var i = 0; i < Model.Manufacturers?.Length; i++)
+            {
+                <div class="form-check">
+                    @{
+                        var idSelected = "Manufacturers_" + @i + "__Selected";
+                        var nameSelected = "Manufacturers[" + @i + "].Selected";
+                        var isChecked = @Model.Manufacturers[i].Selected ? "checked=\"checked\"" : "";
+                    }
+                    <input type="checkbox" value="true" id="@idSelected" name="@nameSelected" class="form-check-input" @isChecked />
+                    
+                    <label asp-for="@Model.Manufacturers[i].Selected" class="form-check-label">
+                        @Model.Manufacturers[i].Name (@Model.Manufacturers[i].Count)
+                    </label>
+                    @{
+                        var value = @Model.Manufacturers[i].Name;
+                        var id = "Manufacturers_" + @i + "__Name";
+                        var name = "Manufacturers[" + @i + "].Name";
+                    }
+                    <input type="hidden" value="@value" id="@id" name="@name" />
                 </div>
-
-                <div class="form-group" id="auction-house-form-group">
-                    <label asp-for="AuctionHouses" class="col-md-4 control-label"></label>
-                    <div class="col-md-10">
-                        @for (var i = 0; i < Model.AuctionHouses?.Length; i++)
-                        {
-                            <div class="form-check">
-                                <input type="checkbox" asp-for="@Model.AuctionHouses[i].Selected" class="form-check-input"/>
-                                
-                                <label asp-for="@Model.AuctionHouses[i].Selected" class="form-check-label">
-                                    @Model.AuctionHouses[i].Name (@Model.AuctionHouses[i].Count)
-                                </label>
-                                <input type="hidden" asp-for="@Model.AuctionHouses[i].Name" />  
-                            </div>
-                        }
-                    </div>
+            }
+        </div>
+    </div>
+    
+    <div class="form-group mr-3 pb-3" id="models-form-group">
+        <label asp-for="Models" class="col-md-4 control-label"></label>
+        <div class="col-md-10">
+            @for (var i = 0; i < Model.Models?.Length; i++)
+            {
+                <div class="form-check">
+                    @{
+                        var idSelected = "Models_" + @i + "__Selected";
+                        var nameSelected = "Models[" + @i + "].Selected";
+                        var isChecked = @Model.Models[i].Selected ? "checked=\"checked\"" : "";
+                    }
+                    <input type="checkbox" value="true" id="@idSelected" name="@nameSelected" class="form-check-input" @isChecked />
+                    
+                    <label asp-for="@Model.Models[i].Selected" class="form-check-label">
+                        @Model.Models[i].Name (@Model.Models[i].Count)
+                    </label>
+                    @{
+                        var value = @Model.Models[i].Name;
+                        var id = "Models_" + @i + "__Name";
+                        var name = "Models[" + @i + "].Name";
+                    }
+                    <input type="hidden" value="@value" id="@id" name="@name" />
                 </div>
+            }
+        </div>
+    </div>
 
-                <div class="form-group" id="countries-form-group">
-                    <label asp-for="Countries" class="col-md-4 control-label"></label>
-                    <div class="col-md-10">
-                        @for (var i = 0; i < Model.Countries?.Length; i++)
-                        {
-                            <div class="form-check">
-                                <input type="checkbox" asp-for="@Model.Countries[i].Selected" class="form-check-input"/>
-                                
-                                <label asp-for="@Model.Countries[i].Selected" class="form-check-label">
-                                    @Model.Countries[i].Name (@Model.Countries[i].Count)
-                                </label>
-                                <input type="hidden" asp-for="@Model.Countries[i].Name" />  
-                            </div>
-                        }
-                    </div>
+    <div class="form-group mr-3 pb-3" id="countries-form-group">
+        <label asp-for="Countries" class="col-md-4 control-label"></label>
+        <div class="col-md-10">
+            @for (var i = 0; i < Model.Countries?.Length; i++)
+            {
+                <div class="form-check">
+                    @{
+                        var idSelected = "Countries_" + @i + "__Selected";
+                        var nameSelected = "Countries[" + @i + "].Selected";
+                        var isChecked = @Model.Countries[i].Selected ? "checked=\"checked\"" : "";
+                    }
+                    <input type="checkbox" value="true" id="@idSelected" name="@nameSelected" class="form-check-input" @isChecked />
+                    
+                    <label asp-for="@Model.Countries[i].Selected" class="form-check-label">
+                        @Model.Countries[i].Name (@Model.Countries[i].Count)
+                    </label>
+                    @{
+                        var value = @Model.Countries[i].Name;
+                        var id = "Countries_" + @i + "__Name";
+                        var name = "Countries[" + @i + "].Name";
+                    }
+                    <input type="hidden" value="@value" id="@id" name="@name" />
                 </div>
+            }
+        </div>
+    </div>
 
-                 <div class="form-group" id="manufacturers-form-group">
-                    <label asp-for="Manufacturers" class="col-md-4 control-label"></label>
-                    <div class="col-md-10">
-                        @for (var i = 0; i < Model.Manufacturers?.Length; i++)
-                        {
-                            <div class="form-check">
-                                <input type="checkbox" asp-for="@Model.Manufacturers[i].Selected" class="form-check-input"/>
-                                
-                                <label asp-for="@Model.Manufacturers[i].Selected" class="form-check-label">
-                                    @Model.Manufacturers[i].Name (@Model.Manufacturers[i].Count)
-                                </label>
-                                <input type="hidden" asp-for="@Model.Manufacturers[i].Name" />  
-                            </div>
-                        }
-                    </div>
+    <div class="form-group mr-3 pb-3" id="cities-form-group">
+        <label asp-for="Cities" class="col-md-4 control-label"></label>
+        <div class="col-md-10">
+            @for (var i = 0; i < Model.Cities?.Length; i++)
+            {
+                <div class="form-check">
+                    @{
+                        var idSelected = "Cities_" + @i + "__Selected";
+                        var nameSelected = "Cities[" + @i + "].Selected";
+                        var isChecked = @Model.Cities[i].Selected ? "checked=\"checked\"" : "";
+                    }
+                    <input type="checkbox" value="true" id="@idSelected" name="@nameSelected" class="form-check-input" @isChecked />
+                    
+                    <label asp-for="@Model.Cities[i].Selected" class="form-check-label">
+                        @Model.Cities[i].Name (@Model.Cities[i].Count)
+                    </label>
+                    @{
+                        var value = @Model.Cities[i].Name;
+                        var id = "Cities_" + @i + "__Name";
+                        var name = "Cities[" + @i + "].Name";
+                    }
+                    <input type="hidden" value="@value" id="@id" name="@name" />
                 </div>
+            }
+        </div>
+    </div>
 
-                <div class="form-group" id="cities-form-group">
-                    <label asp-for="Cities" class="col-md-4 control-label"></label>
-                    <div class="col-md-10">
-                        @for (var i = 0; i < Model.Cities?.Length; i++)
-                        {
-                            <div class="form-check">
-                                <input type="checkbox" asp-for="@Model.Cities[i].Selected" class="form-check-input"/>
-                                
-                                <label asp-for="@Model.Cities[i].Selected" class="form-check-label">
-                                    @Model.Cities[i].Name (@Model.Cities[i].Count)
-                                </label>
-                                <input type="hidden" asp-for="@Model.Cities[i].Name" />  
-                            </div>
-                        }
-                    </div>
+    
+    <div class="form-group mr-3 pb-3" id="auction-house-form-group">
+        <label asp-for="AuctionHouses" class="col-md-4 control-label"></label>
+        <div class="col-md-10">
+            @for (var i = 0; i < Model.AuctionHouses?.Length; i++)
+            {
+                <div class="form-check">
+                     @{
+                        var idSelected = "AuctionHouses_" + @i + "__Selected";
+                        var nameSelected = "AuctionHouses[" + @i + "].Selected";
+                        var isChecked = @Model.AuctionHouses[i].Selected ? "checked=\"checked\"" : "";
+                    }
+                    <input type="checkbox" value="true" id="@idSelected" name="@nameSelected" class="form-check-input" @isChecked />
+                    
+                    <label asp-for="@Model.AuctionHouses[i].Selected" class="form-check-label">
+                        @Model.AuctionHouses[i].Name (@Model.AuctionHouses[i].Count)
+                    </label>
+                    @{
+                        var value = @Model.AuctionHouses[i].Name;
+                        var id = "AuctionHouses_" + @i + "__Name";
+                        var name = "AuctionHouses[" + @i + "].Name";
+                    }
+                    <input type="hidden" value="@value" id="@id" name="@name" />
                 </div>
+            }
+        </div>
+    </div>
 
-                @if(Model.WorkingTimeMax == null || Model.WorkingTimeMax > 0){
-                    <div class="form-group working-time-range-slider">
-                        <label asp-for="WorkingTimeRange" class="col-md-6 control-label"></label>
-                        <div class="col-md-12"><div id="working-time-range-slider"></div></div>
-                        <input type="hidden" asp-for="@Model.WorkingTimeRange[0]"/>
-                        <input type="hidden" asp-for="@Model.WorkingTimeRange[1]"/>
-                    </div>
-                }
-                
-                @if(Model.DealPriceMax == null || Model.DealPriceMax > 0){
-                    <div class="form-group deal-price-range-slider">
-                        <label asp-for="DealPriceRange" class="col-md-6 control-label"></label>
-                        <div class="col-md-12"><div id="deal-price-range-slider"></div></div>
-                        <input type="hidden" asp-for="@Model.DealPriceRange[0]"/>
-                        <input type="hidden" asp-for="@Model.DealPriceRange[1]"/>
-                    </div>
-                }
+    @if(Model.WorkingTimeMax == null || Model.WorkingTimeMax > 0){
+        <div class="form-group  mr-3 pb-3 working-time-range-slider">
+            <label asp-for="WorkingTimeRange" class="col-md-6 control-label"></label>
+            <div class="col-md-12"><input id="working-time-range-slider"></input></div>
+            <input type="hidden" asp-for="@Model.WorkingTimeRange[0]"/>
+            <input type="hidden" asp-for="@Model.WorkingTimeRange[1]"/>
+        </div>
+    }
 
-                @if(Model.SoldAtMax > 1900){
-                    <div class="form-group sold-at-range-slider">
-                        <label asp-for="SoldAtRange" class="col-md-6 control-label"></label>
-                        <div class="col-md-12"><div id="sold-at-range-slider"></div></div>
-                        <input type="hidden" asp-for="@Model.SoldAtRange[0]"/>
-                        <input type="hidden" asp-for="@Model.SoldAtRange[1]"/>
-                    </div>
-                }
-            </form>
+    @if(Model.ProductionDateMax == null || Model.ProductionDateMax > 0){
+        <div class="form-group  mr-3 pb-3 production-date-range-slider">
+            <label asp-for="ProductionDateRange" class="col-md-6 control-label"></label>
+            <div class="col-md-12"><input id="production-date-range-slider"></input></div>
+            <input type="hidden" asp-for="@Model.ProductionDateRange[0]"/>
+            <input type="hidden" asp-for="@Model.ProductionDateRange[1]"/>
+        </div>
+    }
+    
+    @if(Model.DealPriceMax == null || Model.DealPriceMax > 0 && false){
+        <div class="form-group  mr-3 pb-3 deal-price-range-slider">
+            <label asp-for="DealPriceRange" class="col-md-6 control-label"></label>
+            <div class="col-md-12"><input id="deal-price-range-slider"></input></div>
+            <input type="hidden" asp-for="@Model.DealPriceRange[0]"/>
+            <input type="hidden" asp-for="@Model.DealPriceRange[1]"/>
+        </div>
+    }
+
+    @if(Model.SoldAtMax > 1900){
+        <div class="form-group  mr-3 pb-3 sold-at-range-slider">
+            <label asp-for="SoldAtRange" class="col-md-6 control-label"></label>
+            <div class="col-md-12"><input id="sold-at-range-slider"></input></div>
+            <input type="hidden" asp-for="@Model.SoldAtRange[0]"/>
+            <input type="hidden" asp-for="@Model.SoldAtRange[1]"/>
+        </div>
+    }
+
+    <input type="hidden" asp-for="@Model.Sort.Field">
+    <input type="hidden" asp-for="@Model.Sort.Direction">
+</form>

@@ -13,20 +13,10 @@
     <div class="condition">
         
     </div>
-    <div class="info d-flex"> 
-        <div class="search">
-            @await Html.PartialAsync("_AuctionSearchPartial", Model,
+    <div class="info d-flex">
+        @await Html.PartialAsync("_AuctionInfoPartial", Model,
                                         new ViewDataDictionary(ViewData){})
-        </div>
-        <div class="show flex-grow-1">
-            <div class="sort">
-                @await Html.PartialAsync("_AuctionSortPartial", Model,
-                                        new ViewDataDictionary(ViewData){})
-            </div>
-            <div class="data">
-                
-            </div>
-        </div>
+        
     </div>
 </div>
 
@@ -40,15 +30,20 @@
                 url: "@Url.Action("NoAuction")",
                 data: $("form").serialize(),
                 success: function (response) {
-                    
+                    $(".info").html("");
+                    $(".info").html(response);
+                    $('#mydiv').html($(response).find('#something').html());
+                    $(response).filter('script').each(function(){
+                        $.globalEval(this.text || this.textContent || this.innerHTML || '');
+                    });
                 }
             });
         }
+
         function addRemoveElement(parentNode, chipElementId, resetValue){
             var span = document.createElement("span");
                 span.className ="closebtn";
                 span.innerHTML = "&times;";
-                console.log(chipElementId);
                 span.onclick = function(e){
                     var elem = document.getElementById(chipElementId);
                     elem.parentNode.removeChild(elem);
@@ -84,90 +79,21 @@
                 addRemoveElement(chip, args[0], resetValue);
                 document.getElementsByClassName("condition")[0].appendChild(chip);
             }  
-            searchEquipments();
+            //searchEquipments();
         }
         
-        if(@Model.WorkingTimeMax > 0){
-            $("#working-time-range-slider").ionRangeSlider({
-                skin: "round",
-                type: "double",
-                min: @Model.WorkingTimeMin,
-                max: @Model.WorkingTimeMax,
-                from: @Model.WorkingTimeRange[0],
-                to: @Model.WorkingTimeRange[1],
-                grid: false,
-                grid_snap: true,
-                from_fixed: false,  // fix position of FROM handle
-                to_fixed: false,
-                onFinish: function (data) {
-                    $("input[name='WorkingTimeRange[0]'").val(data.from);
-                    $("input[name='WorkingTimeRange[1]'").val(data.to);
-                    addOrUpdateChip(resetWorkingTimeRangeSlider, "working-time-chip", "工作时长(小时)：" + data.from, data.to);
-                }
-            });
-            function resetWorkingTimeRangeSlider(){
-                $("#working-time-range-slider").data("ionRangeSlider").reset();
-            }
-        }
-        
-
-        if(@Model.DealPriceMax > 0){
-            $("#deal-price-range-slider").ionRangeSlider({
-                skin: "round",
-                type: "double",
-                min: @Model.DealPriceMin,
-                max: @Model.DealPriceMax,
-                from: @Model.DealPriceRange[0],
-                to: @Model.DealPriceRange[1],
-                grid: false,
-                grid_snap: true,
-                from_fixed: false,  // fix position of FROM handle
-                to_fixed: false,
-                onFinish: function (data) {
-                    $("input[name='DealPriceRange[0]'").val(data.from);
-                    $("input[name='DealPriceRange[1]'").val(data.to);
-                    addOrUpdateChip(resetDealPriceRangeRangeSlider, "deal-price-chip", "成交价格(美元)：" + data.from, data.to);
-                }
-            });
-            function resetDealPriceRangeRangeSlider(){
-                $("#deal-price-range-range-slider").data("ionRangeSlider").reset();
-            }
-        }
-
-        if(@Model.SoldAtMax > 0){
-            $("#sold-at-range-slider").ionRangeSlider({
-                skin: "round",
-                type: "double",
-                min: @Model.SoldAtMin,
-                max: @Model.SoldAtMax,
-                from: @Model.SoldAtRange[0],
-                to: @Model.SoldAtRange[1],
-                grid: false,
-                grid_snap: true,
-                from_fixed: false,  // fix position of FROM handle
-                to_fixed: false,
-                onFinish: function (data) {
-                    $("input[name='SoldAtRange[0]'").val(data.from);
-                    $("input[name='SoldAtRange[1]'").val(data.to);
-                    addOrUpdateChip(resetDealPriceRangeRangeSlider, "deal-price-chip", "拍卖日期：" + data.from, data.to);
-                }
-            });
-            function resetDealPriceRangeRangeSlider(){
-                $("#deal-price-range-range-slider").data("ionRangeSlider").reset();
-            }
-        }
-        
-        (function BindCheckBox(){
+        var bindCheckBox = function(){
             //$("#models-form-group").find("input[type='checkbox']:visible").each(function(i, ele){
-            $("input[type='checkbox']:visible").each(function(i, ele){
-                $(ele).on("change", function(){
+            $(".search input[type='checkbox']:visible").each(function(i, ele){
+                $(document).on("change", "#" + $(ele).attr("id"), function(){
                     var chipId = $(this).attr("id") + "-chip";
                     if($(this).is(':checked')){
                         var checkboxArrayId = $(this).attr("id").split("_").slice(0,2).join("_");  
                         var hiddenInputId = checkboxArrayId + "__Name";
                         var valueInput = $("#" + hiddenInputId);
                         
-                        addOrUpdateChip(resetCheckboxStatus, chipId, valueInput.val());
+                        //addOrUpdateChip(resetCheckboxStatus, chipId, valueInput.val());
+                        searchEquipments();
                     }else{
                         $("#" + chipId).remove();
                         searchEquipments();
@@ -175,12 +101,13 @@
                     
                 })
             });
-        })();
+        };
         function resetCheckboxStatus(id){
             $("#" + id.toString()).prop('checked', false);     
         }
+        bindCheckBox();
 
-        $(".order-ul .list-inline-item").on("click", function(){
+        $(document).on("click", ".order-ul .list-inline-item", function(){
             var className = "text-warning";
             var $orderBys = $(this).find(".order-by");
             if($orderBys.length > 0){
@@ -201,7 +128,10 @@
 
             $(".order-ul .list-inline-item").find("p").removeClass(className);
             $(this).find("p").addClass(className);
+            
+            searchEquipments();
         });
         
     </script>
+    @{ await Html.RenderPartialAsync("_SliderScriptsPartial"); }
 }
