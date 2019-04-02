@@ -18,6 +18,9 @@ namespace Auction.Models.EquipmentViewModels
 
         // 文件排序
         public int file_id { get; set; }
+        // 图片类型 Cover Exterior TrackedChassis Cab Boom Engine
+        public string PhotoType { get; set; }
+
         public IFormFile photo { get; set; }
     }
 }

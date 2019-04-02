@@ -386,6 +386,7 @@ namespace Auction.Controllers
         // }
 
 
+        // 上传
         [Authorize(Roles = "Admin, Staff, Develpment")]
         [HttpPost("[action]")]
         public async Task<IActionResult> UploadPhotoAsync(EquipmentPhotoViewModel equipmentPhoto)
@@ -434,7 +435,33 @@ namespace Auction.Controllers
                                             newFileName,
                                             RequestPath: "/images/" + typeof(Equipment).Name + "/" + newFileName,
                                             SavePath: "\\images\\" + typeof(Equipment).Name + "\\" + newFileName);
-                equipment.Photos.Add(newPhoto);
+                newPhoto.EquipmentId = equipment.Id;
+
+                if (equipmentPhoto.PhotoType == "Cover")
+                {
+                    equipment.CoverPhoto = newPhoto;
+                }
+                else if (equipmentPhoto.PhotoType == "Exterior")
+                {
+                    equipment.ExteriorPhotos.Add(newPhoto);
+                }
+                else if (equipmentPhoto.PhotoType == "TrackedChassis")
+                {
+                    equipment.TrackedChassisPhotos.Add(newPhoto);
+                }
+                else if (equipmentPhoto.PhotoType == "Cab")
+                {
+                    equipment.CabPhotos.Add(newPhoto);
+                }
+                else if (equipmentPhoto.PhotoType == "Boom")
+                {
+                    equipment.BoomPhotos.Add(newPhoto);
+                }
+                else if (equipmentPhoto.PhotoType == "Engine")
+                {
+                    equipment.EnginePhotos.Add(newPhoto);
+                }
+
                 await _context.SaveChangesAsync();
             }
 
@@ -486,24 +513,24 @@ namespace Auction.Controllers
         /// </summary>
         [HttpPost("[action]")]
         [Authorize(Roles = "Admin, Staff, Develpment")]
-        public async Task<IActionResult> SetCoverPhoto(string photoName, Guid equipmentId)
+        public async Task<IActionResult> SetHiddenPhototAfterSold(string photoName, Guid equipmentId)
         {
             var response = ResponseModelFactory.CreateInstance;
-            var photo = await _context.Photos.FirstOrDefaultAsync(p => p.FileName == photoName && p.IsCover != true);
+            var photo = await _context.Photos.FirstOrDefaultAsync(p => p.FileName == photoName);
             if (photo == null)
             {
                 response.SetNotFound("没有找到图片");
                 return Ok(response);
             }
 
-            var originCoverPhoto = await _context.Photos.FirstOrDefaultAsync(p => p.EquipmentId == equipmentId && p.IsCover == true);
-            if (originCoverPhoto != null)
-            {
-                originCoverPhoto.IsCover = false;
-                _context.Entry(originCoverPhoto).State = EntityState.Modified;
-            }
+            // var originHiddenPhototAfterSold = await _context.Photos.FirstOrDefaultAsync(p => p.EquipmentId == equipmentId && p.IsHiddenAfterSold == true);
+            // if (originHiddenPhototAfterSold != null)
+            // {
+            //     originHiddenPhototAfterSold.IsHiddenAfterSold = false;
+            //     _context.Entry(originHiddenPhototAfterSold).State = EntityState.Modified;
+            // }
 
-            photo.IsCover = true;
+            photo.IsHiddenAfterSold = !photo.IsHiddenAfterSold;
             _context.Entry(photo).State = EntityState.Modified;
 
             await _context.SaveChangesAsync();
@@ -563,9 +590,9 @@ namespace Auction.Controllers
 
                 var totalCount = query.Count();
                 var list = query.Paged(searchEquipment.CurrentPage, searchEquipment.PageSize)
-                                // .Select(equipment =>  _mapper.Map<EquipmentViewModel>(equipment)) //因为设置了延迟加载会报错
+                               // .Select(equipment =>  _mapper.Map<EquipmentViewModel>(equipment)) //因为设置了延迟加载会报错
                                .ProjectTo<EquipmentViewModel>().ToList();
-                                // .Project().To<EquipmentViewModel>()
+                // .Project().To<EquipmentViewModel>()
 
                 searchEquipment.Equipments = new StaticPagedList<EquipmentViewModel>(
                     list,
@@ -667,7 +694,7 @@ namespace Auction.Controllers
                 query = query.Where(x => ((DateTime)x.ProductionDate).Year <= searchEquipment.ProductionDateRange[1]);
             }
             if (removeCondition != "ProductionDate" && searchEquipment.ProductionDateRange != null && searchEquipment.ProductionDateRange.Length == 2 &&
-                searchEquipment.ProductionDateRange[0] > 0 && searchEquipment.ProductionDateRange[1] < 0)
+                searchEquipment.ProductionDateRange[0] > 0 && searchEquipment.ProductionDateRange[1] > 0)
             {
                 query = query.Where(x => ((DateTime)x.ProductionDate).Year >= searchEquipment.ProductionDateRange[0] && ((DateTime)x.ProductionDate).Year <= searchEquipment.ProductionDateRange[1]);
 
@@ -691,41 +718,41 @@ namespace Auction.Controllers
 
             }
 
-            // if (removeCondition != "DealPrice" && searchEquipment.DealPriceRange != null && searchEquipment.DealPriceRange.Length == 2 &&
-            //     searchEquipment.DealPriceRange[0] >= 0 && searchEquipment.DealPriceRange[1] == 0)
-            // {
-            //     query = query.Where(x => x.DealPrice >= searchEquipment.DealPriceRange[0]);
+            if (removeCondition != "DealPrice" && searchEquipment.DealPriceRange != null && searchEquipment.DealPriceRange.Length == 2 &&
+                searchEquipment.DealPriceRange[0] >= 0 && searchEquipment.DealPriceRange[1] == 0)
+            {
+                query = query.Where(x => x.DealPrice >= searchEquipment.DealPriceRange[0]);
 
-            // }
-            // if (removeCondition != "DealPrice" && searchEquipment.DealPriceRange != null && searchEquipment.DealPriceRange.Length == 2 &&
-            //     searchEquipment.DealPriceRange[0] < 0 && searchEquipment.DealPriceRange[1] >= 0)
-            // {
-            //     query = query.Where(x => x.DealPrice <= searchEquipment.DealPriceRange[1]);
-            // }
-            // if (removeCondition != "DealPrice" && searchEquipment.DealPriceRange != null && searchEquipment.DealPriceRange.Length == 2 &&
-            //     searchEquipment.DealPriceRange[0] > 0 && searchEquipment.DealPriceRange[1] > 0)
-            // {
-            //     query = query.Where(x => x.DealPrice >= searchEquipment.DealPriceRange[0] && x.DealPrice <= searchEquipment.DealPriceRange[1]);
+            }
+            if (removeCondition != "DealPrice" && searchEquipment.DealPriceRange != null && searchEquipment.DealPriceRange.Length == 2 &&
+                searchEquipment.DealPriceRange[0] < 0 && searchEquipment.DealPriceRange[1] >= 0)
+            {
+                query = query.Where(x => x.DealPrice <= searchEquipment.DealPriceRange[1]);
+            }
+            if (removeCondition != "DealPrice" && searchEquipment.DealPriceRange != null && searchEquipment.DealPriceRange.Length == 2 &&
+                searchEquipment.DealPriceRange[0] > 0 && searchEquipment.DealPriceRange[1] > 0)
+            {
+                query = query.Where(x => x.DealPrice >= searchEquipment.DealPriceRange[0] && x.DealPrice <= searchEquipment.DealPriceRange[1]);
 
-            // }
+            }
 
-            // if (removeCondition != "SoldAt" && searchEquipment.SoldAtRange != null && searchEquipment.SoldAtRange.Length == 2 &&
-            //     searchEquipment?.SoldAtRange[0] >= 0 && searchEquipment?.SoldAtRange[1] == 0)
-            // {
-            //     query = query.Where(x => ((DateTime)x.SoldAt).Year >= searchEquipment.SoldAtRange[0]);
+            if (removeCondition != "SoldAt" && searchEquipment.SoldAtRange != null && searchEquipment.SoldAtRange.Length == 2 &&
+                searchEquipment?.SoldAtRange[0] >= 0 && searchEquipment?.SoldAtRange[1] == 0)
+            {
+                query = query.Where(x => ((DateTime)x.SoldAt).Year >= searchEquipment.SoldAtRange[0]);
 
-            // }
-            // if (removeCondition != "SoldAt" && searchEquipment.SoldAtRange != null && searchEquipment.SoldAtRange.Length == 2 &&
-            //     searchEquipment.SoldAtRange[0] < 0 && searchEquipment.SoldAtRange[1] >= 0)
-            // {
-            //     query = query.Where(x => ((DateTime)x.SoldAt).Year <= searchEquipment.SoldAtRange[1]);
-            // }
-            // if (removeCondition != "SoldAt" && searchEquipment.SoldAtRange != null && searchEquipment.SoldAtRange.Length == 2 &&
-            //     searchEquipment.SoldAtRange[0] > 0 && searchEquipment.SoldAtRange[1] > 0)
-            // {
-            //     query = query.Where(x => ((DateTime)x.SoldAt).Year >= searchEquipment.SoldAtRange[0] && ((DateTime)x.SoldAt).Year <= searchEquipment.SoldAtRange[1]);
+            }
+            if (removeCondition != "SoldAt" && searchEquipment.SoldAtRange != null && searchEquipment.SoldAtRange.Length == 2 &&
+                searchEquipment.SoldAtRange[0] < 0 && searchEquipment.SoldAtRange[1] >= 0)
+            {
+                query = query.Where(x => ((DateTime)x.SoldAt).Year <= searchEquipment.SoldAtRange[1]);
+            }
+            if (removeCondition != "SoldAt" && searchEquipment.SoldAtRange != null && searchEquipment.SoldAtRange.Length == 2 &&
+                searchEquipment.SoldAtRange[0] > 0 && searchEquipment.SoldAtRange[1] > 0)
+            {
+                query = query.Where(x => ((DateTime)x.SoldAt).Year >= searchEquipment.SoldAtRange[0] && ((DateTime)x.SoldAt).Year <= searchEquipment.SoldAtRange[1]);
 
-            // }
+            }
 
             return query;
         }
@@ -813,7 +840,9 @@ namespace Auction.Controllers
                 if (m.Name == "液压挖掘机")
                 {
                     m.SortNumber = 0;
-                }else{
+                }
+                else
+                {
                     m.SortNumber = 100;
                 }
                 if (selectedNames != null)

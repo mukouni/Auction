@@ -100,11 +100,11 @@ namespace Auction.Data
                     .HasDefaultValueSql("newid()");
                 entity.Property(e => e.IsDeleted)
                     .HasDefaultValue(IsDeleted.No);
-                entity.Property(e => e.IsCover)
-                    .HasDefaultValue(false);
                 entity.Property(e => e.CreatedAt)
                     .ValueGeneratedOnAdd()
                     .HasDefaultValueSql("getdate()");
+                entity.Property(e => e.IsHiddenAfterSold)
+                    .HasDefaultValue(false);
                 entity.Property(e => e.LastUpdatedAt)
                     .ValueGeneratedOnAddOrUpdate()
                     .HasDefaultValueSql("getdate()");
@@ -127,6 +127,21 @@ namespace Auction.Data
                 entity.Property(e => e.LastUpdatedAt)
                     .ValueGeneratedOnAddOrUpdate()
                     .HasDefaultValueSql("getdate()");
+
+                entity.HasOne(e => e.CoverPhoto)
+                    .WithOne(p => p.CoverEquipment);
+                entity.HasMany(e => e.Photos)
+                    .WithOne(p => p.Equipment);
+                entity.HasMany(e => e.ExteriorPhotos)
+                    .WithOne(p => p.ExteriorEquipment);
+                entity.HasMany(e => e.TrackedChassisPhotos)
+                    .WithOne(p => p.TrackedChassisEquipment);
+                entity.HasMany(e => e.CabPhotos)
+                    .WithOne(p => p.CabEquipment);
+                entity.HasMany(e => e.BoomPhotos)
+                    .WithOne(p => p.BoomEquipment);
+                entity.HasMany(e => e.EnginePhotos)
+                    .WithOne(p => p.EngineEquipment);
             });
         }
 

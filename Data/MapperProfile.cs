@@ -20,7 +20,7 @@ namespace Auction.Data.AutoMapper
                 // .ForMember(x => x.CoverPhoto, opt =>
                 //     opt.MapFrom((src, dest, destMember, context) =>
                 //                     {
-                //                         destMember = src.Photos.FirstOrDefault(p => p.IsCover == true);
+                //                         destMember = src.Photos.FirstOrDefault(p => p.IsHiddenAfterSold == true);
                 //                         if (destMember == null)
                 //                         {
                 //                             destMember = src.Photos.LastOrDefault();
@@ -40,14 +40,38 @@ namespace Auction.Data.AutoMapper
             CreateMap<EquipmentViewModel, Equipment>();
 
             CreateMap<Photo, PhotoViewModel>()
-                .ForMember(x => x.Equipment, opt => opt.Ignore());
+                .ForMember(x => x.Equipment, opt => opt.Ignore())
+                .ForMember(x => x.BoomEquipment, opt => opt.Ignore())
+                .ForMember(x => x.CabEquipment, opt => opt.Ignore())
+                .ForMember(x => x.CoverEquipment, opt => opt.Ignore())
+                .ForMember(x => x.EngineEquipment, opt => opt.Ignore())
+                .ForMember(x => x.ExteriorEquipment, opt => opt.Ignore())
+                .ForMember(x => x.TrackedChassisEquipment, opt => opt.Ignore());
             CreateMap<PhotoViewModel, Photo>()
-                .ForMember(x => x.Equipment, opt => opt.Ignore());
+                .ForMember(x => x.Equipment, opt => opt.Ignore())
+                .ForMember(x => x.BoomEquipment, opt => opt.Ignore())
+                .ForMember(x => x.CabEquipment, opt => opt.Ignore())
+                .ForMember(x => x.CoverEquipment, opt => opt.Ignore())
+                .ForMember(x => x.EngineEquipment, opt => opt.Ignore())
+                .ForMember(x => x.ExteriorEquipment, opt => opt.Ignore())
+                .ForMember(x => x.TrackedChassisEquipment, opt => opt.Ignore());
 
             CreateMap<Photo, EquipmentPhotoViewModel>()
-                .ForMember(x => x.Equipment, opt => opt.Ignore());
+                .ForMember(x => x.Equipment, opt => opt.Ignore())
+                .ForMember(x => x.BoomEquipment, opt => opt.Ignore())
+                .ForMember(x => x.CabEquipment, opt => opt.Ignore())
+                .ForMember(x => x.CoverEquipment, opt => opt.Ignore())
+                .ForMember(x => x.EngineEquipment, opt => opt.Ignore())
+                .ForMember(x => x.ExteriorEquipment, opt => opt.Ignore())
+                .ForMember(x => x.TrackedChassisEquipment, opt => opt.Ignore());
             CreateMap<EquipmentPhotoViewModel, Photo>()
-                .ForMember(x => x.Equipment, opt => opt.Ignore());
+                .ForMember(x => x.Equipment, opt => opt.Ignore())
+                .ForMember(x => x.BoomEquipment, opt => opt.Ignore())
+                .ForMember(x => x.CabEquipment, opt => opt.Ignore())
+                .ForMember(x => x.CoverEquipment, opt => opt.Ignore())
+                .ForMember(x => x.EngineEquipment, opt => opt.Ignore())
+                .ForMember(x => x.ExteriorEquipment, opt => opt.Ignore())
+                .ForMember(x => x.TrackedChassisEquipment, opt => opt.Ignore());
 
 
             CreateMap<ApplicationUser, ForgotPasswordViewModel>();

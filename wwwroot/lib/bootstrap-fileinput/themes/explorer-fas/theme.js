@@ -16,13 +16,13 @@
     "use strict";
     var teTagBef = '<tr class="file-preview-frame {frameClass}" id="{previewId}" data-fileindex="{fileindex}" data-previewId="{previewId}"' +
         ' data-template="{template}"', 
-        teContent = '<td style="width:100px; text-align:center"><input type="radio" name="IsCover" value="true" id="{previewId}"></td><td class="kv-file-content">\n';
+        teContent = '<td style="width:100px; text-align:center"><input type="checkbox" name="IsHiddenAfterSold" value="true" id="{previewId}"></td><td class="kv-file-content">\n';
     $.fn.fileinputThemes['explorer-fas'] = {
         layoutTemplates: {
             preview: '<div class="file-preview {class}">\n' +
             '    {close}' +
             '    <div class="{dropClass}">\n' +
-            '    <table class="table table-bordered table-hover"><thead><td>主要图片</td><td>图片</td><td>信息</td><td></td></thead><tbody class="file-preview-thumbnails">\n' +
+            '    <table class="table table-bordered table-hover"><thead><td>售出后隐藏</td><td>图片</td><td>信息</td><td></td></thead><tbody class="file-preview-thumbnails">\n' +
             '    </tbody></table>\n' +
             '    <div class="clearfix"></div>' +
             '    <div class="file-preview-status text-center text-success"></div>\n' +

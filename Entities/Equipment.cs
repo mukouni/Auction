@@ -58,81 +58,81 @@ namespace Auction.Entities
         [Column(TypeName = "nvarchar(50)")]
         public string City { get; set; }
 
-        ///<summary>
+        /// <summary>
         /// 是否被拍卖
         /// </summary>
         public IsSold? IsSold { get; set; }
 
-        ///<summary>
+        /// <summary>
         /// 拍卖时间，用于区分是否被拍卖
         /// </summary>
         public DateTime? SoldAt { get; set; }
 
-        ///<summary>
+        /// <summary>
         /// 是否是采购设备
         /// </summary>
         public IsPurchase? IsPurchase { get; set; }
 
-        ///<summary>
+        /// <summary>
         /// 生产年份
         /// </summary>
         public DateTime? ProductionDate { get; set; }
 
-        ///<summary>
+        /// <summary>
         /// 工作小时
         /// </summary>
         public long? WorkingTime { get; set; }
 
-        ///<summary>
+        /// <summary>
         /// 工作里程数
         /// </summary>
         public long? WorkingDistance { get; set; }
 
-        ///<summary>
+        /// <summary>
         /// 工作里程数单位
         /// </summary>
         [Column(TypeName = "nvarchar(20)")]
         public string WorkingDistanceUnit { get; set; }
 
-        ///<summary>
+        /// <summary>
         /// 成交价格
         /// </summary>
         [Column(TypeName = "decimal(18, 2)")]
         public Decimal? DealPrice { get; set; }
 
-        ///<summary>
+        /// <summary>
         /// 折合人民币
         /// </summary>
         [Column(TypeName = "decimal(18, 2)")]
         public Decimal? DealPriceRMB { get; set; }
 
-        ///<summary>
+        /// <summary>
         /// 长(毫米)
         /// </summary>
         public long? Long { get; set; }
 
-        ///<summary>
+        /// <summary>
         /// 宽(毫米)
         /// </summary>
         public long? Width { get; set; }
 
-        ///<summary>
+        /// <summary>
         /// 高(毫米)
         /// </summary>
         public long? Height { get; set; }
 
-        ///<summary>
+        /// <summary>
         /// 重量(kg) 
         /// </summary>
         public double? Weight { get; set; }
 
-        ///<summary>
+        /// <summary>
         /// 体积(立方米) 
         /// </summary>
         [Column(TypeName = "decimal(18, 3)")]
         public Decimal? Volume { get; set; }
 
-        ///<summary>
+        /// <summary>
         /// 备注
         /// </summary>
 
@@ -141,5 +141,40 @@ namespace Auction.Entities
 
         // 导航属性
         public virtual ICollection<Photo> Photos { get; set; } = new List<Photo>();
+
+        /// <summary>
+        /// 封皮照片 
+        /// </summary>
+        public virtual Photo CoverPhoto { get; set; }
+
+        /// <summary>
+        /// 外观照片 
+        /// </summary>
+        // [InverseProperty(nameof(Photo.Exterior))]
+        public virtual ICollection<Photo> ExteriorPhotos { get; set; } = new List<Photo>();
+
+        /// <summary>
+        /// 履带底架照片 
+        /// </summary>
+        // [InverseProperty(nameof(Photo.TrackedChassis))]
+        public virtual ICollection<Photo> TrackedChassisPhotos { get; set; } = new List<Photo>();
+
+        /// <summary>
+        /// 驾驶室照片
+        /// </summary>
+        // [InverseProperty(nameof(Photo.Cab))]
+        public virtual ICollection<Photo> CabPhotos { get; set; } = new List<Photo>();
+
+        /// <summary>
+        /// 臂架照片 
+        /// </summary>
+        // [InverseProperty(nameof(Photo.Boom))]
+        public virtual ICollection<Photo> BoomPhotos { get; set; } = new List<Photo>();
+
+        /// <summary>
+        /// 引擎照片
+        /// </summary>
+        // [InverseProperty(nameof(Photo.Engine))]
+        public virtual ICollection<Photo> EnginePhotos { get; set; } = new List<Photo>();
     }
 }

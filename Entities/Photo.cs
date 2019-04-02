@@ -47,11 +47,6 @@ namespace Auction.Entities
         public int? Ranking { get; set; }
 
         /// <summary>
-        /// 是否是展示图片
-        /// </summary>
-        public Boolean? IsCover { get; set; }
-
-        /// <summary>
         /// 图片格式
         /// </summary>
         [Column(TypeName = "nvarchar(50)")]
@@ -64,9 +59,58 @@ namespace Auction.Entities
 
         public Guid EquipmentId { get; set; }
 
+        /// <summary>
+        /// 是否在售出后隐藏
+        /// </summary>
+        public bool? IsHiddenAfterSold { get; set; }
+
         //导航属性
         // [JsonIgnore]
         public virtual Equipment Equipment { get; set; }
+        public Guid? CoverEquipmentId { get; set; }
+        /// <summary>
+        /// 封皮照片的设备
+        /// </summary>
+        [ForeignKey(nameof(CoverEquipmentId))]
+        public virtual Equipment CoverEquipment { get; set; }
+
+        public Guid? ExteriorEquipmentId { get; set; }
+        /// <summary>
+        /// 外观照片的设备
+        /// </summary>
+        [ForeignKey(nameof(ExteriorEquipmentId))]
+        public virtual Equipment ExteriorEquipment { get; set; }
+
+
+        public Guid? TrackedChassisEquipmentId { get; set; }
+        /// <summary>
+        /// 履带底架照片的设备
+        /// </summary>
+        [ForeignKey(nameof(TrackedChassisEquipmentId))]
+        public virtual Equipment TrackedChassisEquipment { get; set; }
+
+        public Guid? CabEquipmentId { get; set; }
+        /// <summary>
+        /// 驾驶室照片的设备
+        /// </summary>
+        [ForeignKey(nameof(CabEquipmentId))]
+        public virtual Equipment CabEquipment { get; set; }
+
+        public Guid? BoomEquipmentId { get; set; }
+        /// <summary>
+        /// 臂架照片的设备
+        /// </summary>
+        [ForeignKey(nameof(BoomEquipmentId))]
+        public virtual Equipment BoomEquipment { get; set; }
+
+
+        public Guid? EngineEquipmentId { get; set; }
+        /// <summary>
+        /// 引擎照片的设备
+        /// </summary>
+        [ForeignKey(nameof(EngineEquipmentId))]
+        public virtual Equipment EngineEquipment { get; set; }
+
 
         /// IFormFile中的FileName是有后缀名的，数据库中的FileName是没有后缀名的
         /// <summary>

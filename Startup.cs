@@ -104,6 +104,7 @@ namespace Auction
                     {
                         // options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                         options.SerializerSettings.ContractResolver =  new Newtonsoft.Json.Serialization.DefaultContractResolver(); 
+                        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore; // 忽略在对象图中找到的循环引用
                     })
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 

@@ -52,10 +52,10 @@ namespace Auction.Models
         public int? Ranking { get; set; }
 
         /// <summary>
-        /// 是否是展示图片
+        /// 是否在出售后隐藏
         /// </summary>
-        [Display(Name = "是否是展示图片")]
-        public Boolean? IsCover { get; set; }
+        [Display(Name = "出售后隐藏")]
+        public bool? IsHiddenAfterSold { get; set; }
 
         /// <summary>
         /// 图片格式
@@ -84,6 +84,13 @@ namespace Auction.Models
 
         // [JsonIgnore]
         public virtual Equipment Equipment { get; set; }
+        public virtual Equipment CoverEquipment { get; set; }
+
+        public virtual Equipment ExteriorEquipment { get; set; }
+        public virtual Equipment TrackedChassisEquipment { get; set; }
+        public virtual Equipment CabEquipment { get; set; }
+        public virtual Equipment BoomEquipment { get; set; }
+        public virtual Equipment EngineEquipment { get; set; }
 
         // public string FullFileName(string size = null)
         // {

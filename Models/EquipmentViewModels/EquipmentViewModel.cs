@@ -173,26 +173,24 @@ namespace Auction.Models.EquipmentViewModels
         /// 备注
         /// </summary>
         [DataType(DataType.MultilineText)]
-        [Display(Name = "备注 ")]
+        [Display(Name = "备注")]
         public string Remark { get; set; }
 
+        public ICollection<EquipmentPhotoViewModel> Photos { get; set; } = new List<EquipmentPhotoViewModel>();
 
+        [Display(Name = "封面图片")]
         public EquipmentPhotoViewModel CoverPhoto
         {
+            set
+            {
+                this._coverPhoto = value;
+            }
             get
             {
-                if (_coverPhoto != null)
+
+                if (this._coverPhoto == null)
                 {
-                    return _coverPhoto;
-                }
-                _coverPhoto = Photos.FirstOrDefault(p => p.IsCover == true);
-                if (_coverPhoto == null)
-                {
-                    _coverPhoto = Photos.LastOrDefault();
-                }
-                if (_coverPhoto == null)
-                {
-                    _coverPhoto = new EquipmentPhotoViewModel()
+                    this._coverPhoto = new EquipmentPhotoViewModel()
                     {
                         SavePath = "\\images\\Equipment\\default.jpg",
                         RequestPath = "/images/Equipment/5af6c17b-a58f-4134-80ca-7b7134f697e5.jpg",
@@ -201,13 +199,22 @@ namespace Auction.Models.EquipmentViewModels
                 }
                 return _coverPhoto;
             }
-            set
-            {
-                _coverPhoto = value;
-            }
         }
 
+        [Display(Name = "外观照片")]
+        public ICollection<EquipmentPhotoViewModel> ExteriorPhotos { get; set; } = new List<EquipmentPhotoViewModel>();
 
-        public ICollection<EquipmentPhotoViewModel> Photos { get; set; } = new List<EquipmentPhotoViewModel>();
+        [Display(Name = "履带底架照片")]
+        public ICollection<EquipmentPhotoViewModel> TrackedChassisPhotos { get; set; } = new List<EquipmentPhotoViewModel>();
+        [Display(Name = "驾驶室照片")]
+        public ICollection<EquipmentPhotoViewModel> BoomPhotos { get; set; } = new List<EquipmentPhotoViewModel>();
+
+
+        [Display(Name = "臂架照片")]
+        public ICollection<EquipmentPhotoViewModel> CabPhotos { get; set; } = new List<EquipmentPhotoViewModel>();
+
+        [Display(Name = "引擎照片")]
+        public ICollection<EquipmentPhotoViewModel> EnginePhotos { get; set; } = new List<EquipmentPhotoViewModel>();
+
     }
 }
