@@ -101,7 +101,7 @@ namespace Auction.Controllers
             {
                 query = query.Where(x => x.Name.Contains(searchEquipment.Kw.Trim()) || x.Code.Contains(searchEquipment.Kw.Trim()));
             }
-            query.OrderBy(e => e.LastUpdatedAt).ThenBy(e => e.CreatedAt).ThenBy(e => e.Name);
+            query = query.OrderByDescending(e => e.LastUpdatedAt).ThenByDescending(e => e.CreatedAt).ThenBy(e => e.Name);
 
             var list = query.Paged(searchEquipment.CurrentPage, searchEquipment.PageSize)
                             // .Select(equipment =>  _mapper.Map<EquipmentViewModel>(equipment)) //因为设置了延迟加载会报错
@@ -161,7 +161,13 @@ namespace Auction.Controllers
 
             var equipment = new EquipmentViewModel();
             equipment.Code = "A" + GenerateCode();
-
+            var group1 = new SelectListGroup() { Name = "Group 1" };
+            equipment.Currencies = _context.Currencies.Select(c => new SelectListItem
+            {
+                Value = c.Name,
+                Text = c.Name
+            }).ToList();
+            equipment.Currencies.First().Selected = true;
             return View(equipment);
         }
 
@@ -171,7 +177,7 @@ namespace Auction.Controllers
         {
 
             Equipment equipment = _mapper.Map<Equipment>(EquipmentVM);
-
+            equipment.CoverPhoto = null;
             await _context.Equipments.AddAsync(equipment);
             await _context.SaveChangesAsync();
 
@@ -210,6 +216,11 @@ namespace Auction.Controllers
             }
             var equipment = await _context.Equipments.FirstOrDefaultAsync(e => e.Id == id);
             var equipmentVM = _mapper.Map<EquipmentViewModel>(equipment);
+            equipmentVM.Currencies = _context.Currencies.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToList();
             return View(equipmentVM);
         }
 
@@ -245,7 +256,14 @@ namespace Auction.Controllers
             {
                 try
                 {
-                    _context.Update(_mapper.Map<EquipmentViewModel, Equipment>(equipmentVM));
+                    var changedEquipment = new Equipment();
+                    if (equipmentVM.CoverPhoto.EquipmentId == new Guid())
+                    {
+                        changedEquipment = _mapper.Map<EquipmentViewModel, Equipment>(equipmentVM);
+                        changedEquipment.CoverPhoto = null;
+                    }
+                    
+                    _context.Equipments.Update(changedEquipment);
                     // var list = new List<Equipment>();
                     // for (int i = 9; i < 20; i++)
                     // {
@@ -258,19 +276,21 @@ namespace Auction.Controllers
                     //     list.Add(enew);
                     // }
                     // await _context.AddRangeeAsync(list);
-                    await _context.SaveChangesAsync();
+                    _context.SaveChanges();
                     return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateException /* ex */)
+                catch (DbUpdateException ex)
                 {
                     //Log the error (uncomment ex variable name and write a log.)
                     ModelState.AddModelError("", "Unable to save changes. " +
                         "Try again, and if the problem persists, " +
                         "see your system administrator.");
+                    Console.WriteLine(ex.Message);
+                    _logger.LogError(ex.Message);
                 }
                 var equipment = await _context.Equipments.FirstOrDefaultAsync(e => e.Id == id);
             }
-            return View(equipmentVM);
+            return RedirectToAction(nameof(Edit), equipmentVM);
         }
 
         // [HttpPost("[action]")]

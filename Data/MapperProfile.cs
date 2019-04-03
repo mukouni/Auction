@@ -16,7 +16,9 @@ namespace Auction.Data.AutoMapper
     {
         public MapperProfile()
         {
-            CreateMap<Equipment, EquipmentViewModel>();
+            CreateMap<Equipment, EquipmentViewModel>()
+                .ForMember(evm => evm.DealPriceCurrencyId, conf => conf.MapFrom(e => e.DealPriceCurrencyId))
+                .ForMember(evm => evm.PriceCurrencyId, conf => conf.MapFrom(e => e.PriceCurrencyId));
                 // .ForMember(x => x.CoverPhoto, opt =>
                 //     opt.MapFrom((src, dest, destMember, context) =>
                 //                     {
@@ -37,7 +39,9 @@ namespace Auction.Data.AutoMapper
                 //                         return destMember;
                 //                     }
                 //                 ));
-            CreateMap<EquipmentViewModel, Equipment>();
+            CreateMap<EquipmentViewModel, Equipment>()
+                .ForMember(e => e.DealPriceCurrencyId, conf => conf.MapFrom(evm => evm.DealPriceCurrencyId))
+                .ForMember(e => e.PriceCurrencyId, conf => conf.MapFrom(evm => evm.PriceCurrencyId));;
 
             CreateMap<Photo, PhotoViewModel>()
                 .ForMember(x => x.Equipment, opt => opt.Ignore())

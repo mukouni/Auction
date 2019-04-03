@@ -118,7 +118,7 @@ function UploadPhoto(uploadUrl, deleteUrl, setHiddenPhototUrl, modelId) {
                 if(p.PreviewId == previewId){
                     $.ajax({
                         type: "post",
-                        url: this.deleteUrl,
+                        url: "/equipment/deletephoto",
                         data: { photoName: p.FileName },
                         success: function(result){
                             if(result.Message == "操作成功"){
@@ -138,7 +138,7 @@ function UploadPhoto(uploadUrl, deleteUrl, setHiddenPhototUrl, modelId) {
                 photo.size    = p.FileSize
                 photo.key     = p.Id
                 photo.width   = "120px"
-                photo.url     = this.deleteUrl
+                photo.url     = "/equipment/deletephoto"
                 photo.extra.photoName = p.FileName
                 
                 _initialPreview.push(p.RequestPath)

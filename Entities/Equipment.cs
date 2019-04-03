@@ -17,6 +17,22 @@ namespace Auction.Entities
         public string RBCode { get; set; }
 
         /// <summary>
+        /// 拍卖号
+        /// </summary>
+
+        public string LotNo { get; set; }
+
+        /// <summary>
+        /// 引擎号
+        /// </summary>
+        public string EngineNo { get; set; }
+
+        /// <summary>
+        /// 架子号
+        /// </summary>
+        public string FrameNo { get; set; }
+
+        /// <summary>
         /// 序列号
         /// </summary>
         [Column(TypeName = "nvarchar(50)")]
@@ -99,6 +115,30 @@ namespace Auction.Entities
         /// </summary>
         [Column(TypeName = "decimal(18, 2)")]
         public Decimal? DealPrice { get; set; }
+
+        /// <summary>
+        /// 成交价格币种
+        /// </summary>
+        public virtual Currency DealPriceCurrency { get; set; }
+        /// <summary>
+        /// 成交价格币种Id
+        /// </summary>
+        public int? DealPriceCurrencyId { get; set; }
+
+        /// <summary>
+        /// 成交价格
+        /// </summary>
+        public Decimal? Price { get; set; }
+
+        /// <summary>
+        /// 价格币种
+        /// </summary>
+        public virtual Currency PriceCurrency { get; set; }
+
+        /// <summary>
+        /// 价格币种Id
+        /// </summary>
+        public int? PriceCurrencyId { get; set; }
 
         /// <summary>
         /// 折合人民币

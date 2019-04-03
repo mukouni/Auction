@@ -229,7 +229,7 @@ a:visited {
 
 .page-link:focus,
 .form-control:focus {
-  border: #EAB82D;
+  border-color: #EAB82D;
   box-shadow: 0 0 0 0.2rem #EAB82D80;
 }
 

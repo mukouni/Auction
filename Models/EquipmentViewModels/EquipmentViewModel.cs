@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Auction.Entities;
 using Auction.Entities.Enums;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
 using static Auction.Entities.Enums.CommonEnum;
 
@@ -123,8 +124,6 @@ namespace Auction.Models.EquipmentViewModels
         [Display(Name = "里程单位")]
         public string WorkingDistanceUnit { get; set; } = "km";
 
-
-
         ///<summary>
         /// 成交价格
         /// </summary>
@@ -133,9 +132,48 @@ namespace Auction.Models.EquipmentViewModels
         public Decimal? DealPrice { get; set; }
 
         ///<summary>
+        /// 成交价格币种
+        /// </summary>
+        [Display(Name = "成交货币币种")]
+        public int? DealPriceCurrencyId { get; set; }
+
+        /// <summary>
+        /// lotNo
+        /// </summary>
+        [Display(Name = "LotNo")]
+
+        public string LotNo { get; set; }
+
+        /// <summary>
+        /// 引擎号
+        /// </summary>
+        [Display(Name = "引擎号")]
+        public string EngineNo { get; set; }
+
+        /// <summary>
+        /// 架子号
+        /// </summary>
+        [Display(Name = "架子号")]
+        public string FrameNo { get; set; }
+
+        ///<summary>
+        /// 成交价格
+        /// </summary>
+        [Display(Name = "价格")]
+        [DataType(DataType.Currency)]
+        public Decimal? Price { get; set; }
+
+        ///<summary>
+        /// 成交价格
+        /// </summary>
+        [Display(Name = "成交价格币种")]
+        public int? PriceCurrencyId { get; set; }
+
+        ///<summary>
         /// 折合人民币
         /// </summary>
         [Display(Name = "折合人民币")]
+        [DataType(DataType.Currency)]
         public Decimal? DealPriceRMB { get; set; }
 
         ///<summary>
@@ -179,7 +217,7 @@ namespace Auction.Models.EquipmentViewModels
         public ICollection<EquipmentPhotoViewModel> Photos { get; set; } = new List<EquipmentPhotoViewModel>();
 
         [Display(Name = "封面图片")]
-        public EquipmentPhotoViewModel CoverPhoto
+        public EquipmentPhotoViewModel CoverPhoto //{get; set;}
         {
             set
             {
@@ -193,13 +231,14 @@ namespace Auction.Models.EquipmentViewModels
                     this._coverPhoto = new EquipmentPhotoViewModel()
                     {
                         SavePath = "\\images\\Equipment\\default.jpg",
-                        RequestPath = "/images/Equipment/5af6c17b-a58f-4134-80ca-7b7134f697e5.jpg",
+                        RequestPath = "/images/Equipment/default.jpg",
                         FileName = "default.jpg"
                     };
                 }
                 return _coverPhoto;
             }
         }
+
 
         [Display(Name = "外观照片")]
         public ICollection<EquipmentPhotoViewModel> ExteriorPhotos { get; set; } = new List<EquipmentPhotoViewModel>();
@@ -215,6 +254,8 @@ namespace Auction.Models.EquipmentViewModels
 
         [Display(Name = "引擎照片")]
         public ICollection<EquipmentPhotoViewModel> EnginePhotos { get; set; } = new List<EquipmentPhotoViewModel>();
+
+        public ICollection<SelectListItem> Currencies { get; set; } = new List<SelectListItem>();
 
     }
 }

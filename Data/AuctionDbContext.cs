@@ -47,6 +47,8 @@ namespace Auction.Data
 
         public DbSet<LoginLogging> LoginLoggings { get; set; }
 
+        public DbSet<Currency> Currencies { get; set; }
+
         #region DbQuery
         /// <summary>
         /// 

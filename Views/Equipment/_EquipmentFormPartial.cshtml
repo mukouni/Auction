@@ -3,7 +3,7 @@
 @{
     var workingDistanceUnits = new List<SelectListItem>
     {
-        new SelectListItem { Value = "km", Text = "Km" },
+        new SelectListItem { Value = "km", Text = "Km", Selected = true },
         new SelectListItem { Value = "mi", Text = "Mi" }
     };
 }
@@ -26,7 +26,15 @@
             <span asp-validation-for="RBCode" class="text-danger"></span>
         </div>
     </div>
-    
+
+    <div class="form-group">
+        <label asp-for="LotNo" class="col-md-4 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="LotNo" class="form-control" />
+            <span asp-validation-for="LotNo" class="text-danger"></span>
+        </div>
+    </div>
+
     <div class="form-group">
         <label asp-for="Name" class="col-md-4 control-label"></label>
         <div class="col-md-10">
@@ -117,7 +125,6 @@
             <input asp-for="WorkingDistance" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
             <div class="input-group-append">
                 <select asp-for="WorkingDistanceUnit" asp-items="workingDistanceUnits" class="custom-select"></select> 
-                
             </div>
             <input type="hidden" asp-for="WorkingDistanceUnit">
             
@@ -125,11 +132,27 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="DealPrice" class="col-md-4 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="DealPrice" class="form-control" />
-            <span asp-validation-for="DealPrice" class="text-danger"></span>
+        <label asp-for="Price" class="col-md-4 control-label"></label>
+        <div class="input-group col-md-10">
+            <div class="input-group-append">
+                <!-- <select asp-for="PriceCurrency" asp-items="@*Model.Currencies*@" class="custom-select"></select> -->
+                 @Html.DropDownListFor(a => a.PriceCurrencyId, Model.Currencies, "请选择", new { @class = "custom-select" })
+            </div>
+            <input asp-for="Price" class="form-control" />
         </div>
+        <span asp-validation-for="Price" class="text-danger form-text col-md-12"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="DealPrice" class="col-md-4 control-label"></label>
+        <div class="input-group col-md-10">
+            <div class="input-group-append">
+                <!-- <select asp-for="DealPriceCurrency" asp-items="@*Model.Currencies*@" class="custom-select"></select> -->
+                @Html.DropDownListFor(a => a.DealPriceCurrencyId, Model.Currencies, "请选择", new { @class = "custom-select" })
+            </div>
+            <input asp-for="DealPrice" class="form-control" />
+        </div>
+        <span asp-validation-for="DealPrice" class="text-danger form-text col-md-12"></span>
     </div>
     
     <div class="form-group">
@@ -139,7 +162,22 @@
             <span asp-validation-for="DealPriceRMB" class="text-danger"></span>
         </div>
     </div>
-   
+
+    <div class="form-group">
+        <label asp-for="EngineNo" class="col-md-4 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="EngineNo" class="form-control" />
+            <span asp-validation-for="EngineNo" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="FrameNo" class="col-md-4 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="FrameNo" class="form-control" />
+            <span asp-validation-for="FrameNo" class="text-danger"></span>
+        </div>
+    </div>
     <div class="form-group">
         <label asp-for="Long" class="col-md-4 control-label"></label>
         <div class="col-md-10">
