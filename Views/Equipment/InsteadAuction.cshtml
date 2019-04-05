@@ -8,9 +8,9 @@
 
 <div class="bodyinfo row text-dark">
     <div class="searchInput  pt-2 d-flex flex-grow-1 justify-content-center">
-        <div class="form-group col-md-6">
-            <form asp-controller="Equipment" asp-action='@ViewData["Action"]' method="get" id="searchform" class="form-inline">
-                <input asp-for="@Model.KeyWord" class="form-control col-md-9">
+        <div class="form-group col-md-7">
+            <form asp-controller="Equipment" asp-action='@ViewData["Action"]' method="get" id="searchform" class="form-inline justify-content-center">
+                <input asp-for="@Model.KeyWord" class="form-control col-md-8 col-sm-6 col-8">
                 <button type="submit" value="Submit" class="btn btn-primary ml-2">搜索设备</button>
             </form>
         </div>
@@ -23,7 +23,6 @@
         
     </div>
 </div>
-
 
 @section script {
     <script src="~/lib/ion-rangeslider/js/ion.rangeSlider.min.js"></script>
@@ -85,17 +84,17 @@
             }  
             //searchEquipments();
         }
-        
+
         var bindCheckBox = function(){
             //$("#models-form-group").find("input[type='checkbox']:visible").each(function(i, ele){
             $(".search input[type='checkbox']:visible").each(function(i, ele){
-                $(document).on("change", "#" + $(ele).attr("id"), function(){
+                $(document).on("change click touch touchstart touchend", "#" + $(ele).attr("id"), function(){
                     var chipId = $(this).attr("id") + "-chip";
                     if($(this).is(':checked')){
                         var checkboxArrayId = $(this).attr("id").split("_").slice(0,2).join("_");  
                         var hiddenInputId = checkboxArrayId + "__Name";
                         var valueInput = $("#" + hiddenInputId);
-                        
+
                         //addOrUpdateChip(resetCheckboxStatus, chipId, valueInput.val());
                         searchEquipments();
                     }else{

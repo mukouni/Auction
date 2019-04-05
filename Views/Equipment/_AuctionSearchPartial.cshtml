@@ -5,8 +5,8 @@
 
     @if(Model.Names?.Length > 0){
         <div class="form-group mt-3 mr-3 pb-3" id="names-form-group">
-            <label asp-for="Names" class="col-md-4 control-label"></label>
-            <div class="col-md-10">
+            <label asp-for="Names" class="col-md-12 control-label"></label>
+            <div class="col-md-12">
                 @for (var i = 0; i < Model.Names?.Length; i++)
                 {
                     <div class="form-check">
@@ -32,8 +32,8 @@
     }
     @if(Model.Manufacturers?.Length > 0){
         <div class="form-group mr-3 pb-3" id="manufacturers-form-group">
-            <label asp-for="Manufacturers" class="col-md-4 control-label"></label>
-            <div class="col-md-10">
+            <label asp-for="Manufacturers" class="col-md-12 control-label"></label>
+            <div class="col-md-12">
                 @for (var i = 0; i < Model.Manufacturers?.Length; i++)
                 {
                     <div class="form-check">
@@ -60,8 +60,8 @@
     }
     @if(Model.Models?.Length > 0){
         <div class="form-group mr-3 pb-3" id="models-form-group">
-            <label asp-for="Models" class="col-md-4 control-label"></label>
-            <div class="col-md-10">
+            <label asp-for="Models" class="col-md-12 control-label"></label>
+            <div class="col-md-12">
                 @for (var i = 0; i < Model.Models?.Length; i++)
                 {
                     <div class="form-check">
@@ -88,8 +88,8 @@
     }
     @if(Model.Countries?.Length > 0){
         <div class="form-group mr-3 pb-3" id="countries-form-group">
-            <label asp-for="Countries" class="col-md-4 control-label"></label>
-            <div class="col-md-10">
+            <label asp-for="Countries" class="col-md-12 control-label"></label>
+            <div class="col-md-12">
                 @for (var i = 0; i < Model.Countries?.Length; i++)
                 {
                     <div class="form-check">
@@ -116,8 +116,8 @@
     }
     @if(Model.Cities?.Length > 0){
         <div class="form-group mr-3 pb-3" id="cities-form-group">
-            <label asp-for="Cities" class="col-md-4 control-label"></label>
-            <div class="col-md-10">
+            <label asp-for="Cities" class="col-md-12 control-label"></label>
+            <div class="col-md-12">
                 @for (var i = 0; i < Model.Cities?.Length; i++)
                 {
                     <div class="form-check">
@@ -144,8 +144,8 @@
     }
     @if(Model.Cities?.Length > 0){    
         <div class="form-group mr-3 pb-3" id="auction-house-form-group">
-            <label asp-for="AuctionHouses" class="col-md-4 control-label"></label>
-            <div class="col-md-10">
+            <label asp-for="AuctionHouses" class="col-md-12 control-label"></label>
+            <div class="col-md-12">
                 @for (var i = 0; i < Model.AuctionHouses?.Length; i++)
                 {
                     <div class="form-check">

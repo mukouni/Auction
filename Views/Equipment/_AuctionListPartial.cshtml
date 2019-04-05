@@ -2,7 +2,7 @@
 
 @foreach (var item in @Model.Equipments){
     <div class="media mb-3 equipment-list">
-        <img class="mr-3" src="@item.CoverPhoto.RequestPath" alt="@item.CoverPhoto.FileName" style="width: 240px">
+        <img class="mr-3" src="@item.CoverPhoto.RequestPath" alt="@item.CoverPhoto.FileName">
         <div class="media-body">
             <h3 class="font-weight-bold"> 
                 @item.Manufacturer  @item.Model @item.Name  

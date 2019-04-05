@@ -1,6 +1,6 @@
 @model SearchEquipmentViewModel
 
-<div class="search">
+<div class="search slideout-menu slideout-menu-left">
     @await Html.PartialAsync("_AuctionSearchPartial", Model, ViewData)
                                 @**new ViewDataDictionary(ViewData){})**@
 </div>
@@ -79,5 +79,12 @@
             }
         }
         checkedValue();
+        $("html").removeClass("slideout-open")
+        var slideout = new Slideout({
+            'panel': $('.info .show').get(0),
+            'menu': $('.info .search').get(0),
+            'padding': 250,
+            'tolerance': 70
+        });
     </script>
 }

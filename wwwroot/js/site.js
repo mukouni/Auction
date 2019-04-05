@@ -44,26 +44,28 @@ var cookieUtil = {
 };
 
 
-function selectPageSizeChange(obj){
+function selectPageSizeChange(obj) {
     $.ajax({
         type: "get",
         url: "/equipment/index",
-        data: {PageSize: $(obj).val()},
+        data: {
+            PageSize: $(obj).val()
+        },
         success: function (response) {
             $('#equipment—index-table').html(response);
-            $('[data-toggle="table"]').bootstrapTable(); 
+            $('[data-toggle="table"]').bootstrapTable();
         }
     });
 }
 
 
 function UploadPhoto(uploadUrl, deleteUrl, setHiddenPhototUrl, modelId) {
-    this.uploadUrl          = uploadUrl
-    this.deleteUrl          = deleteUrl
+    this.uploadUrl = uploadUrl
+    this.deleteUrl = deleteUrl
     this.setHiddenPhototUrl = setHiddenPhototUrl
-    this.modelId            = modelId
+    this.modelId = modelId
 
-    this.initInput = function(inputId, photoJson, photoType){
+    this.initInput = function (inputId, photoJson, photoType) {
         var photos = photoJson;
         var _initialPreview = []
         var _initialPreviewConfig = []
@@ -78,7 +80,7 @@ function UploadPhoto(uploadUrl, deleteUrl, setHiddenPhototUrl, modelId) {
             "theme": 'explorer-fas',
             uploadUrl: this.uploadUrl,
             ajaxSettings: {
-                beforeSend: function(xhr) {
+                beforeSend: function (xhr) {
                     xhr.setRequestHeader('X-XSRF-TOKEN', cookieUtil.getItem("XSRF-TOKEN"))
                 }
             },
@@ -92,14 +94,14 @@ function UploadPhoto(uploadUrl, deleteUrl, setHiddenPhototUrl, modelId) {
             initialPreviewAsData: true,
             initialPreview: _initialPreview,
             initialPreviewConfig: _initialPreviewConfig
-        }).on("filebatchselected", function(event, files) {
+        }).on("filebatchselected", function (event, files) {
             $fileInput.fileinput("upload");
-        }).on('filepreupload', function(event, data, previewId, index) {
+        }).on('filepreupload', function (event, data, previewId, index) {
             //data.form.append('IsHiddenAfterSold', $("input#" + previewId).is(":checked"))
         }).on("fileuploaded", function (event, data, previewId, index) {
             _addData([data.response])
-            
-            if(data.response.Message == "操作成功"){
+
+            if (data.response.Message == "操作成功") {
                 var caption = $("#" + previewId).find(".explorer-caption")
                 caption.attr("title", data.response.Data.FileName)
                 caption.text(data.response.Data.FileName)
@@ -107,21 +109,21 @@ function UploadPhoto(uploadUrl, deleteUrl, setHiddenPhototUrl, modelId) {
             }
             newPhotos.push({
                 PreviewId: previewId,
-                FileName:  data.response.Data.FileName,
+                FileName: data.response.Data.FileName,
                 PhotoId: data.response.Data.Id
             })
-        }).on('filesorted', function(event, params) {
-        }).on('filebatchpreupload', function(event, data, jqXHR) {
-        }).on("filesuccessremove", function (event, id, fileindex) { 
-            var previewId = $("#"+id).data("previewid")
-            $.each(newPhotos, function(i, p){
-                if(p.PreviewId == previewId){
+        }).on('filesorted', function (event, params) {}).on('filebatchpreupload', function (event, data, jqXHR) {}).on("filesuccessremove", function (event, id, fileindex) {
+            var previewId = $("#" + id).data("previewid")
+            $.each(newPhotos, function (i, p) {
+                if (p.PreviewId == previewId) {
                     $.ajax({
                         type: "post",
                         url: "/equipment/deletephoto",
-                        data: { photoName: p.FileName },
-                        success: function(result){
-                            if(result.Message == "操作成功"){
+                        data: {
+                            photoName: p.FileName
+                        },
+                        success: function (result) {
+                            if (result.Message == "操作成功") {
                                 delete newPhotos[i]
                             }
                         }
@@ -131,16 +133,18 @@ function UploadPhoto(uploadUrl, deleteUrl, setHiddenPhototUrl, modelId) {
         });
 
         //初始化 initialPreview initialPreviewConfig
-        function _addData(photos){
-            $.each(photos, function(i, p){
-                var photo     = { extra: {} }
+        function _addData(photos) {
+            $.each(photos, function (i, p) {
+                var photo = {
+                    extra: {}
+                }
                 photo.caption = p.FileName
-                photo.size    = p.FileSize
-                photo.key     = p.Id
-                photo.width   = "120px"
-                photo.url     = "/equipment/deletephoto"
+                photo.size = p.FileSize
+                photo.key = p.Id
+                photo.width = "120px"
+                photo.url = "/equipment/deletephoto"
                 photo.extra.photoName = p.FileName
-                
+
                 _initialPreview.push(p.RequestPath)
                 _initialPreviewConfig.push(photo)
             })
@@ -148,61 +152,72 @@ function UploadPhoto(uploadUrl, deleteUrl, setHiddenPhototUrl, modelId) {
 
         this.selectHiddenPhototCheckbox(photos);
     }
-    
-    this.selectHiddenPhototCheckbox = function (photos){
-        $.each(photos, function(i, photo){
-            if(photo.IsHiddenAfterSold){
+
+    this.selectHiddenPhototCheckbox = function (photos) {
+        $.each(photos, function (i, photo) {
+            if (photo.IsHiddenAfterSold) {
                 $(".explorer-caption[title='" + photo.FileName + "']")
-                .closest("tr")
-                .find('input:checkbox[name="IsHiddenAfterSold"]:visible')
-                .attr('checked', true)
+                    .closest("tr")
+                    .find('input:checkbox[name="IsHiddenAfterSold"]:visible')
+                    .attr('checked', true)
             }
         })
-        
+
     }
 
-    this.SetHiddenPhototAfterSold = function(){
+    this.SetHiddenPhototAfterSold = function () {
         var that = $(this)
         var photoName = that.closest("tr").find(".explorer-caption").attr("title")
         $.ajax({
             type: "post",
             url: "/equipment/sethiddenphototaftersold",
-            data: { 
-                photoName: photoName, 
+            data: {
+                photoName: photoName,
                 equipmentId: this.modelId,
-                '__RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val() },
-            success: function(result){
-            }
+                '__RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val()
+            },
+            success: function (result) {}
         })
     }
 
-    this.bindCheckbox = function(){
+    this.bindCheckbox = function () {
         $(document).on("click", 'input:checkbox[name="IsHiddenAfterSold"]:visible', this.SetHiddenPhototAfterSold)
     }
 
 }
 
-$(document).on("click", ".order-ul .list-inline-item", function(){
+$(document).on("click", ".order-ul .list-inline-item", function () {
     var className = "text-warning";
     var $orderBys = $(this).find(".order-by");
-    if($orderBys.length > 0){
-        if($(this).find("p").hasClass(className)){
+    if ($orderBys.length > 0) {
+        if ($(this).find("p").hasClass(className)) {
             $orderBys.toggleClass("d-none");
         }
         var $showOrderBy = $(this).find(".order-by:visible");
         $("#Sort_Field").val($orderBys.first().data("order-by"));
-        if($showOrderBy.data("direction") == "desc"){
+        if ($showOrderBy.data("direction") == "desc") {
             $("#Sort_Direction").val("desc");
-        }else{
+        } else {
             $("#Sort_Direction").val("asc");
         }
-    }else{
+    } else {
         $("#Sort_Field").val("");
         $("#Sort_Direction").val("");
     }
 
     $(".order-ul .list-inline-item").find("p").removeClass(className);
     $(this).find("p").addClass(className);
-    
+
     searchEquipments();
+});
+
+$("#toggle-menu").click(function () {
+    $("#navbar").toggleClass("d-none ver-menu");
+})
+
+var slideout = new Slideout({
+    'panel': $('.info .show').get(0),
+    'menu': $('.info .search').get(0),
+    'padding': 250,
+    'tolerance': 70
 });
