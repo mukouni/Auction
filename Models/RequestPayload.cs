@@ -16,7 +16,7 @@ namespace Auction.Models
         public RequestPayload()
         {
             Sorts = new Sort[]{};
-            Kw = "";
+            KeyWord = "";
         }
 
         public List<SelectListItem> PageSizeOptions { get; set; }
@@ -61,7 +61,7 @@ namespace Auction.Models
         /// <summary>
         /// 搜索关键字
         /// </summary>
-        public string Kw { get; set; }
+        public string KeyWord { get; set; }
 
         public int Count { get; set; }
     }

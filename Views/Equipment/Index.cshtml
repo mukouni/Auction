@@ -16,10 +16,7 @@
     
 @section script {
     <script>
-        $( document ).ready(function() {
-            $(".search .nav-link[href='/equipment/index']").addClass("active");
-            $("header .nav-link[aria-controls='manage']").addClass("active");
-        })
+        
         function deleteItem(form) {
             $(form).closest("tr").find(".isDeleted").text("Yes");
         }

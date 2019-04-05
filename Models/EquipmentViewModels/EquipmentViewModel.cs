@@ -109,7 +109,7 @@ namespace Auction.Models.EquipmentViewModels
         /// 工作小时
         /// </summary>
         [Display(Name = "工作小时")]
-        public long? WorkingTime { get; set; }
+        public long WorkingTime { get; set; }
 
 
         ///<summary>
@@ -157,9 +157,9 @@ namespace Auction.Models.EquipmentViewModels
         public string FrameNo { get; set; }
 
         ///<summary>
-        /// 成交价格
+        /// 预估价格
         /// </summary>
-        [Display(Name = "价格")]
+        [Display(Name = "预估价格")]
         [DataType(DataType.Currency)]
         public Decimal? Price { get; set; }
 
@@ -168,6 +168,12 @@ namespace Auction.Models.EquipmentViewModels
         /// </summary>
         [Display(Name = "成交价格币种")]
         public int? PriceCurrencyId { get; set; }
+
+        ///<summary>
+        /// 成交价格
+        /// </summary>
+        [Display(Name = "成交价格币种")]
+        public Currency PriceCurrency { get; set; }
 
         ///<summary>
         /// 折合人民币
@@ -217,7 +223,7 @@ namespace Auction.Models.EquipmentViewModels
         public ICollection<EquipmentPhotoViewModel> Photos { get; set; } = new List<EquipmentPhotoViewModel>();
 
         [Display(Name = "封面图片")]
-        public EquipmentPhotoViewModel CoverPhoto //{get; set;}
+        public EquipmentPhotoViewModel CoverPhoto //{get; set;} // 修改页面里面如果很有可能会将这个新的临时对象一并保存，但是Photo中的EquipmentId是{0000-...}造成保存失败！！
         {
             set
             {

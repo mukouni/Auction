@@ -67,72 +67,171 @@ namespace Auction.Models.EquipmentViewModels
         [Display(Name = "拍卖时间")]
         public IsSold? IsSold { get; set; }
 
-
-        [Display(Name = "拍卖时间")]
-        public DateTime? SoldAt { get; set; }
-
         /// <summary>
         /// 是否是采购设备
         /// </summary>
         [Display(Name = "是否是采购设备")]
         public IsPurchase? IsPurchase { get; set; }
 
+
         /// <summary>
-        /// 生产年份范围
+        /// 用户选择的生产年份最小值
         /// </summary>
-        [Display(Name = "生产年份范围")]
-        public int?[] ProductionDateRange { get; set; }
+        public int? ProductionDateRangeMin { get; set; }
+        /// <summary>
+        /// 用户选择的生产年份最大值
+        /// </summary>
+        public int? ProductionDateRangeMax { get; set; }
+        /// <summary>
+        /// 插件默认选择的生产年份最小值
+        /// </summary>
+        public int? ProductionDateRangeDefaultMin { get; set; }
+        /// <summary>
+        /// 插件默认选择的生产年份最大值
+        /// </summary>
+        public int? ProductionDateRangeDefaultMax { get; set; }
+        /// <summary>
+        /// 数据库读取到的生产年份最小值
+        /// </summary>
+        public int? ProductionDateMin { get; set; }
+        /// <summary>
+        /// 数据库读取到的生产年份最大值
+        /// </summary>
         public int? ProductionDateMax { get; set; }
 
-        public int? ProductionDateMin { get; set; }
 
         /// <summary>
-        /// 工作小时范围
+        /// 用户选择的工作小时最小值
         /// </summary>
-        [Display(Name = "工作小时范围")]
-        public long?[] WorkingTimeRange { get; set; }
-
+        public long? WorkingTimeRangeMin { get; set; }
         /// <summary>
-        /// 工作小时最小值
+        /// 用户选择的工作小时最大值
+        /// </summary>
+        public long? WorkingTimeRangeMax { get; set; }
+        /// <summary>
+        /// 插件默认选择的工作小时最小值
+        /// </summary>
+        public long? WorkingTimeRangeDefaultMin { get; set; }
+        /// <summary>
+        /// 插件默认选择的工作小时最大值
+        /// </summary>
+        public long? WorkingTimeRangeDefaultMax { get; set; }
+        /// <summary>
+        /// 数据库读取到的工作小时最小值
         /// </summary>
         public long? WorkingTimeMin { get; set; }
-
         /// <summary>
-        /// 工作小时最大值
+        /// 数据库读取到的工作小时最大值
         /// </summary>
         public long? WorkingTimeMax { get; set; }
 
-        /// <summary>
-        /// 拍卖日期范围
-        /// </summary>
-        [Display(Name = "拍卖日期")]
-        public int?[] SoldAtRange { get; set; }
-
-        public int? SoldAtMax { get; set; }
-
-        public int? SoldAtMin { get; set; }
 
         /// <summary>
-        /// 成交价格范围
+        /// 用户选择的拍卖日期最小值
         /// </summary>
-        [Display(Name = "成交价格范围")]
-        public Decimal?[] DealPriceRange { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? SoldAtRangeMin { get; set; }
+        /// <summary>
+        /// 用户选择的拍卖日期最大值
+        /// </summary>
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? SoldAtRangeMax { get; set; }
+        /// <summary>
+        /// 页面插件默认选择的拍卖日期最小值
+        /// </summary>
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? SoldAtRangeDefaultMin { get; set; }
+        /// <summary>
+        /// 页面插件默认选择的拍卖日期最大值
+        /// </summary>
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? SoldAtRangeDefaultMax { get; set; }
+        /// <summary>
+        /// 数据库读取到的拍卖日期最小值
+        /// </summary>
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? SoldAtMin { get; set; }
+        /// <summary>
+        /// 数据库读取到的拍卖日期最大值
+        /// </summary>
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? SoldAtMax { get; set; }
+
 
         /// <summary>
-        /// 成交价最小值
+        /// 用户输入的成交价格最小值
         /// </summary>
+        [DataType(DataType.Currency)]
+        public Decimal? DealPriceRangeMin { get; set; }
+        /// <summary>
+        /// 用户输入的成交价格最大值
+        /// </summary>
+        [DataType(DataType.Currency)]
+        public Decimal? DealPriceRangeMax { get; set; }
+        /// <summary>
+        /// 插件默认选择的成交价格最小值
+        /// </summary>
+        [DataType(DataType.Currency)]
+        public Decimal? DealPriceRangeDefaultMin { get; set; }
+        /// <summary>
+        /// 插件默认选择的成交价格最大值
+        /// </summary>
+        [DataType(DataType.Currency)]
+        public Decimal? DealPriceRangeDefaultMax { get; set; }
+        /// <summary>
+        /// 数据库读取到的成交价格最小值
+        /// </summary>
+        [DataType(DataType.Currency)]
         public Decimal? DealPriceMin { get; set; }
+        /// <summary>
+        /// 数据库读取到的成交价格最大值
+        /// </summary>
+        [DataType(DataType.Currency)]
+        public Decimal? DealPriceMax { get; set; }
+
 
         /// <summary>
-        /// 成交价最大值
+        /// 用户选择的预估价格最小值
         /// </summary>
-        public Decimal? DealPriceMax { get; set; }
+        [DataType(DataType.Currency)]
+        public Decimal? PriceRangeMin { get; set; }
+        /// <summary>
+        /// 用户选择的预估价格最大值
+        /// </summary>
+        [DataType(DataType.Currency)]
+        public Decimal? PriceRangeMax { get; set; }
+        /// <summary>
+        /// 插件默认选择的预估价格最小值
+        /// </summary>
+        [DataType(DataType.Currency)]
+        public Decimal? PriceRangeDefaultMin { get; set; }
+        /// <summary>
+        /// 插件默认选择的预估价格最大值
+        /// </summary>
+        [DataType(DataType.Currency)]
+        public Decimal? PriceRangeDefaultMax { get; set; }
+        /// <summary>
+        /// 数据库读取到的预估价格最小值
+        /// </summary>
+        [DataType(DataType.Currency)]
+        public Decimal? PriceMin { get; set; }
+        /// <summary>
+        /// 数据库读取到的预估价格最大值
+        /// </summary>
+        [DataType(DataType.Currency)]
+        public Decimal? PriceMax { get; set; }
 
         /// <summary>
         /// 折合人民币
         /// </summary>
         [Display(Name = "折合人民币")]
-        [Column(TypeName = "decimal(18, 2)")]
+        [DataType(DataType.Currency)]
         public Decimal DealPriceRMB { get; set; }
 
         public virtual StaticPagedList<EquipmentViewModel> Equipments { get; set; }

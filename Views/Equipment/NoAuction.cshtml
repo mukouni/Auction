@@ -4,18 +4,26 @@
 @model SearchEquipmentViewModel
 @{
     ViewData["Title"] = "未拍卖设备";
+    ViewData["Action"] = "NoAuction";
 }
 @section stylesheet {
     <link href="~/lib/ion-rangeslider/css/ion.rangeSlider.min.css" media="all" rel="stylesheet" type="text/css"/>
 }
 
 <div class="bodyinfo row text-dark">
+    <div class="searchInput  pt-2 d-flex flex-grow-1 justify-content-center">
+        <div class="form-group col-md-6">
+            <form asp-controller="Equipment" asp-action='@ViewData["Action"]' method="get" id="searchform" class="form-inline">
+                <input asp-for="@Model.KeyWord" class="form-control col-md-9">
+                <button type="submit" value="Submit" class="btn btn-primary ml-2">搜索设备</button>
+            </form>
+        </div>
+    </div>
     <div class="condition">
         
     </div>
     <div class="info d-flex">
-        @await Html.PartialAsync("_AuctionInfoPartial", Model,
-                                        new ViewDataDictionary(ViewData){})
+        @await Html.PartialAsync("_AuctionInfoPartial", Model, ViewData)
         
     </div>
 </div>
@@ -106,32 +114,7 @@
             $("#" + id.toString()).prop('checked', false);     
         }
         bindCheckBox();
-
-        $(document).on("click", ".order-ul .list-inline-item", function(){
-            var className = "text-warning";
-            var $orderBys = $(this).find(".order-by");
-            if($orderBys.length > 0){
-                if($(this).find("p").hasClass(className)){
-                    $orderBys.toggleClass("d-none");
-                }
-                var $showOrderBy = $(this).find(".order-by:visible");
-                $("#Sort_Field").val($orderBys.first().data("order-by"));
-                if($showOrderBy.data("direction") == "desc"){
-                    $("#Sort_Direction").val("desc");
-                }else{
-                    $("#Sort_Direction").val("asc");
-                }
-            }else{
-                $("#Sort_Field").val("");
-                $("#Sort_Direction").val("");
-            }
-
-            $(".order-ul .list-inline-item").find("p").removeClass(className);
-            $(this).find("p").addClass(className);
-            
-            searchEquipments();
-        });
-        
+       
     </script>
     @{ await Html.RenderPartialAsync("_SliderScriptsPartial"); }
 }

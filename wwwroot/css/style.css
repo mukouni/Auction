@@ -3,8 +3,6 @@ body {
   font-family: 'Trebuchet MS';
 
   height: 100%;
-
-  color: white;
 }
 
 .irs--round .irs-bar {
@@ -33,12 +31,13 @@ body {
 
 .chip {
   display: inline-block;
-  padding: 0 25px;
-  height: 50px;
-  font-size: 18px;
-  line-height: 50px;
+  padding: 0 10px;
+  font-size: 16px;
+  height: 26px;
+  line-height: 26px;
   border-radius: 25px;
   background-color: #f1f1f1;
+  margin: 0 5px 5px 0;
 }
 
 .chip img {
@@ -232,7 +231,9 @@ a:visited {
   border-color: #EAB82D;
   box-shadow: 0 0 0 0.2rem #EAB82D80;
 }
-
+.daterangepicker select{
+  border-radius: 2px;
+}
 #navbar li.nav-item:hover {
   border-radius: 5px;
   background-color: white;
@@ -321,6 +322,9 @@ table[data-toggle="table"] tbody td:last-child {
   margin: 150px auto 0;
 }
 
+.bodyinfo .searchinput{
+
+}
 .bodyinfo .condition {
   width: 100%;
   height: 60px;
@@ -361,6 +365,7 @@ footer {
 
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
+  color: white;
 }
 
 @media (min-width: 410px) {

@@ -15,6 +15,13 @@
                 @Html.DisplayNameFor(model => item.ProductionDate):
                 <b>@(((DateTime)item.ProductionDate).Year)</b>
             </p>
+            @if(item.Price != null){
+            <p>
+                @Html.DisplayNameFor(model => item.Price):
+                <b>@item.Price@item.PriceCurrency?.SymbolCode</b>
+            </p>
+            }
+            <p>
             <p>
                 @Html.DisplayNameFor(model => item.Code):
                 <b>@item.Code</b>

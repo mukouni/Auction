@@ -3,7 +3,7 @@
     <form asp-controller="Equipment" asp-action="Index" asp-route-returnurl="@ViewData["ReturnUrl"]" method="get" class="form-inline" role="form" style="padding: 0; margin:0">
         <div class="form-group ml-4">
             <div class="input-group">
-                <input type="text" name="kw" value="@Model.Kw" class="form-control" placeholder="设备或code" aria-label="设备或code" aria-describedby="button-addon2">
+                <input type="text" name="KeyWord" value="@Model.KeyWord" class="form-control" placeholder="设备或code" aria-label="设备或code" aria-describedby="button-addon2">
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary" type="submit" id="button-addon2">搜索</button>
                 </div>

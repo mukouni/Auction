@@ -1,17 +1,15 @@
 @model SearchEquipmentViewModel
 
 <div class="search">
-    @await Html.PartialAsync("_AuctionSearchPartial", Model,
-                                new ViewDataDictionary(ViewData){})
+    @await Html.PartialAsync("_AuctionSearchPartial", Model, ViewData)
+                                @**new ViewDataDictionary(ViewData){})**@
 </div>
 <div class="show flex-grow-1">
     <div class="sort">
-        @await Html.PartialAsync("_AuctionSortPartial", Model,
-                                new ViewDataDictionary(ViewData){})
+        @await Html.PartialAsync("_AuctionSortPartial", Model, ViewData)
     </div>
     <div class="data pl-3 pt-3">
-        @await Html.PartialAsync("_AuctionListPartial", Model,
-                                new ViewDataDictionary(ViewData){})
+        @await Html.PartialAsync("_AuctionListPartial", Model, ViewData)
     </div>
 </div>
 
@@ -52,33 +50,32 @@
                 addOrUpdateChip(resetCheckboxStatus, chipId, valueInput.val());
             })
 
-
-            if($("#SoldAtRangeRange_0_").val() != undefined && $("#SoldAtRangeRange_0_").val() != ""){
-                addOrUpdateChip(resetSoldAtRangeSlider, 
-                                "sold-at-chip", 
-                                "拍卖日期:" + $("#SoldAtRangeRange_0_").val(), 
-                                $("#SoldAtRangeRange_1_").val());
-            }
-
-             if($("#WorkingTimeRange_0_").val() != undefined && $("#WorkingTimeRange_0_").val() != ""){
+             if($("#WorkingTimeRangeMin").val() != undefined && $("#WorkingTimeRangeMin").val() != ""){
                 addOrUpdateChip(resetWorkingTimeRangeSlider, 
-                                "working-time-chip", 
-                                "工作小时:" + $("#WorkingTimeRange_0_").val(), 
-                                $("#WorkingTimeRange_1_").val());
+                                "working-time-range-chip", 
+                                "工作小时:" + $("#WorkingTimeRangeMin").val(), 
+                                $("#WorkingTimeRangeMax").val());
             }
 
-            if($("#ProductionDateRange_0_").val() != undefined && $("#ProductionDateRange_0_").val() != ""){
-                addOrUpdateChip(resetProductionDateRangeSlider, 
-                                "production-date-chip", 
-                                "生产年份:" + $("#ProductionDateRange_0_").val(), 
-                                $("#ProductionDateRange_1_").val());
+            if($("#ProductionDateRangeMin").val() != undefined && $("#ProductionDateRangeMin").val() != ""){
+                addOrUpdateChip(resetProductionDateRangeSlider,
+                                "production-date-range-chip",
+                                "生产年份:" + $("#ProductionDateRangeMin").val(),
+                                $("#ProductionDateRangeMax").val());
             }
             
-            if($("#DealPriceRange_0_").val() != undefined && $("#DealPriceRange_0_").val() != ""){
-                addOrUpdateChip(resetDealPriceRangeSlider, 
-                                "deal-price-chip", 
-                                "成交价格:" + $("#DealPriceRange_0_").val(), 
-                                $("#DealPriceRange_1_").val());
+            if($("#DealPriceRangeMin").val() != undefined && $("#DealPriceRangeMin").val() != ""){
+                addOrUpdateChip(resetDealPriceRangeSlider,
+                                "deal-price-range-chip", 
+                                "成交价格:" + $("#DealPriceRangeMin").val(),
+                                $("#DealPriceRangeMax").val());
+            }
+
+            if($("#SoldAtRangeMin").val() != undefined && $("#SoldAtRangeMin").val() != ""){
+                addOrUpdateChip(resetSoldAtRangePicker, 
+                                "sold-at-range-chip", 
+                                "拍卖日期:" + moment($("#SoldAtRangeMin").val()).format("YYYY/MM/DD"),
+                                moment($("#SoldAtRangeMax").val()).format("YYYY/MM/DD"));
             }
         }
         checkedValue();

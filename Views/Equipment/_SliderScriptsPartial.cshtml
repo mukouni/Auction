@@ -1,9 +1,9 @@
 <script id="slider-script">
-    var workingTimeMin = parseInt("@Model.WorkingTimeMin") || 0;
-    var workingTimeMax = parseInt("@Model.WorkingTimeMax") || 0;
-    var workingTimeFrom = parseInt("@(Model.WorkingTimeRange == null ? 0 : Model.WorkingTimeRange[0])") || workingTimeMin;
-    var workingTimeTo = parseInt("@(Model.WorkingTimeRange == null ? 0 : Model.WorkingTimeRange[1])") || workingTimeMax;
+    var workingTimeMin = parseInt("@Model.WorkingTimeMin") || parseInt("@ApplicationConstant.intDefaultValue");
+    var workingTimeMax = parseInt("@Model.WorkingTimeMax") || parseInt("@ApplicationConstant.intDefaultValue");
     if(workingTimeMax > 0){
+        var workingTimeFrom = parseInt("@(Model.WorkingTimeRangeDefaultMin)") || WorkingTimeMin;
+        var workingTimeTo = parseInt("@(Model.WorkingTimeRangeDefaultMax)") || WorkingTimeMax;
         $("#working-time-range-slider").ionRangeSlider({
             skin: "round",
             type: "double",
@@ -16,24 +16,54 @@
             from_fixed: false,  // fix position of FROM handle
             to_fixed: false,
             onFinish: function (data) {
-                $("input[name='WorkingTimeRange[0]'").val(data.from);
-                $("input[name='WorkingTimeRange[1]'").val(data.to);
+                $("#WorkingTimeRangeMin").val(data.from);
+                $("#WorkingTimeRangeMax").val(data.to);
                 //addOrUpdateChip(resetWorkingTimeRangeSlider, "working-time-chip", "工作时长(小时)：" + data.from, data.to);
                 searchEquipments();
             }
         });
         function resetWorkingTimeRangeSlider(){
             $("#working-time-range-slider").data("ionRangeSlider").reset();
-            $("input[name='WorkingTimeRange[0]'").val("");
-            $("input[name='WorkingTimeRange[1]'").val("");
+            $("#WorkingTimeRangeMin").val("");
+            $("#WorkingTimeRangeMax").val("");
         }
     }
 
-    var dealPriceMin = parseInt("@Model.DealPriceMin") || 0;
-    var dealPriceMax = parseInt("@Model.DealPriceMax") || 0;
-    var dealPriceFrom = parseInt("@(Model.DealPriceRange == null ? 0 : Model.DealPriceRange[0])") || dealPriceMin;
-    var dealPriceTo = parseInt("@(Model.DealPriceRange == null ? 0 : Model.DealPriceRange[1])") || dealPriceMax;
-    if(dealPriceMax > 0){
+    var priceMin = moment("@Model.PriceMin") || moment("@ApplicationConstant.DateTimeMinValue");
+    var priceMax = moment("@Model.PriceMin") || moment("@ApplicationConstant.DateTimeMinValue");
+    if(priceMax > moment("@ApplicationConstant.DateTimeMinValue")){
+        var PriceFrom =  moment("@Model.PriceRangeDefaultMin") || priceMin;
+        var PriceTo =  moment("@Model.PriceRangeDefaultMax") || priceMax;
+        $("#price-range-slider").ionRangeSlider({
+            skin: "round",
+            type: "double",
+            min: PriceMin.format("YYYY-MM-DD"),
+            max: PriceMax.format("YYYY-MM-DD"),
+            from: PriceFrom.format("YYYY-MM-DD"),
+            to: PriceTo.format("YYYY-MM-DD"),
+            grid: false,
+            grid_snap: true,
+            from_fixed: false,  // fix position of FROM handle
+            to_fixed: false,
+            onFinish: function (data) {
+                $("#PriceRangeMin").val(data.from);
+                $("#PriceRangeMax").val(data.to);
+                //addOrUpdateChip(resetPriceRangeSlider, "deal-price-chip", "成交价格(美元):" + data.from, data.to);
+                searchEquipments();
+            }
+        });
+        function resetPriceRangeSlider(){
+            $("#price-range-slider").data("ionRangeSlider").reset();
+            $("#PriceRangeMin").val("");
+            $("#PriceRangeMax").val("");
+        }
+    }
+
+    var dealPriceMin = parseInt("@Model.DealPriceMin") || parseInt("@ApplicationConstant.intDefaultValue");
+    var dealPriceMax = parseInt("@Model.DealPriceMin") || parseInt("@ApplicationConstant.intDefaultValue");
+    if(dealPriceMax > parseInt("@ApplicationConstant.intDefaultValue")){
+        var dealPriceFrom = parseInt("@Model.DealPriceRangeDefaultMin") || dealPriceMin;
+        var dealPriceTo = parseInt("@Model.DealPriceRangeDefaultMax") || dealPriceMax;
         $("#deal-price-range-slider").ionRangeSlider({
             skin: "round",
             type: "double",
@@ -46,54 +76,24 @@
             from_fixed: false,  // fix position of FROM handle
             to_fixed: false,
             onFinish: function (data) {
-                $("input[name='DealPriceRange[0]'").val(data.from);
-                $("input[name='DealPriceRange[1]'").val(data.to);
+                $("#DealPriceRangeMin").val(data.from);
+                $("#DealPriceRangeMax").val(data.to);
                 //addOrUpdateChip(resetDealPriceRangeSlider, "deal-price-chip", "成交价格(美元):" + data.from, data.to);
                 searchEquipments();
             }
         });
         function resetDealPriceRangeSlider(){
             $("#deal-price-range-slider").data("ionRangeSlider").reset();
-            $("input[name='DealPriceRange[0]'").val("");
-            $("input[name='DealPriceRange[1]'").val("");
+            $("#DealPriceRangeMin").val("");
+            $("#DealPriceRangeMax").val("");
         }
     }
 
-    var soldAtMin = parseInt("@Model.SoldAtMin") || 0;
-    var soldAtMax = parseInt("@Model.SoldAtMax") || 0;
-    var soldAtFrom = parseInt("@(Model.SoldAtRange == null ? 0 : Model.SoldAtRange[0])") || soldAtMin;
-    var soldAtTo = parseInt("@(Model.SoldAtRange == null ? 0 : Model.SoldAtRange[1])") || soldAtMax;
-    if(soldAtMax > 0){
-        $("#sold-at-range-slider").ionRangeSlider({
-            skin: "round",
-            type: "double",
-            min: soldAtMin,
-            max: soldAtMax,
-            from: soldAtFrom,
-            to: soldAtTo,
-            grid: false,
-            grid_snap: true,
-            from_fixed: false,  // fix position of FROM handle
-            to_fixed: false,
-            onFinish: function (data) {
-                $("input[name='SoldAtRange[0]'").val(data.from);
-                $("input[name='SoldAtRange[1]'").val(data.to);
-                //addOrUpdateChip(resetSoldAtRangeSlider, "sold-at-chip", "拍卖日期:" + data.from, data.to);
-                searchEquipments();
-            }
-        });
-        function resetSoldAtRangeSlider(){
-            $("#sold-at-range-slider").data("ionRangeSlider").reset();
-            $("input[name='SoldAtRange[0]'").val("");
-            $("input[name='SoldAtRange[1]'").val("");
-        }
-    }
-
-    var productionDateMin = parseInt("@Model.ProductionDateMin") || 0;
-    var productionDateMax = parseInt("@Model.ProductionDateMax") || 0;
-    var productionDateFrom = parseInt("@(Model.ProductionDateRange == null ? 0 : Model.ProductionDateRange[0])") || productionDateMin;
-    var productionDateTo = parseInt("@(Model.ProductionDateRange == null ? 0 : Model.ProductionDateRange[1])") || productionDateMax;
-    if(productionDateMax > 0){
+    var productionDateMin = parseInt("@Model.ProductionDateMin") || parseInt("@ApplicationConstant.intDefaultValue");
+    var productionDateMax = parseInt("@Model.ProductionDateMax") || parseInt("@ApplicationConstant.intDefaultValue");
+    if(productionDateMax > parseInt("@ApplicationConstant.intDefaultValue")){
+        var productionDateFrom = parseInt("@Model.ProductionDateRangeDefaultMin");
+        var productionDateTo = parseInt("@Model.ProductionDateRangeDefaultMax");
         $("#production-date-range-slider").ionRangeSlider({
             skin: "round",
             type: "double",
@@ -106,16 +106,71 @@
             from_fixed: false,  // fix position of FROM handle
             to_fixed: false,
             onFinish: function (data) {
-                $("input[name='ProductionDateRange[0]'").val(data.from);
-                $("input[name='ProductionDateRange[1]'").val(data.to);
+                $("#ProductionDateRangeMin").val(data.from);
+                $("#ProductionDateRangeMax").val(data.to);
                 //addOrUpdateChip(resetProductionDateRangeSlider, "production-date-chip", "生产年份:" + data.from, data.to);
                 searchEquipments();
             }
         });
         function resetProductionDateRangeSlider(){
             $("#production-date-range-slider").data("ionRangeSlider").reset();
-            $("input[name='ProductionDateRange[0]'").val("");
-            $("input[name='ProductionDateRange[1]'").val("");
+            $("#ProductionDateRangeMin").val("");
+            $("#ProductionDateRangeMax").val("");
         }
     }
+
+    var soldAtMin = moment("@Model.SoldAtMin") || moment("@ApplicationConstant.DateTimeMinValue");
+    var soldAtMax = moment("@Model.SoldAtMax") || moment("@ApplicationConstant.DateTimeMinValue");
+    if(soldAtMax > moment("@ApplicationConstant.DateTimeMinValue")){
+        var soldAtFrom = moment("@Model.SoldAtRangeDefaultMin");
+        var soldAtTo = moment("@Model.SoldAtRangeDefaultMax");
+        $('#sold-at-range-picker').daterangepicker({
+            locale: {
+                cancelLabel: '清除',
+                applyLabel: "确认",
+                format: 'YYYY-MM-DD',
+                customRangeLabel: "自定义",
+                daysOfWeek: ["日", "一", "二", "三", "四", "五", "六"],
+                monthNames: [
+                    "1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"
+                ],
+            },
+            ranges: {
+                '今天': [moment(), moment()],
+                '昨天': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                '近7天': [moment().subtract(6, 'days'), moment()],
+                '近30天': [moment().subtract(29, 'days'), moment()],
+                '本月': [moment().startOf('month'), moment().endOf('month')],
+                '下个月': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                '近3个月': [moment().subtract(3, 'months'), moment()],
+                '近半年': [moment().subtract(6, 'months'), moment()],
+                '整年': [moment().startOf('year'), moment().endOf('year')],
+            },
+            minDate: soldAtMin.format("YYYY-MM-DD"),
+            maxDate: soldAtMax.format("YYYY-MM-DD"),
+            startDate: soldAtFrom.format("YYYY-MM-DD"),
+            endtDate: soldAtTo.format("YYYY-MM-DD"),
+            showDropdowns: true,
+        }, function(start, end, label) {
+            console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+        });
+        $('#sold-at-range-picker').on('apply.daterangepicker', function(ev, picker) {
+            $("#SoldAtRangeMin").val(picker.startDate.format("YYYY-MM-DD"));
+            $("#SoldAtRangeMax").val(picker.endDate.format("YYYY-MM-DD"));
+            searchEquipments();
+        });
+        $('#sold-at-range-picker').on('cancel.daterangepicker', function(ev, picker) {
+            $('#sold-at-range-picker').data('daterangepicker').setStartDate(soldAtMin.format("YYYY-MM-DD")); // 不会触发apply.daterangepicker事件 也不会出发初始化回调函数
+            $('#sold-at-range-picker').data('daterangepicker').setEndDate(soldAtMax.format("YYYY-MM-DD"));
+            $("#SoldAtRangeMin").val("");
+            $("#SoldAtRangeMax").val("");
+            searchEquipments();
+        });
+    }
+    function resetSoldAtRangePicker(){
+            $("#sold-at-range-picker").data("daterangepicker").setStartDate(soldAtMin.format("YYYY-MM-DD"));
+            $("#sold-at-range-picker").data("daterangepicker").setEndDate(soldAtMax.format("YYYY-MM-DD"));
+            $("#SoldAtRangeMin").val("");
+            $("#SoldAtRangeMax").val("");
+        }
 </script>

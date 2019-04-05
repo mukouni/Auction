@@ -1,7 +1,6 @@
 ﻿@inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 @inject IHttpContextAccessor HttpContextAccessor
-
 <!DOCTYPE html>
 <html>
 
@@ -11,6 +10,7 @@
     <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" >
     <link rel="stylesheet" href="~/lib/fontawesome-free/css/all.min.css" asp-append-version="true" >
+    <link rel="stylesheet" href="~/lib/daterangepicker/daterangepicker.css" asp-append-version="true" >
     <!-- <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" /> -->
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
     @RenderSection("stylesheet", required: false)
@@ -26,15 +26,40 @@
                     <div class="d-none d-sm-block">
                         <img class="" src="~/images/logo.svg">
                     </div>
+                    @{
+                       var Path = Context.Request.Path;
+                    }
                     <div id="navbar" class="d-none d-sm-block d-sm-flex align-self-end">
                         <ul class="nav nav-pills">
-                            <li class="nav-item"><a asp-controller="Equipment" asp-action="NoAuction" class="nav-link" aria-controls="no-auction">未拍卖设备</a></li>
-                            <li class="nav-item"><a asp-controller="Equipment" asp-action="Auctioned" class="nav-link"aria-controls="auctioned">已拍卖设备</a></li>
-                            <li class="nav-item"><a asp-controller="Equipment" asp-action="InsteadAuction" class="nav-link" aria-controls="instead-auction">代采购设备</a></li>
+                            <li class="nav-item">
+                                <a asp-controller="Equipment" asp-action="NoAuction"
+                                    class='nav-link @Html.IsActive("Equipment", "NoAuction")'
+                                    aria-controls="no-auction">
+                                    未拍卖设备
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a asp-controller="Equipment" asp-action="Auctioned" 
+                                    class='nav-link @Html.IsActive("Equipment", "Auctioned")'
+                                    aria-controls="auctioned">
+                                    已拍卖设备
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a asp-controller="Equipment" asp-action="InsteadAuction" 
+                                    class='nav-link @Html.IsActive("Equipment", "InsteadAuction")'
+                                    aria-controls="instead-auction">
+                                    代采购设备
+                                </a>
+                            </li>
                             @if (SignInManager.IsSignedIn(User) && (User.IsInRole(ApplicationRole.Admin) || User.IsInRole(ApplicationRole.Staff)))
                             {
                             <li class="nav-item">
-                                <a a asp-controller="Equipment" asp-action="Index" class="nav-link" aria-controls="manage">系统管理</a>
+                                <a asp-controller="Equipment" asp-action="Index" 
+                                    class='nav-link @Html.IsActive("Equipment", "Index")'
+                                    aria-controls="manage">
+                                    系统管理
+                                </a>
                             </li>
                             }
                         </ul>
@@ -61,6 +86,9 @@
     <script src="~/lib/jquery/dist/jquery.js" asp-append-version="true"></script>
     <script src="~/lib/popper.js/dist/umd/popper.js" asp-append-version="true"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-append-version="true"></script>
+    <script src="~/lib/moment/min/moment.min.js" asp-append-version="true"></script>
+    <script src="~/lib/moment/locale/zh-cn.js" asp-append-version="true"></script>
+    <script src="~/lib/daterangepicker/daterangepicker.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/menu.js" asp-append-version="true"></script>
 

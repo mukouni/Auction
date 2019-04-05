@@ -181,3 +181,28 @@ function UploadPhoto(uploadUrl, deleteUrl, setHiddenPhototUrl, modelId) {
     }
 
 }
+
+$(document).on("click", ".order-ul .list-inline-item", function(){
+    var className = "text-warning";
+    var $orderBys = $(this).find(".order-by");
+    if($orderBys.length > 0){
+        if($(this).find("p").hasClass(className)){
+            $orderBys.toggleClass("d-none");
+        }
+        var $showOrderBy = $(this).find(".order-by:visible");
+        $("#Sort_Field").val($orderBys.first().data("order-by"));
+        if($showOrderBy.data("direction") == "desc"){
+            $("#Sort_Direction").val("desc");
+        }else{
+            $("#Sort_Direction").val("asc");
+        }
+    }else{
+        $("#Sort_Field").val("");
+        $("#Sort_Direction").val("");
+    }
+
+    $(".order-ul .list-inline-item").find("p").removeClass(className);
+    $(this).find("p").addClass(className);
+    
+    searchEquipments();
+});

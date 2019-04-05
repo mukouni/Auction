@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore.Scaffolding.Internal;
 using System.Linq;
 using System.Reflection;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Auction.Models.EquipmentViewModels;
+using System.Linq.Expressions;
+using Auction.Entities;
 
 namespace Auction.Extensions
 {
@@ -31,6 +34,39 @@ namespace Auction.Extensions
             query = query.Skip((currentPage - 1) * pageSize).Take(pageSize);
             return query;
         }
+
+        public static IQueryable<T> AuctionSort<T>(this IQueryable<T> query, SearchEquipmentViewModel searchEquipment) where T : Equipment
+        {
+            if (searchEquipment.Sort?.Field != null && searchEquipment.Sort?.Direction != null)
+            {
+                Expression<Func<T, Object>> orderByFunc = null;
+                if ("WorkingTime" == searchEquipment.Sort?.Field)
+                    orderByFunc = item => item.WorkingTime;
+                else if ("ProductionDate" == searchEquipment.Sort?.Field)
+                    orderByFunc = item => item.ProductionDate;
+                else if ("SoldAt" == searchEquipment.Sort?.Field)
+                    orderByFunc = item => item.SoldAt;
+                else if ("Name" == searchEquipment.Sort?.Field)
+                    orderByFunc = item => item.Name;
+                else if ("Price" == searchEquipment.Sort?.Field)
+                    orderByFunc = item => item.Price;
+
+                if (searchEquipment.Sort.Direction == "desc")
+                {
+                    query = query.OrderByDescending(orderByFunc);
+                }
+                else
+                {
+                    query = query.OrderBy(orderByFunc);
+                }
+            }
+            else
+            {
+                query = query.OrderBy(e => e.CreatedAt);
+            }
+            return query;
+        }
+
 
 
         private static readonly TypeInfo QueryCompilerTypeInfo = typeof(QueryCompiler).GetTypeInfo();

@@ -1,29 +1,115 @@
 @using System.IO;
 @using Newtonsoft.Json;
 @using Microsoft.Extensions.Options;
-@model EquipmentViewModel
-@{
-    ViewData["Title"] = "代采购设备";
-}
+@model SearchEquipmentViewModel
 @section stylesheet {
-    
+    <link href="~/lib/ion-rangeslider/css/ion.rangeSlider.min.css" media="all" rel="stylesheet" type="text/css"/>
 }
 
-<div class="bodyinfo row">
+<div class="bodyinfo row text-dark">
+    <div class="searchInput  pt-2 d-flex flex-grow-1 justify-content-center">
+        <div class="form-group col-md-6">
+            <form asp-controller="Equipment" asp-action='@ViewData["Action"]' method="get" id="searchform" class="form-inline">
+                <input asp-for="@Model.KeyWord" class="form-control col-md-9">
+                <button type="submit" value="Submit" class="btn btn-primary ml-2">搜索设备</button>
+            </form>
+        </div>
+    </div>
     <div class="condition">
         
     </div>
-    <div class="info d-flex"> 
-        <div class="search">
-            
-        </div>
-        <div class="show flex-grow-1">
-            <div class="sort">
-
-            </div>
-            <div class="data">
-
-            </div>
-        </div>
+    <div class="info d-flex">
+        @await Html.PartialAsync("_AuctionInfoPartial", Model, ViewData)
+        
     </div>
 </div>
+
+
+@section script {
+    <script src="~/lib/ion-rangeslider/js/ion.rangeSlider.min.js"></script>
+    <script>
+        function searchEquipments(){
+            $.ajax({
+                type: "get",
+                url: "@Url.Action("InsteadAuction")",
+                data: $("form").serialize(),
+                success: function (response) {
+                    $(".info").html("");
+                    $(".info").html(response);
+                    $('#mydiv').html($(response).find('#something').html());
+                    $(response).filter('script').each(function(){
+                        $.globalEval(this.text || this.textContent || this.innerHTML || '');
+                    });
+                }
+            });
+        }
+
+        function addRemoveElement(parentNode, chipElementId, resetValue){
+            var span = document.createElement("span");
+                span.className ="closebtn";
+                span.innerHTML = "&times;";
+                span.onclick = function(e){
+                    var elem = document.getElementById(chipElementId);
+                    elem.parentNode.removeChild(elem);
+                    if(resetValue.length == 0){
+                        resetValue();
+                    }else{
+                        resetValue(chipElementId.split("-chip")[0])
+                    }
+                    searchEquipments();
+                }
+            parentNode.appendChild(span);
+        }
+
+        function addOrUpdateChip(resetValue, ...args){
+            var existChip = document.getElementById(args[0]);
+            
+            if(existChip) {
+                if(args.length == 3 ){
+                    existChip.innerText = args[1] + "—" + args[2];
+                } else {
+                    existChip.innerText = args[1];
+                }
+                addRemoveElement(existChip, args[0], resetValue);
+            } else {            
+                var chip = document.createElement("div");
+                    chip.className = "chip";
+                    chip.id = args[0].toString();
+                if(args.length == 3 ){
+                    chip.innerHTML = args[1] + "—" + args[2];
+                }else{
+                    chip.innerHTML = args[1];
+                }
+                addRemoveElement(chip, args[0], resetValue);
+                document.getElementsByClassName("condition")[0].appendChild(chip);
+            }  
+            //searchEquipments();
+        }
+        
+        var bindCheckBox = function(){
+            //$("#models-form-group").find("input[type='checkbox']:visible").each(function(i, ele){
+            $(".search input[type='checkbox']:visible").each(function(i, ele){
+                $(document).on("change", "#" + $(ele).attr("id"), function(){
+                    var chipId = $(this).attr("id") + "-chip";
+                    if($(this).is(':checked')){
+                        var checkboxArrayId = $(this).attr("id").split("_").slice(0,2).join("_");  
+                        var hiddenInputId = checkboxArrayId + "__Name";
+                        var valueInput = $("#" + hiddenInputId);
+                        
+                        //addOrUpdateChip(resetCheckboxStatus, chipId, valueInput.val());
+                        searchEquipments();
+                    }else{
+                        $("#" + chipId).remove();
+                        searchEquipments();
+                    }
+                    
+                })
+            });
+        };
+        function resetCheckboxStatus(id){
+            $("#" + id.toString()).prop('checked', false);     
+        }
+        bindCheckBox();        
+    </script>
+    @{ await Html.RenderPartialAsync("_SliderScriptsPartial"); }
+}

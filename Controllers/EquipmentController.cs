@@ -97,9 +97,9 @@ namespace Auction.Controllers
             };
 
             var query = _context.Equipments.AsQueryable<Equipment>();
-            if (!string.IsNullOrEmpty(searchEquipment.Kw))
+            if (!string.IsNullOrEmpty(searchEquipment.KeyWord))
             {
-                query = query.Where(x => x.Name.Contains(searchEquipment.Kw.Trim()) || x.Code.Contains(searchEquipment.Kw.Trim()));
+                query = query.Where(x => x.Name.Contains(searchEquipment.KeyWord.Trim()) || x.Code.Contains(searchEquipment.KeyWord.Trim()));
             }
             query = query.OrderByDescending(e => e.LastUpdatedAt).ThenByDescending(e => e.CreatedAt).ThenBy(e => e.Name);
 
@@ -262,7 +262,7 @@ namespace Auction.Controllers
                         changedEquipment = _mapper.Map<EquipmentViewModel, Equipment>(equipmentVM);
                         changedEquipment.CoverPhoto = null;
                     }
-                    
+
                     _context.Equipments.Update(changedEquipment);
                     // var list = new List<Equipment>();
                     // for (int i = 9; i < 20; i++)
@@ -560,7 +560,7 @@ namespace Auction.Controllers
 
 
         /// <summary>
-        /// 为拍卖设备
+        /// 未拍卖设备
         /// </summary>
         [HttpGet("[action]")]
         [HttpPost("[action]")]
@@ -569,11 +569,11 @@ namespace Auction.Controllers
             using (_context)
             {
                 var query = _context.Equipments.AsQueryable<Equipment>();
-                if (!string.IsNullOrEmpty(searchEquipment.Kw))
+                if (!string.IsNullOrEmpty(searchEquipment.KeyWord))
                 {
-                    query = query.Where(x => x.Name.Contains(searchEquipment.Kw.Trim()) || x.Code.Contains(searchEquipment.Kw.Trim()));
+                    query = query.Where(x => x.Name.Contains(searchEquipment.KeyWord.Trim()) || x.Code.Contains(searchEquipment.KeyWord.Trim()));
                 }
-                query = query.Where(x => x.SoldAt == null);
+                query = query.Where(x => x.AuctionHouse != null && x.DealPrice == null);
                 query = query.Where(x => x.IsDeleted == CommonEnum.IsDeleted.No || x.IsDeleted == null);
 
                 searchEquipment = SliderMaxMin(searchEquipment, query);
@@ -582,31 +582,7 @@ namespace Auction.Controllers
                 // 全匹配查询，不过滤所有条件
                 query = SearchCondition(query, searchEquipment);
 
-                if (searchEquipment.Sort?.Field != null && searchEquipment.Sort?.Direction != null)
-                {
-                    Expression<Func<Equipment, Object>> orderByFunc = null;
-                    if ("WorkingTime" == searchEquipment.Sort?.Field)
-                        orderByFunc = item => item.WorkingTime;
-                    else if ("ProductionDate" == searchEquipment.Sort?.Field)
-                        orderByFunc = item => item.ProductionDate;
-                    else if ("SoldAt" == searchEquipment.Sort?.Field)
-                        orderByFunc = item => item.SoldAt;
-                    else if ("Name" == searchEquipment.Sort?.Field)
-                        orderByFunc = item => item.Name;
-
-                    if (searchEquipment.Sort.Direction == "desc")
-                    {
-                        query = query.OrderByDescending(orderByFunc);
-                    }
-                    else
-                    {
-                        query = query.OrderBy(orderByFunc);
-                    }
-                }
-                else
-                {
-                    query = query.OrderBy(e => e.CreatedAt);
-                }
+                query = query.AuctionSort(searchEquipment);
 
                 var totalCount = query.Count();
                 var list = query.Paged(searchEquipment.CurrentPage, searchEquipment.PageSize)
@@ -640,19 +616,116 @@ namespace Auction.Controllers
         /// 已拍卖设备
         /// </summary>
         [HttpGet("[action]")]
-        public IActionResult Auctioned()
+        [HttpPost("[action]")]
+        public IActionResult Auctioned(SearchEquipmentViewModel searchEquipment)
         {
-            return View(new EquipmentViewModel());
+            using (_context)
+            {
+                var query = _context.Equipments.AsQueryable<Equipment>();
+                if (!string.IsNullOrEmpty(searchEquipment.KeyWord))
+                {
+                    query = query.Where(x => x.Name.Contains(searchEquipment.KeyWord.Trim()) || x.Code.Contains(searchEquipment.KeyWord.Trim()));
+                }
+                query = query.Where(x => x.AuctionHouse != null && x.DealPrice != null);
+                query = query.Where(x => x.IsDeleted == CommonEnum.IsDeleted.No || x.IsDeleted == null);
+
+                searchEquipment = SliderMaxMin(searchEquipment, query);
+                searchEquipment = SearchConditionRange(searchEquipment, query);
+
+                // 全匹配查询，不过滤所有条件
+                query = SearchCondition(query, searchEquipment);
+
+                query = query.AuctionSort(searchEquipment);
+
+                var totalCount = query.Count();
+                var list = query.Paged(searchEquipment.CurrentPage, searchEquipment.PageSize)
+                               // .Select(equipment =>  _mapper.Map<EquipmentViewModel>(equipment)) //因为设置了延迟加载会报错
+                               .ProjectTo<EquipmentViewModel>().ToList();
+                // .Project().To<EquipmentViewModel>()
+
+                searchEquipment.Equipments = new StaticPagedList<EquipmentViewModel>(list,
+                                                                                    searchEquipment.CurrentPage,
+                                                                                    searchEquipment.PageSize,
+                                                                                    totalCount);
+                searchEquipment.Count = totalCount;
+
+                if (Request.IsAjaxGetRequest())
+                {
+                    // 搜索
+                    return (IActionResult)PartialView("_AuctionInfoPartial", searchEquipment);
+                }
+                if (Request.IsAjaxPostRequest())
+                {
+                    // 翻页
+                    return (IActionResult)PartialView("_AuctionListPartial", searchEquipment);
+                }
+                // 刷新
+                return View(searchEquipment);
+            }
         }
 
         /// <summary>
         /// 代采购设备
         /// </summary>
         [HttpGet("[action]")]
+        [HttpPost("[action]")]
         [Authorize(Roles = "Admin, Development, Staff, Member")]
-        public IActionResult InsteadAuction()
+        public IActionResult InsteadAuction(SearchEquipmentViewModel searchEquipment)
         {
-            return View(new EquipmentViewModel());
+            ViewData["Title"] = "代购拍卖设备";
+            ViewData["Action"] = "InsteadAuction";
+            ViewData["ShowSoltAtSort"] = true;
+            ViewData["ShowPriceSort"] = true;
+            using (_context)
+            {
+                var query = _context.Equipments.AsQueryable<Equipment>();
+                if (!string.IsNullOrEmpty(searchEquipment.KeyWord))
+                {
+                    query = query.Where(x => x.Name.Contains(searchEquipment.KeyWord.Trim()) || x.Code.Contains(searchEquipment.KeyWord.Trim()));
+                }
+                query = query.Where(x => x.AuctionHouse == null);
+                query = query.Where(x => x.IsDeleted == CommonEnum.IsDeleted.No || x.IsDeleted == null);
+
+                searchEquipment = SliderMaxMin(searchEquipment, query);
+                searchEquipment = SearchConditionRange(searchEquipment, query);
+
+                // 不允许搜索
+                searchEquipment.PriceMin = null;
+                searchEquipment.PriceMax = null;
+                // searchEquipment.SoldAt = null;
+
+
+                // 全匹配查询，不过滤所有条件
+                query = SearchCondition(query, searchEquipment);
+
+                query = query.AuctionSort(searchEquipment);
+
+                var totalCount = query.Count();
+                var list = query.Paged(searchEquipment.CurrentPage, searchEquipment.PageSize)
+                               // .Select(equipment =>  _mapper.Map<EquipmentViewModel>(equipment)) //因为设置了延迟加载会报错
+                               .ProjectTo<EquipmentViewModel>().ToList();
+                // .Project().To<EquipmentViewModel>()
+
+                searchEquipment.Equipments = new StaticPagedList<EquipmentViewModel>(
+                    list,
+                    searchEquipment.CurrentPage,
+                    searchEquipment.PageSize,
+                    totalCount);
+                searchEquipment.Count = totalCount;
+
+                if (Request.IsAjaxGetRequest())
+                {
+                    // 搜索
+                    return (IActionResult)PartialView("_AuctionInfoPartial", searchEquipment);
+                }
+                if (Request.IsAjaxPostRequest())
+                {
+                    // 翻页
+                    return (IActionResult)PartialView("_AuctionListPartial", searchEquipment);
+                }
+                // 刷新
+                return View(searchEquipment);
+            }
         }
 
         private static Encoding GetEncoding(MultipartSection section)
@@ -702,76 +775,170 @@ namespace Auction.Controllers
                 query = query.Where(x => cities.Contains(x.City));
             }
 
-            if (removeCondition != "ProductionDate" && searchEquipment.ProductionDateRange != null && searchEquipment.ProductionDateRange.Length == 2 &&
-                searchEquipment.ProductionDateRange[0] > 0 && searchEquipment.ProductionDateRange[1] == 0)
-            {
-                query = query.Where(x => ((DateTime)x.ProductionDate).Year >= searchEquipment.ProductionDateRange[0]);
+            // if (removeCondition != "ProductionDate" &&
+            //     searchEquipment.ProductionDateRangeMin > 0 && searchEquipment.ProductionDateRangeMax == 0)
+            // {
+            //     query = query.Where(x => ((DateTime)x.ProductionDate).Year >= searchEquipment.ProductionDateRangeMin);
 
-            }
-            if (removeCondition != "ProductionDate" && searchEquipment.ProductionDateRange != null && searchEquipment.ProductionDateRange.Length == 2 &&
-                searchEquipment.ProductionDateRange[0] == 0 && searchEquipment.ProductionDateRange[1] > 0)
-            {
-                query = query.Where(x => ((DateTime)x.ProductionDate).Year <= searchEquipment.ProductionDateRange[1]);
-            }
-            if (removeCondition != "ProductionDate" && searchEquipment.ProductionDateRange != null && searchEquipment.ProductionDateRange.Length == 2 &&
-                searchEquipment.ProductionDateRange[0] > 0 && searchEquipment.ProductionDateRange[1] > 0)
-            {
-                query = query.Where(x => ((DateTime)x.ProductionDate).Year >= searchEquipment.ProductionDateRange[0] && ((DateTime)x.ProductionDate).Year <= searchEquipment.ProductionDateRange[1]);
+            // }
+            // if (removeCondition != "ProductionDate" &&
+            //     searchEquipment.ProductionDateRangeMin == 0 && searchEquipment.ProductionDateRangeMax > 0)
+            // {
+            //     query = query.Where(x => ((DateTime)x.ProductionDate).Year <= searchEquipment.ProductionDateRangeMax);
+            // }
+            // if (removeCondition != "ProductionDate" &&
+            //     searchEquipment.ProductionDateRangeMin > 0 && searchEquipment.ProductionDateRangeMax > 0)
+            // {
+            //     query = query.Where(x => ((DateTime)x.ProductionDate).Year >= searchEquipment.ProductionDateRangeMin && ((DateTime)x.ProductionDate).Year <= searchEquipment.ProductionDateRangeMax);
 
-            }
-
-            if (removeCondition != "WorkingTime" && searchEquipment.WorkingTimeRange != null && searchEquipment.WorkingTimeRange.Length == 2 &&
-                searchEquipment?.WorkingTimeRange[0] >= 0 && searchEquipment?.WorkingTimeRange[1] == 0)
+            // }
+            var ProductionDateMin = searchEquipment.ProductionDateMin ?? ApplicationConstant.intDefaultValue;
+            var ProductionDateMax = searchEquipment.ProductionDateMax ?? ApplicationConstant.intMaxValue;
+            if (removeCondition != "ProductionDate" &&
+                searchEquipment.ProductionDateRangeMin != null && searchEquipment.ProductionDateRangeMax != null &&
+                // searchEquipment.ProductionDateRangeMin >= ProductionDateMin && searchEquipment.ProductionDateRangeMax <= ProductionDateMax &&
+                searchEquipment.ProductionDateRangeMin <= searchEquipment.ProductionDateRangeMax)
             {
-                query = query.Where(x => x.WorkingTime >= searchEquipment.WorkingTimeRange[0]);
-
+                query = query.Where(x =>
+                    ((DateTime)x.ProductionDate).Year >= searchEquipment.ProductionDateRangeMin &&
+                    ((DateTime)x.ProductionDate).Year <= searchEquipment.ProductionDateRangeMax);
             }
-            if (removeCondition != "WorkingTime" && searchEquipment.WorkingTimeRange != null && searchEquipment.WorkingTimeRange.Length == 2 &&
-                searchEquipment.WorkingTimeRange[0] < 0 && searchEquipment.WorkingTimeRange[1] >= 0)
+            else
             {
-                query = query.Where(x => x.WorkingTime <= searchEquipment.WorkingTimeRange[1]);
-            }
-            if (removeCondition != "WorkingTime" && searchEquipment.WorkingTimeRange != null && searchEquipment.WorkingTimeRange.Length == 2 &&
-                searchEquipment.WorkingTimeRange[0] > 0 && searchEquipment.WorkingTimeRange[1] > 0)
-            {
-                query = query.Where(x => x.WorkingTime >= searchEquipment.WorkingTimeRange[0] && x.WorkingTime <= searchEquipment.WorkingTimeRange[1]);
-
-            }
-
-            if (removeCondition != "DealPrice" && searchEquipment.DealPriceRange != null && searchEquipment.DealPriceRange.Length == 2 &&
-                searchEquipment.DealPriceRange[0] >= 0 && searchEquipment.DealPriceRange[1] == 0)
-            {
-                query = query.Where(x => x.DealPrice >= searchEquipment.DealPriceRange[0]);
-
-            }
-            if (removeCondition != "DealPrice" && searchEquipment.DealPriceRange != null && searchEquipment.DealPriceRange.Length == 2 &&
-                searchEquipment.DealPriceRange[0] < 0 && searchEquipment.DealPriceRange[1] >= 0)
-            {
-                query = query.Where(x => x.DealPrice <= searchEquipment.DealPriceRange[1]);
-            }
-            if (removeCondition != "DealPrice" && searchEquipment.DealPriceRange != null && searchEquipment.DealPriceRange.Length == 2 &&
-                searchEquipment.DealPriceRange[0] > 0 && searchEquipment.DealPriceRange[1] > 0)
-            {
-                query = query.Where(x => x.DealPrice >= searchEquipment.DealPriceRange[0] && x.DealPrice <= searchEquipment.DealPriceRange[1]);
-
+                // if (removeCondition == "ProductionDate")
+                // {
+                //     if (searchEquipment.ProductionDateRangeMin != null)
+                //         searchEquipment.ProductionDateRangeMin = ProductionDateMin;
+                //     if (searchEquipment.ProductionDateRangeMax != null)
+                //         searchEquipment.ProductionDateRangeMax = ProductionDateMax;
+                // }
             }
 
-            if (removeCondition != "SoldAt" && searchEquipment.SoldAtRange != null && searchEquipment.SoldAtRange.Length == 2 &&
-                searchEquipment?.SoldAtRange[0] >= 0 && searchEquipment?.SoldAtRange[1] == 0)
-            {
-                query = query.Where(x => ((DateTime)x.SoldAt).Year >= searchEquipment.SoldAtRange[0]);
+            // if (removeCondition != "WorkingTime" &&
+            //     searchEquipment?.WorkingTimeRangeMin >= 0 &&
+            //     searchEquipment?.WorkingTimeRangeMax == 0)
+            // {
+            //     query = query.Where(x => x.WorkingTime >= searchEquipment.WorkingTimeRangeMin);
 
-            }
-            if (removeCondition != "SoldAt" && searchEquipment.SoldAtRange != null && searchEquipment.SoldAtRange.Length == 2 &&
-                searchEquipment.SoldAtRange[0] < 0 && searchEquipment.SoldAtRange[1] >= 0)
-            {
-                query = query.Where(x => ((DateTime)x.SoldAt).Year <= searchEquipment.SoldAtRange[1]);
-            }
-            if (removeCondition != "SoldAt" && searchEquipment.SoldAtRange != null && searchEquipment.SoldAtRange.Length == 2 &&
-                searchEquipment.SoldAtRange[0] > 0 && searchEquipment.SoldAtRange[1] > 0)
-            {
-                query = query.Where(x => ((DateTime)x.SoldAt).Year >= searchEquipment.SoldAtRange[0] && ((DateTime)x.SoldAt).Year <= searchEquipment.SoldAtRange[1]);
+            // }
+            // if (removeCondition != "WorkingTime" &&
+            //     searchEquipment.WorkingTimeRangeMin < 0 && 
+            //     searchEquipment.WorkingTimeRangeMax >= 0)
+            // {
+            //     query = query.Where(x => x.WorkingTime <= searchEquipment.WorkingTimeRangeMax);
+            // }
+            // if (removeCondition != "WorkingTime" &&
+            //     searchEquipment.WorkingTimeRangeMin > 0 && 
+            //     searchEquipment.WorkingTimeRangeMax > 0)
+            // {
+            //     query = query.Where(x => 
+            //         x.WorkingTime >= searchEquipment.WorkingTimeRangeMin && x.WorkingTime <= searchEquipment.WorkingTimeRangeMax);
 
+            // }
+            var WorkingTimeMin = searchEquipment.WorkingTimeMin ?? ApplicationConstant.longDefaultValue;
+            var WorkingTimeMax = searchEquipment.WorkingTimeMax ?? ApplicationConstant.longMaxValue;
+            if (removeCondition != "WorkingTime" &&
+                searchEquipment.WorkingTimeRangeMin != null && searchEquipment.WorkingTimeRangeMax != null &&
+                // searchEquipment.WorkingTimeRangeMin >= WorkingTimeMin && searchEquipment.WorkingTimeRangeMax <= WorkingTimeMax &&
+                searchEquipment.WorkingTimeRangeMin <= searchEquipment.WorkingTimeRangeMax)
+            {
+                query = query.Where(x =>
+                    x.WorkingTime >= searchEquipment.WorkingTimeRangeMin && x.WorkingTime <= searchEquipment.WorkingTimeRangeMax);
+            }
+            else
+            {
+                // if (searchEquipment.WorkingTimeRangeMin != null)
+                //     searchEquipment.WorkingTimeRangeMin = WorkingTimeMin;
+                // if (searchEquipment.WorkingTimeRangeMax != null)
+                //     searchEquipment.WorkingTimeRangeMax = WorkingTimeMax;
+            }
+
+            // if (removeCondition != "DealPrice" &&
+            //     searchEquipment.DealPriceRangeMin >= 0 && searchEquipment.DealPriceRangeMax == 0)
+            // {
+            //     query = query.Where(x => x.DealPrice >= searchEquipment.DealPriceRangeMin);
+
+            // }
+            // if (removeCondition != "DealPrice" &&
+            //     searchEquipment.DealPriceRangeMin < 0 && searchEquipment.DealPriceRangeMax >= 0)
+            // {
+            //     query = query.Where(x => x.DealPrice <= searchEquipment.DealPriceRangeMax);
+            // }
+            // if (removeCondition != "DealPrice" &&
+            //     searchEquipment.DealPriceRangeMin > 0 && searchEquipment.DealPriceRangeMax > 0)
+            // {
+            //     query = query.Where(x => x.DealPrice >= searchEquipment.DealPriceRangeMin && x.DealPrice <= searchEquipment.DealPriceRangeMax);
+            // }
+            var DealPriceMin = searchEquipment.DealPriceMin ?? ApplicationConstant.decimalDefaultValue;
+            var DealPriceMax = searchEquipment.DealPriceMax ?? ApplicationConstant.decimalMaxValue;
+            if (removeCondition != "DealPrice" &&
+                searchEquipment.DealPriceRangeMin != null && searchEquipment.DealPriceRangeMax != null &&
+                // searchEquipment.DealPriceRangeMin >= DealPriceMin && searchEquipment.DealPriceRangeMax <= DealPriceMax &&
+                searchEquipment.DealPriceRangeMin <= searchEquipment.DealPriceRangeMax)
+            {
+                query = query.Where(x =>
+                    x.DealPrice >= searchEquipment.DealPriceRangeMin && x.DealPrice <= searchEquipment.DealPriceRangeMax);
+            }
+            else
+            {
+                // if (searchEquipment.DealPriceRangeMin != null)
+                //     searchEquipment.DealPriceRangeMin = DealPriceMin;
+                // if (searchEquipment.DealPriceRangeMax != null)
+                //     searchEquipment.DealPriceRangeMax = DealPriceMax;
+            }
+
+            var PriceMin = searchEquipment.PriceMin ?? ApplicationConstant.decimalDefaultValue;
+            var PriceMax = searchEquipment.PriceMax ?? ApplicationConstant.decimalMaxValue;
+            if (removeCondition != "Price" &&
+                searchEquipment.PriceRangeMin >= PriceMin && searchEquipment.PriceRangeMax <= PriceMax &&
+                // searchEquipment.PriceRangeMin != null && searchEquipment.PriceRangeMax != null &&
+                searchEquipment.PriceRangeMin <= searchEquipment.PriceRangeMax)
+            {
+                query = query.Where(x =>
+                    x.Price >= searchEquipment.PriceRangeMin && x.Price <= searchEquipment.PriceRangeMax);
+            }
+            else
+            {
+                // if (searchEquipment.PriceRangeMin != null)
+                //     searchEquipment.PriceRangeMin = PriceMin;
+                // if (searchEquipment.PriceRangeMax != null)
+                //     searchEquipment.PriceRangeMax = PriceMax;
+            }
+
+            // if (searchEquipment?.SoldAtRangeMin < searchEquipment?.SoldAtMin ||
+            //     searchEquipment?.SoldAtRangeMin > searchEquipment?.SoldAtMax)
+            // {
+            //     searchEquipment.SoldAtRangeMin = searchEquipment.SoldAtMin;
+            // }
+            // if (searchEquipment?.SoldAtRangeMax > searchEquipment?.SoldAtMax ||
+            //     searchEquipment?.SoldAtRangeMax < searchEquipment?.SoldAtMin)
+            // {
+            //     searchEquipment.SoldAtRangeMax = searchEquipment.SoldAtMax;
+            // }
+            // if (searchEquipment?.SoldAtRangeMin > searchEquipment?.SoldAtRangeMax)
+            // {
+            //     searchEquipment.SoldAtRangeMin = searchEquipment.SoldAtRangeMax;
+            // }
+            // if (searchEquipment?.SoldAtRangeMax < searchEquipment.SoldAtRangeMin)
+            // {
+            //     searchEquipment.SoldAtRangeMax = searchEquipment.SoldAtRangeMin;
+            // }
+            var SoldAtMin = searchEquipment.SoldAtMin ?? ApplicationConstant.DateTimeMinValue;
+            var SoldAtMax = searchEquipment.SoldAtMax ?? ApplicationConstant.DateTimeMaxValue;
+            if (removeCondition != "SoldAt" &&
+                searchEquipment.SoldAtRangeMin != null && searchEquipment.SoldAtRangeMax != null &&
+                // searchEquipment.SoldAtRangeMin >= SoldAtMin && searchEquipment.SoldAtRangeMax <= SoldAtMax &&
+                searchEquipment.SoldAtRangeMin <= searchEquipment.SoldAtRangeMax)
+            {
+                query = query.Where(x =>
+                    ((DateTime)x.SoldAt) >= searchEquipment.SoldAtRangeMin && ((DateTime)x.SoldAt) <= searchEquipment.SoldAtRangeMax);
+            }
+            else
+            {
+                // if (searchEquipment.SoldAtRangeMin != null)
+                //     searchEquipment.SoldAtRangeMin = SoldAtMin;
+                // if (searchEquipment.SoldAtRangeMax != null)
+                //     searchEquipment.SoldAtRangeMax = SoldAtMax;
             }
 
             return query;
@@ -957,86 +1124,243 @@ namespace Auction.Controllers
 
         private SearchEquipmentViewModel SliderMaxMin(SearchEquipmentViewModel searchEquipment, IQueryable<Equipment> query)
         {
-            searchEquipment.WorkingTimeMin = SearchCondition(query, searchEquipment, "WorkingTime").Min(e => e.WorkingTime);
-            searchEquipment.WorkingTimeMax = SearchCondition(query, searchEquipment, "WorkingTime").Max(e => e.WorkingTime);
-            // if (searchEquipment.WorkingTimeRange == null)
-            // {
-            //     searchEquipment.WorkingTimeRange = new long[2];
-            //     searchEquipment.WorkingTimeRange[0] = searchEquipment.WorkingTimeMin ?? 0;
-            //     searchEquipment.WorkingTimeRange[1] = searchEquipment.WorkingTimeMax ?? 0;
-            // }
-            if (searchEquipment.WorkingTimeRange != null &&
-                searchEquipment.WorkingTimeMin > searchEquipment.WorkingTimeRange[0])
-                searchEquipment.WorkingTimeRange[0] = searchEquipment.WorkingTimeMin ?? 0;
-            if (searchEquipment.WorkingTimeRange != null &&
-                searchEquipment.WorkingTimeMax < searchEquipment.WorkingTimeRange[1])
-                searchEquipment.WorkingTimeRange[1] = searchEquipment.WorkingTimeMax ?? 0;
+            var WorkingTimeQuery = SearchCondition(query, searchEquipment, "WorkingTime");
+            if (WorkingTimeQuery.Max(e => e.WorkingTime) != null && WorkingTimeQuery.Max(e => e.WorkingTime) > 0)
+            {
+                searchEquipment.WorkingTimeMin = WorkingTimeQuery.Min(e => e.WorkingTime);
+                searchEquipment.WorkingTimeMax = WorkingTimeQuery.Max(e => e.WorkingTime);
+                // 防止搜索超出范围
+                if (searchEquipment.WorkingTimeRangeMin != null &&
+                    searchEquipment.WorkingTimeMin > searchEquipment.WorkingTimeRangeMin)
+                    searchEquipment.WorkingTimeRangeMin = searchEquipment.WorkingTimeMin;
+                if (searchEquipment.WorkingTimeRangeMax != null &&
+                    searchEquipment.WorkingTimeMax < searchEquipment.WorkingTimeRangeMax)
+                    searchEquipment.WorkingTimeRangeMax = searchEquipment.WorkingTimeMax;
+                if (searchEquipment.WorkingTimeRangeMin != null && searchEquipment.WorkingTimeRangeMax != null &&
+                    searchEquipment.WorkingTimeRangeMin > searchEquipment.WorkingTimeRangeMax)
+                {
+                    searchEquipment.WorkingTimeRangeMin = searchEquipment.WorkingTimeMin;
+                    searchEquipment.WorkingTimeRangeMax = searchEquipment.WorkingTimeMax;
+                }
 
-            searchEquipment.ProductionDateMin = ((DateTime)SearchCondition(query, searchEquipment, "ProductionDate").Min(e => e.ProductionDate)).Year;
-            searchEquipment.ProductionDateMax = ((DateTime)SearchCondition(query, searchEquipment, "ProductionDate").Max(e => e.ProductionDate)).Year;
-            // if (searchEquipment.ProductionDateRange == null)
-            // {
-            //     searchEquipment.ProductionDateRange = new int[2];
-            //     searchEquipment.ProductionDateRange[0] = searchEquipment.ProductionDateMin ?? 0;
-            //     searchEquipment.ProductionDateRange[1] = searchEquipment.ProductionDateMax ?? 0;
-            // }
-            if (searchEquipment.ProductionDateRange != null &&
-                searchEquipment.ProductionDateMin > searchEquipment.ProductionDateRange[0])
-                searchEquipment.ProductionDateRange[0] = searchEquipment.ProductionDateMin ?? 0;
-            if (searchEquipment.ProductionDateRange != null &&
-                searchEquipment.ProductionDateMax < searchEquipment.ProductionDateRange[1])
-                searchEquipment.ProductionDateRange[1] = searchEquipment.ProductionDateMax ?? 0;
+                if (searchEquipment.WorkingTimeRangeMin != null)
+                {
+                    searchEquipment.WorkingTimeRangeDefaultMin = searchEquipment.WorkingTimeRangeMin;
+                }
+                else
+                {
+                    searchEquipment.WorkingTimeRangeDefaultMin = searchEquipment.WorkingTimeMin;
+                }
+                if (searchEquipment.WorkingTimeRangeMax != null)
+                {
+                    searchEquipment.WorkingTimeRangeDefaultMax = searchEquipment.WorkingTimeRangeMax;
+                }
+                else
+                {
+                    searchEquipment.WorkingTimeRangeDefaultMax = searchEquipment.WorkingTimeMax;
+                }
+            }
+            else
+            {
+                // 数据库搜索不到值，前台不做显示。重置所有数据为0
+                searchEquipment.WorkingTimeRangeMin = null;
+                searchEquipment.WorkingTimeRangeMax = null;
+                searchEquipment.WorkingTimeRangeDefaultMin = 0;
+                searchEquipment.WorkingTimeRangeDefaultMax = 0;
+                searchEquipment.WorkingTimeMin = 0;
+                searchEquipment.WorkingTimeMax = 0;
+            }
 
-            searchEquipment.DealPriceMin = query.Min(e => e.DealPrice);
-            searchEquipment.DealPriceMax = query.Max(e => e.DealPrice);
-            // if (searchEquipment.DealPriceRange == null)
-            // {
-            //     searchEquipment.DealPriceRange = new decimal[2];
-            //     searchEquipment.DealPriceRange[0] = searchEquipment.DealPriceMin ?? 0;
-            //     searchEquipment.DealPriceRange[1] = searchEquipment.DealPriceMax ?? 0;
-            // }
-            if (searchEquipment.DealPriceRange != null &&
-                searchEquipment.DealPriceMin > searchEquipment.DealPriceRange[0])
-                searchEquipment.DealPriceRange[0] = searchEquipment.DealPriceMin ?? 0;
-            if (searchEquipment.DealPriceRange != null &&
-                searchEquipment.DealPriceMax < searchEquipment.DealPriceRange[1])
-                searchEquipment.DealPriceRange[1] = searchEquipment.DealPriceMax ?? 0;
+            var ProductionDateQuery = SearchCondition(query, searchEquipment, "ProductionDate");
+            if (ProductionDateQuery.Max(e => e.ProductionDate) != null && ProductionDateQuery.Max(e => e.ProductionDate) > new DateTime(1900, 1, 1))
+            {
+                searchEquipment.ProductionDateMin = ((DateTime)ProductionDateQuery.Min(e => e.ProductionDate)).Year;
+                searchEquipment.ProductionDateMax = ((DateTime)ProductionDateQuery.Max(e => e.ProductionDate)).Year;
+                // 防止搜索超出范围       
+                if (searchEquipment.ProductionDateRangeMin != null &&
+                    searchEquipment.ProductionDateMin > searchEquipment.ProductionDateRangeMin)
+                    searchEquipment.ProductionDateRangeMin = searchEquipment.ProductionDateMin;
+                if (searchEquipment.ProductionDateRangeMax != null &&
+                    searchEquipment.ProductionDateMax < searchEquipment.ProductionDateRangeMax)
+                    searchEquipment.ProductionDateRangeMax = searchEquipment.ProductionDateMax;
+                if (searchEquipment.ProductionDateRangeMin != null && searchEquipment.ProductionDateRangeMax != null &&
+                    searchEquipment.ProductionDateRangeMin > searchEquipment.ProductionDateRangeMax)
+                {
+                    searchEquipment.ProductionDateRangeMin = searchEquipment.ProductionDateMin;
+                    searchEquipment.ProductionDateRangeMax = searchEquipment.ProductionDateMax;
+                }
+
+                if (searchEquipment.ProductionDateRangeMin != null)
+                {
+                    searchEquipment.ProductionDateRangeDefaultMin = searchEquipment.ProductionDateRangeMin;
+                }
+                else
+                {
+                    searchEquipment.ProductionDateRangeDefaultMin = searchEquipment.ProductionDateMin;
+                }
+                if (searchEquipment.ProductionDateRangeMax != null)
+                {
+                    searchEquipment.ProductionDateRangeDefaultMax = searchEquipment.ProductionDateRangeMax;
+                }
+                else
+                {
+                    searchEquipment.ProductionDateRangeDefaultMax = searchEquipment.ProductionDateMax;
+                }
+            }
+            else
+            {
+                // 数据库搜索不到值，前台不做显示。重置所有数据为0
+                searchEquipment.ProductionDateRangeMin = null;
+                searchEquipment.ProductionDateRangeMax = null;
+                searchEquipment.ProductionDateRangeDefaultMin = 0;
+                searchEquipment.ProductionDateRangeDefaultMax = 0;
+                searchEquipment.ProductionDateMin = 0;
+                searchEquipment.ProductionDateMax = 0;
+            }
+
+            var DealPriceQuery = SearchCondition(query, searchEquipment, "DealPrice");
+            if (DealPriceQuery.Max(e => e.DealPrice) != null && DealPriceQuery.Max(e => e.DealPrice) > 0)
+            {
+                searchEquipment.DealPriceMin = ((decimal)DealPriceQuery.Min(e => e.DealPrice));
+                searchEquipment.DealPriceMax = ((decimal)DealPriceQuery.Max(e => e.DealPrice));
+                // 防止搜索超出范围       
+                if (searchEquipment.DealPriceRangeMin != null &&
+                    searchEquipment.DealPriceMin > searchEquipment.DealPriceRangeMin)
+                    searchEquipment.DealPriceRangeMin = searchEquipment.DealPriceMin;
+                if (searchEquipment.DealPriceRangeMax != null &&
+                    searchEquipment.DealPriceMax < searchEquipment.DealPriceRangeMax)
+                    searchEquipment.DealPriceRangeMax = searchEquipment.DealPriceMax;
+                if (searchEquipment.DealPriceRangeMin != null && searchEquipment.DealPriceRangeMax != null &&
+                    searchEquipment.DealPriceRangeMin > searchEquipment.DealPriceRangeMax)
+                {
+                    searchEquipment.DealPriceRangeMin = searchEquipment.DealPriceMin;
+                    searchEquipment.DealPriceRangeMax = searchEquipment.DealPriceMax;
+                }
+
+                if (searchEquipment.DealPriceRangeMin != null)
+                {
+                    searchEquipment.DealPriceRangeDefaultMin = searchEquipment.DealPriceRangeMin;
+                }
+                else
+                {
+                    searchEquipment.DealPriceRangeDefaultMin = searchEquipment.DealPriceMin;
+                }
+                if (searchEquipment.DealPriceRangeMax != null)
+                {
+                    searchEquipment.DealPriceRangeDefaultMax = searchEquipment.DealPriceRangeMax;
+                }
+                else
+                {
+                    searchEquipment.DealPriceRangeDefaultMax = searchEquipment.DealPriceMax;
+                }
+            }
+            else
+            {
+                // 数据库搜索不到值，前台不做显示。重置所有数据为0
+                searchEquipment.DealPriceRangeMin = null;
+                searchEquipment.DealPriceRangeMax = null;
+                searchEquipment.DealPriceRangeDefaultMin = 0;
+                searchEquipment.DealPriceRangeDefaultMax = 0;
+                searchEquipment.DealPriceMin = 0;
+                searchEquipment.DealPriceMax = 0;
+            }
+
+            var PriceQuery = SearchCondition(query, searchEquipment, "Price");
+            if (PriceQuery.Max(e => e.Price) != null && PriceQuery.Max(e => e.Price) > 0)
+            {
+                searchEquipment.PriceMin = ((decimal)PriceQuery.Min(e => e.Price));
+                searchEquipment.PriceMax = ((decimal)PriceQuery.Max(e => e.Price));
+                // 防止搜索超出范围       
+                if (searchEquipment.PriceRangeMin != null &&
+                    searchEquipment.PriceMin > searchEquipment.PriceRangeMin)
+                    searchEquipment.PriceRangeMin = searchEquipment.PriceMin;
+                if (searchEquipment.PriceRangeMax != null &&
+                    searchEquipment.PriceMax < searchEquipment.PriceRangeMax)
+                    searchEquipment.PriceRangeMax = searchEquipment.PriceMax;
+                if (searchEquipment.PriceRangeMin != null && searchEquipment.PriceRangeMax != null &&
+                    searchEquipment.PriceRangeMin > searchEquipment.PriceRangeMax)
+                {
+                    searchEquipment.PriceRangeMin = searchEquipment.PriceMin;
+                    searchEquipment.PriceRangeMax = searchEquipment.PriceMax;
+                }
+
+                if (searchEquipment.PriceRangeMin != null)
+                {
+                    searchEquipment.PriceRangeDefaultMin = searchEquipment.PriceRangeMin;
+                }
+                else
+                {
+                    searchEquipment.PriceRangeDefaultMin = searchEquipment.PriceMin;
+                }
+                if (searchEquipment.PriceRangeMax != null)
+                {
+                    searchEquipment.PriceRangeDefaultMax = searchEquipment.PriceRangeMax;
+                }
+                else
+                {
+                    searchEquipment.PriceRangeDefaultMax = searchEquipment.PriceMax;
+                }
+            }
+            else
+            {
+                // 数据库搜索不到值，前台不做显示。重置所有数据为0
+                searchEquipment.DealPriceRangeMin = null;
+                searchEquipment.DealPriceRangeMax = null;
+                searchEquipment.DealPriceRangeDefaultMin = 0;
+                searchEquipment.DealPriceRangeDefaultMax = 0;
+                searchEquipment.DealPriceMin = 0;
+                searchEquipment.DealPriceMax = 0;
+            }
 
 
-            // searchEquipment.SoldAtMin = query.Min(e => e.SoldAt) == null ? 0 : ((DateTime)SearchCondition(query, searchEquipment, "SoldAt").Min(e => e.SoldAt)).Year;
-            // searchEquipment.SoldAtMax = query.Max(e => e.SoldAt) == null ? 0 : ((DateTime)SearchCondition(query, searchEquipment, "SoldAt").Max(e => e.SoldAt)).Year;
-            // if (searchEquipment.SoldAtRange == null)
-            // {
-            //     searchEquipment.SoldAtRange = new int[2];
-            //     searchEquipment.SoldAtRange[0] = searchEquipment.SoldAtMin ?? 0;
-            //     searchEquipment.SoldAtRange[1] = searchEquipment.SoldAtMax ?? 0;
-            // }
-            // if (searchEquipment.SoldAtRange != null &&
-            //     searchEquipment.SoldAtMin > searchEquipment.SoldAtRange[0])
-            //     searchEquipment.SoldAtRange[0] = searchEquipment.SoldAtMin ?? 0;
-            // if (searchEquipment.SoldAtRange != null &&
-            //     searchEquipment.SoldAtMax < searchEquipment.SoldAtRange[1])
-            //     searchEquipment.SoldAtRange[1] = searchEquipment.SoldAtMax ?? 0;
+            var SoldAtQuery = SearchCondition(query, searchEquipment, "SoldAt");
+            if (SoldAtQuery.Max(e => e.SoldAt) != null && SoldAtQuery.Max(e => e.SoldAt) > new DateTime(1900, 1, 1))
+            {
+                searchEquipment.SoldAtMin = SoldAtQuery.Min(e => e.SoldAt);
+                searchEquipment.SoldAtMax = SoldAtQuery.Max(e => e.SoldAt);
+                searchEquipment.SoldAtRangeDefaultMin = searchEquipment.SoldAtMin;
+                searchEquipment.SoldAtRangeDefaultMax = searchEquipment.SoldAtMax;
+                // 防止搜索超出范围, 当其他搜索条件影响到这个输入框的值的时候，要缩小用户的值  
+                if (searchEquipment.SoldAtRangeMin != null &&
+                    searchEquipment.SoldAtMin > searchEquipment.SoldAtRangeMin)
+                    searchEquipment.SoldAtRangeMin = searchEquipment.SoldAtMin;
+                if (searchEquipment.SoldAtRangeMax != null &&
+                    searchEquipment.SoldAtMax < searchEquipment.SoldAtRangeMax)
+                    searchEquipment.SoldAtRangeMax = searchEquipment.SoldAtMax;
+                if (searchEquipment.SoldAtRangeMin != null && searchEquipment.SoldAtRangeMax != null &&
+                    searchEquipment.SoldAtRangeMin > searchEquipment.SoldAtRangeMax)
+                {
+                    searchEquipment.SoldAtRangeMin = searchEquipment.SoldAtMin;
+                    searchEquipment.SoldAtRangeMax = searchEquipment.SoldAtMax;
+                }
 
-
-            //  long?[] WorkingTimeRangeTemp = query.GroupBy(r => 1)
-            //                                     .Select(grp => new[]
-            //                                     {
-            //                                        grp.Min(t => t.WorkingTime),
-            //                                        grp.Max(t => t.WorkingTime)
-            //                                     }).First();
-            // searchEquipment.WorkingTimeMin = WorkingTimeRangeTemp[0];
-            // searchEquipment.WorkingTimeMax = WorkingTimeRangeTemp[1];
-
-
-            // decimal?[] DealPriceRangeTemp = query.GroupBy(r => 1)
-            //                                         .Select(grp => new[]
-            //                                         {
-            //                                             grp.Min(t => t.DealPrice),
-            //                                             grp.Max(t => t.DealPrice)
-            //                                         }).First();
-            // searchEquipment.DealPriceMin = DealPriceRangeTemp[0];
-            // searchEquipment.DealPriceMax = DealPriceRangeTemp[1];
+                if (searchEquipment.SoldAtRangeMin != null)
+                {
+                    searchEquipment.SoldAtRangeDefaultMin = searchEquipment.SoldAtRangeMin;
+                }
+                else
+                {
+                    searchEquipment.SoldAtRangeDefaultMin = searchEquipment.SoldAtMin;
+                }
+                if (searchEquipment.SoldAtRangeMax != null)
+                {
+                    searchEquipment.SoldAtRangeDefaultMax = searchEquipment.SoldAtRangeMax;
+                }
+                else
+                {
+                    searchEquipment.SoldAtRangeDefaultMax = searchEquipment.SoldAtMax;
+                }
+            }
+            else
+            {
+                // 数据库搜索不到值，前台不做显示。重置所有数据为 1900-1-1
+                searchEquipment.SoldAtRangeMin = null;
+                searchEquipment.SoldAtRangeMax = null;
+                searchEquipment.SoldAtRangeDefaultMin = ApplicationConstant.DateTimeMinValue;
+                searchEquipment.SoldAtRangeDefaultMax = ApplicationConstant.DateTimeMinValue;
+                searchEquipment.SoldAtMin = ApplicationConstant.DateTimeMinValue;
+                searchEquipment.SoldAtMax = ApplicationConstant.DateTimeMinValue;
+            }
 
             return searchEquipment;
         }

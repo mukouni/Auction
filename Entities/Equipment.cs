@@ -126,17 +126,17 @@ namespace Auction.Entities
         public int? DealPriceCurrencyId { get; set; }
 
         /// <summary>
-        /// 成交价格
+        /// 预估价格
         /// </summary>
         public Decimal? Price { get; set; }
 
         /// <summary>
-        /// 价格币种
+        /// 预估价格币种
         /// </summary>
         public virtual Currency PriceCurrency { get; set; }
 
         /// <summary>
-        /// 价格币种Id
+        /// 预估价格币种Id
         /// </summary>
         public int? PriceCurrencyId { get; set; }
 
