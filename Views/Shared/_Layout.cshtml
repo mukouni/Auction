@@ -8,9 +8,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" >
     <link rel="stylesheet" href="~/lib/fontawesome-free/css/all.min.css" asp-append-version="true" >
     <link rel="stylesheet" href="~/lib/daterangepicker/daterangepicker.css" asp-append-version="true" >
+    <link rel="stylesheet" href="~/lib/swiper/dist/css/swiper.min.css" asp-append-version="true" >
+    <link rel="stylesheet" href="~/lib/photoswipe/dist/photoswipe.css" asp-append-version="true" >
+    <link rel="stylesheet" href="~/lib/photoswipe/dist/default-skin/default-skin.css" asp-append-version="true" >
     <!-- <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" /> -->
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
     @RenderSection("stylesheet", required: false)
@@ -67,7 +71,14 @@
                     <div class="d-flex d-sm-none col justify-content-between align-items-center">
                         <i id="toggle-menu" class="menu fas fa-bars"></i>
                         <img class="" src="~/images/logo-s.svg">
-                        <a href="../pages/index.html"><i class="user fas fa-user"></i></a>
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <a asp-controller="Manage" asp-action="Index"><i class="user fas fa-user"></i></a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Account" asp-action="Login"><i class="user fas fa-user"></i></a>
+                        }
                     </div>
                 </div>
         </header>
@@ -83,6 +94,9 @@
         </footer>
     </div>
 
+    <!--[if lt IE 9]>
+        <script src="~/lib/html5shiv/dist/html5shiv.min.js"></script>
+    <![endif]-->
     <script src="~/lib/jquery/dist/jquery.js" asp-append-version="true"></script>
     <script src="~/lib/popper.js/dist/umd/popper.js" asp-append-version="true"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-append-version="true"></script>
@@ -90,6 +104,9 @@
     <script src="~/lib/moment/locale/zh-cn.js" asp-append-version="true"></script>
     <script src="~/lib/daterangepicker/daterangepicker.js" asp-append-version="true"></script>
     <script src="~/lib/slideout/dist/slideout.js" asp-append-version="true"></script>
+    <script src="~/lib/swiper/dist/js/swiper.min.js" asp-append-version="true"></script>
+    <script src="~/lib/photoswipe/dist/photoswipe.min.js" asp-append-version="true"></script>
+    <script src="~/lib/photoswipe/dist/photoswipe-ui-default.min.js" asp-append-version="true"></script>
     <script src="~/js/menu.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 

@@ -6,8 +6,8 @@
     <link href="~/lib/ion-rangeslider/css/ion.rangeSlider.min.css" media="all" rel="stylesheet" type="text/css"/>
 }
 
-<div class="bodyinfo row text-dark">
-    <div class="searchInput  pt-2 d-flex flex-grow-1 justify-content-center">
+<div class="bodyinfo row flex-column">
+    <div class="search-input  pt-2 d-flex justify-content-center">
         <div class="form-group col-md-7">
             <form asp-controller="Equipment" asp-action='@ViewData["Action"]' method="get" id="searchform" class="form-inline justify-content-center">
                 <input asp-for="@Model.KeyWord" class="form-control col-md-8 col-sm-6 col-8">
@@ -18,7 +18,7 @@
     <div class="condition">
         
     </div>
-    <div class="info d-flex">
+    <div class="info d-flex flex-grow-1">
         @await Html.PartialAsync("_AuctionInfoPartial", Model, ViewData)
         
     </div>

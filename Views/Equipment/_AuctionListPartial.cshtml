@@ -4,9 +4,12 @@
     <div class="media mb-3 equipment-list">
         <img class="mr-3" src="@item.CoverPhoto.RequestPath" alt="@item.CoverPhoto.FileName">
         <div class="media-body">
-            <h3 class="font-weight-bold"> 
+            <a class="font-weight-bold equipment-title h3" 
+                asp-controller="Equipment" asp-action="show"
+                asp-route-type="@ViewData["Action"]"
+                asp-route-id="@item.Id"> 
                 @item.Manufacturer  @item.Model @item.Name  
-            </h3>
+            </a>
             <p>
                 @Html.DisplayNameFor(model => item.WorkingTime):
                 <b>@item.WorkingTime Hr*</b>

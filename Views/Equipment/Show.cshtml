@@ -1,0 +1,504 @@
+@using Auction.Entities
+@model EquipmentViewModel
+@{
+    ViewData["Title"] = "详情";
+    var FirstPhotos = new List<PhotoViewModel>();
+    if(Model.ExteriorPhotos.Count > 0)  { FirstPhotos.Add(Model.ExteriorPhotos.First()); }
+    if(Model.TrackedChassisPhotos.Count > 0) { FirstPhotos.Add(Model.TrackedChassisPhotos.First()); }
+    if(Model.CabPhotos.Count > 0) { FirstPhotos.Add(Model.CabPhotos.First()); }
+    if(Model.BoomPhotos.Count > 0) { FirstPhotos.Add(Model.BoomPhotos.First()); }
+    if(Model.EnginePhotos.Count > 0) { FirstPhotos.Add(Model.EnginePhotos.First()); }
+}
+<div class="bodyinfo equipment-show text-dark container-fluid">
+
+    <div class="photos-container pt-3">
+        <span class="row equipment-name font-weight-bold h3 col" style="color: #EAB82D">
+            @Model.Manufacturer  @Model.Model @Model.Name
+        </span>
+        <div class="row ">
+            <div class="first-photos photos col-md-3  order-1  order-md-0" itemscope itemtype="http://schema.org/ImageGallery">
+                <div class="swiper-container gallery-top">
+                    <div class="swiper-wrapper my-gallery">
+                    @foreach(var photo in @FirstPhotos){
+                        <figure class="swiper-slide" style="background-image:url(@photo.RequestPath); " itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                            <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
+                                <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
+                            </a>
+                            <figcaption>Image caption 2.2</figcaption>
+                        </figure>
+                    }
+                    </div>
+                    <!-- Add Arrows -->
+                    <div class="swiper-button-next swiper-button-white" tabindex="0" role="button" aria-label="上一张" aria-disabled="false"></div>
+                    <div class="swiper-button-prev swiper-button-white" tabindex="0" role="button" aria-label="下一张" aria-disabled="false"></div>
+                <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                </div>
+    
+                <div class="swiper-container gallery-thumbs">
+                    <div class="swiper-wrapper">
+                        @foreach(var photo in @FirstPhotos){
+                            <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                        }
+                    </div>
+                <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                </div>
+            </div>
+            <div class="equipment-message col-md-4 col-lg-5 col-sm-12 d-inline order-0  order-md-1">
+                <div class="col-md-6  float-left">
+                    <label asp-for="Manufacturer"></label>:
+                    @Html.DisplayFor(modelItem => modelItem.Manufacturer)
+                </div>
+                @if(Model.ProductionDate != null){
+                    <div class="col-md-6  float-left">
+                        <label asp-for="ProductionDate"></label>:
+                        <span>
+                            @Html.DisplayFor(modelItem => modelItem.ProductionDate)
+                        </span>
+                    </div>
+                }
+                @if(Model.WorkingTime != 0){
+                    <div class="col-md-6  float-left">
+                        <label asp-for="WorkingTime"></label>:
+                        <span>
+                            @Html.DisplayFor(modelItem => modelItem.WorkingTime)
+                        </span>
+                    </div>
+                }
+                @if(Model.WorkingDistance != null){
+                    <div class="col-md-6  float-left">
+                        <label asp-for="WorkingDistance"></label>:
+                        <span>
+                            @Html.DisplayFor(modelItem => modelItem.WorkingDistance)@Html.DisplayFor(modelItem => modelItem.WorkingDistanceUnit)
+                        </span>
+                    </div>
+                }
+                @if(Model.DealPrice != null){
+                    <div class="col-md-6  float-left">
+                        <label asp-for="DealPrice"></label>:
+                        <span>
+                            @Html.DisplayFor(modelItem => modelItem.DealPrice)@Html.DisplayFor(modelItem => modelItem.DealPriceCurrency.SymbolCode)
+                        </span>
+                    </div>
+                }
+                @if(Model.Price != null){
+                    <div class="col-md-6  float-left">
+                        <label asp-for="Price"></label>:
+                        <span>
+                            @Html.DisplayFor(modelItem => modelItem.Price)@Html.DisplayFor(modelItem => modelItem.PriceCurrency.SymbolCode)
+                        </span>
+                    </div>
+                }
+                @if(Model.SoldAt != null){
+                    <div class="col-md-6  float-left">
+                        <label asp-for="SoldAt"></label>:
+                        <span>
+                            @Html.DisplayFor(modelItem => modelItem.SoldAt)
+                        </span>
+                    </div>
+                }
+                @if(Model.AuctionHouse != null){
+                    <div class="col-md-6  float-left">
+                        <label asp-for="AuctionHouse"></label>:
+                        <span>
+                            @Html.DisplayFor(modelItem => modelItem.AuctionHouse)
+                        </span>
+                    </div>
+                }
+                @if(Model.Country != null){
+                    <div class="col-md-6  float-left">
+                        <label asp-for="Country"></label>:
+                        <span>
+                            @Html.DisplayFor(modelItem => modelItem.Country)
+                        </span>
+                    </div>
+                }
+                @if(Model.City != null){
+                    <div class="col-md-6  float-left">
+                        <label asp-for="City"></label>:
+                        <span>
+                            @Html.DisplayFor(modelItem => modelItem.City)
+                        </span>
+                    </div>
+                }
+
+                @if(Model.Long != null){
+                    <div class="col-md-6  float-left">
+                        <label asp-for="Long"></label>:
+                        <span>
+                            @Html.DisplayFor(modelItem => modelItem.Long)
+                        </span>
+                    </div>
+                }
+
+                @if(Model.Width != null){
+                    <div class="col-md-6  float-left">
+                        <label asp-for="Width"></label>:
+                        <span>
+                            @Html.DisplayFor(modelItem => modelItem.Width)
+                        </span>
+                    </div>
+                }
+                @if(Model.Height != null){
+                    <div class="col-md-6  float-left">
+                        <label asp-for="Height"></label>:
+                        <span>
+                            @Html.DisplayFor(modelItem => modelItem.Height)
+                        </span>
+                    </div>
+                }
+                @if(Model.Height != null){
+                    <div class="col-md-6  float-left">
+                        <label asp-for="Height"></label>:
+                        <span>
+                            @Html.DisplayFor(modelItem => modelItem.Height)
+                        </span>
+                    </div>
+                }
+                @if(Model.Weight != null){
+                    <div class="col-md-6  float-left">
+                        <label asp-for="Weight"></label>:
+                        <span>
+                            @Html.DisplayFor(modelItem => modelItem.Weight)
+                        </span>
+                    </div>
+                }
+                @if(Model.Volume != null){
+                    <div class="col-md-6  float-left">
+                        <label asp-for="Volume"></label>:
+                        <span>
+                            @Html.DisplayFor(modelItem => modelItem.Volume)
+                        </span>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    @if(Model.ExteriorPhotos != null && Model.ExteriorPhotos.Count > 0){
+    <div class="exterior-photos-container photos-container">
+        <div class="row photo-title col mb-1">
+            外观图片:
+        </div>
+        <div class="row">
+            <div class="exterior-photos photos col-md-3" itemscope itemtype="http://schema.org/ImageGallery">
+                <div class="swiper-container gallery-top">
+                    <div class="swiper-wrapper my-gallery">
+                    @foreach(var photo in @Model.ExteriorPhotos?.OrderBy(p => p.FileName)){
+                        <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                            <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
+                                <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
+                            </a>
+                            <figcaption>Image caption 2.2</figcaption>
+                        </figure>
+                    }
+                    </div>
+                    <!-- Add Arrows -->
+                    <div class="swiper-button-next swiper-button-white" tabindex="0" role="button" aria-label="上一张" aria-disabled="false"></div>
+                    <div class="swiper-button-prev swiper-button-white" tabindex="0" role="button" aria-label="下一张" aria-disabled="false"></div>
+                <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                </div>
+    
+                <div class="swiper-container gallery-thumbs">
+                    <div class="swiper-wrapper">
+                        @foreach(var photo in @Model.ExteriorPhotos?.OrderBy(p => p.FileName)){
+                            <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                        }
+                    </div>
+                <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                </div>
+            </div>
+            <div class="photo-message">
+            </div>
+        </div>
+    </div>
+    }
+    @if(Model.TrackedChassisPhotos != null && Model.TrackedChassisPhotos.Count > 0){
+    <div class="tracked-chassis-photos-container photos-container">
+        <div class="row photo-title col mb-1">
+            履带底架图片:
+        </div>
+        <div class="row">
+            <div class="tracked-chassis-photos photos col-md-3" itemscope itemtype="http://schema.org/ImageGallery">
+                <div class="swiper-container gallery-top">
+                    <div class="swiper-wrapper my-gallery">
+                    @foreach(var photo in @Model.TrackedChassisPhotos?.OrderBy(p => p.FileName)){
+                        <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                            <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
+                                <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
+                            </a>
+                            <figcaption>Image caption 2.2</figcaption>
+                        </figure>
+                    }
+                    </div>
+                    <!-- Add Arrows -->
+                    <div class="swiper-button-next swiper-button-white" tabindex="0" role="button" aria-label="上一张" aria-disabled="false"></div>
+                    <div class="swiper-button-prev swiper-button-white" tabindex="0" role="button" aria-label="下一张" aria-disabled="false"></div>
+                    <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                </div>
+                <div class="swiper-container gallery-thumbs">
+                    <div class="swiper-wrapper">
+                        @foreach(var photo in @Model.TrackedChassisPhotos?.OrderBy(p => p.FileName)){
+                            <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                        }
+                    </div>
+                    <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                </div>
+            </div>
+            <div class="photo-message">
+            </div>
+        </div>
+    </div>
+    }
+    
+    @if(Model.CabPhotos != null && Model.CabPhotos.Count > 0){
+    <div class="cab-photos-container photos-container">
+        <div class="row photo-title col mb-1">
+            驾驶室照片:
+        </div>
+        <div class="row">
+            <div class="cab-photos photos col-md-3" itemscope itemtype="http://schema.org/ImageGallery">
+                <div class="swiper-container gallery-top">
+                    <div class="swiper-wrapper my-gallery">
+                    @foreach(var photo in @Model.CabPhotos?.OrderBy(p => p.FileName)){
+                        <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                            <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
+                                <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
+                            </a>
+                            <figcaption>Image caption 2.2</figcaption>
+                        </figure>
+                    }
+                    </div>
+                    <!-- Add Arrows -->
+                    <div class="swiper-button-next swiper-button-white" tabindex="0" role="button" aria-label="上一张" aria-disabled="false"></div>
+                    <div class="swiper-button-prev swiper-button-white" tabindex="0" role="button" aria-label="下一张" aria-disabled="false"></div>
+                <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                </div>
+    
+                @if(@Model.CabPhotos.Count > 1){
+                <div class="swiper-container gallery-thumbs">
+                    <div class="swiper-wrapper">
+                        @foreach(var photo in @Model.CabPhotos?.OrderBy(p => p.FileName)){
+                            <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                        }
+                    </div>
+                    <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                </div>
+                }
+            </div>
+            <div class="photo-message">
+            </div>
+        </div>
+    </div>
+    }
+    @if(Model.BoomPhotos != null && Model.BoomPhotos.Count > 0){
+    <div class="boom-photos-container photos-container">
+        <div class="row photo-title col mb-1">
+            臂架照片:
+        </div>
+        <div class="row">
+            <div class="boom-photos photos col-md-3" itemscope itemtype="http://schema.org/ImageGallery">
+                <div class="swiper-container gallery-top">
+                    <div class="swiper-wrapper my-gallery">
+                    @foreach(var photo in @Model.BoomPhotos?.OrderBy(p => p.FileName)){
+                        <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                            <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
+                                <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
+                            </a>
+                            <figcaption>Image caption 2.2</figcaption>
+                        </figure>
+                    }
+                    </div>
+                    <!-- Add Arrows -->
+                    <div class="swiper-button-next swiper-button-white" tabindex="0" role="button" aria-label="上一张" aria-disabled="false"></div>
+                    <div class="swiper-button-prev swiper-button-white" tabindex="0" role="button" aria-label="下一张" aria-disabled="false"></div>
+                    <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                </div>
+                <div class="swiper-container gallery-thumbs">
+                    <div class="swiper-wrapper">
+                        @foreach(var photo in @Model.BoomPhotos?.OrderBy(p => p.FileName)){
+                            <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                        }
+                    </div>
+                    <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                </div>
+            </div>
+            <div class="photo-message">
+            </div>
+        </div>
+    </div>
+    }
+    @if(Model.EnginePhotos != null && Model.EnginePhotos.Count > 0){
+    <div class="engine-photos-container photos-container">
+        <div class="row photo-title col mb-1">
+            引擎照片:
+        </div>
+        <div class="row">
+            <div class="engine-photos photos col-md-3" itemscope itemtype="http://schema.org/ImageGallery">
+                <div class="swiper-container gallery-top">
+                    <div class="swiper-wrapper my-gallery">
+                    @foreach(var photo in @Model.EnginePhotos?.OrderBy(p => p.FileName)){
+                        <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                            <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
+                                <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
+                            </a>
+                            <figcaption>Image caption 2.2</figcaption>
+                        </figure>
+                    }
+                    </div>
+                    <!-- Add Arrows -->
+                    <div class="swiper-button-next swiper-button-white" tabindex="0" role="button" aria-label="上一张" aria-disabled="false"></div>
+                    <div class="swiper-button-prev swiper-button-white" tabindex="0" role="button" aria-label="下一张" aria-disabled="false"></div>
+                <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                </div>
+    
+                <div class="swiper-container gallery-thumbs">
+                    <div class="swiper-wrapper">
+                        @foreach(var photo in @Model.EnginePhotos?.OrderBy(p => p.FileName)){
+                            <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                        }
+                    </div>
+                <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                </div>
+            </div>
+            <div class="photo-message">
+            </div>
+        </div>
+    </div>
+    }
+</div>
+@await Html.PartialAsync("_PhotoSwipeWindowPort")
+@section script {
+<script>
+    $(document).ready(function () {
+        var isExteriorNoLoop = true;
+        if($(".first-photos .gallery-thumbs .swiper-slide").length == 1) isExteriorNoLoop = false;
+
+        new Swiper('.first-photos .gallery-top', {
+            spaceBetween: 10,
+            loop: isExteriorNoLoop,
+            navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+            },
+            thumbs: {
+            swiper: new Swiper('.first-photos .gallery-thumbs', {
+                    spaceBetween: 10,
+                    slidesPerView: 4,
+                    freeMode: true,
+                    watchSlidesVisibility: true,
+                    watchSlidesProgress: true,
+                    //loop: true, //图片少于4张的时候会发生复制图片问题
+                })
+            }
+        });
+
+        var isExteriorNoLoop = true;
+        if($(".exterior-photos .gallery-thumbs .swiper-slide").length == 1) isExteriorNoLoop = false;
+
+        new Swiper('.exterior-photos .gallery-top', {
+            spaceBetween: 10,
+            loop: isExteriorNoLoop,
+            navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+            },
+            thumbs: {
+            swiper: new Swiper('.exterior-photos .gallery-thumbs', {
+                    spaceBetween: 10,
+                    slidesPerView: 4,
+                    freeMode: true,
+                    watchSlidesVisibility: true,
+                    watchSlidesProgress: true,
+                    //loop: true, //图片少于4张的时候会发生复制图片问题
+                })
+            }
+        });
+        
+        var isTrackedChassisNoLoop = true;
+        if($(".tracked-chassis-photos .gallery-thumbs .swiper-slide").length == 1) isTrackedChassisNoLoop = false;
+        new Swiper('.tracked-chassis-photos .gallery-top', {
+            spaceBetween: 10,
+            loop: isTrackedChassisNoLoop,
+            navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+            },
+            thumbs: {
+            swiper: new Swiper('.tracked-chassis-photos .gallery-thumbs', {
+                    spaceBetween: 10,
+                    slidesPerView: 4,
+                    freeMode: true,
+                    watchSlidesVisibility: true,
+                    watchSlidesProgress: true,
+                    //loop: true,
+                })
+            }
+        });
+
+        var isCabPhotosNoLoop = true;
+        if($(".cab-photos .gallery-thumbs .swiper-slide").length == 1) isCabPhotosNoLoop = false;
+        new Swiper('.cab-photos .gallery-top', {
+            spaceBetween: 10,
+            loop: isCabPhotosNoLoop,
+            navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+            },
+            thumbs: {
+            swiper: new Swiper('.cab-photos .gallery-thumbs', {
+                    spaceBetween: 10,
+                    slidesPerView: 4,
+                    freeMode: true,
+                    watchSlidesVisibility: true,
+                    watchSlidesProgress: true,
+                    //loop: true,
+                })
+            }
+        });
+
+        var isBoomPhotosNoLoop = true;
+        if($(".boom-photos .gallery-thumbs .swiper-slide").length == 1) isBoomPhotosNoLoop = false;
+        new Swiper('.boom-photos .gallery-top', {
+            spaceBetween: 10,
+            loop: isBoomPhotosNoLoop,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            thumbs: {
+            swiper: new Swiper('.boom-photos .gallery-thumbs', {
+                    spaceBetween: 10,
+                    slidesPerView: 4,
+                    freeMode: true,
+                    watchSlidesVisibility: true,
+                    watchSlidesProgress: true,
+                    //loop: true,
+                })
+            }
+        });
+
+        var isEnginePhotosNoLoop = true;
+        if($(".engine-photos .gallery-thumbs .swiper-slide").length == 1) isEnginePhotosNoLoop = false;
+        new Swiper('.engine-photos .gallery-top', {
+            spaceBetween: 10,
+            loop: isEnginePhotosNoLoop,
+            navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+            },
+            thumbs: {
+            swiper: new Swiper('.engine-photos .gallery-thumbs', {
+                    spaceBetween: 10,
+                    slidesPerView: 4,
+                    freeMode: true,
+                    watchSlidesVisibility: true,
+                    watchSlidesProgress: true,
+                    //loop: true,
+                })
+            }
+        });
+
+        initPhotoSwipeFromDOM('.my-gallery');
+    });
+</script>
+}

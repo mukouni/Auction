@@ -184,7 +184,6 @@ namespace Auction.Controllers
             return RedirectToAction(nameof(Index)).WithSuccess("创建成功", "");
         }
 
-        [HttpGet("{id:Guid}")]
         [HttpGet("{id:Guid}/[action]")]
         [Authorize(Roles = "Admin, Staff, Develpment")]
         [GenerateAntiforgeryTokenCookieForAjax]
@@ -291,6 +290,18 @@ namespace Auction.Controllers
                 var equipment = await _context.Equipments.FirstOrDefaultAsync(e => e.Id == id);
             }
             return RedirectToAction(nameof(Edit), equipmentVM);
+        }
+
+        [HttpGet("{id:Guid}")]
+        public async Task<IActionResult> Show(Guid id, string type)
+        {
+            var equipment = _mapper.Map<EquipmentViewModel>(await _context.Equipments.FindAsync(id));
+             if (equipment == null)
+            {
+                return NotFound();
+            }
+            ViewData["Type"] = type;
+            return View(equipment);
         }
 
         // [HttpPost("[action]")]

@@ -32,9 +32,9 @@ body {
 .chip {
   display: inline-block;
   padding: 0 10px;
-  font-size: 16px;
-  height: 26px;
-  line-height: 26px;
+  font-size: 1rem;
+  height: 1.625rem;
+  line-height: 1.625rem;
   border-radius: 25px;
   background-color: #f1f1f1;
   margin: 0 5px 5px 0;
@@ -53,7 +53,7 @@ body {
   color: #888;
   font-weight: bold;
   float: right;
-  font-size: 20px;
+  font-size: 1.25rem;
   cursor: pointer;
 }
 
@@ -73,7 +73,7 @@ label,
 .form-control,
 .btn,
 .input-group-text {
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .btn,
@@ -168,7 +168,7 @@ a:visited {
 }
 
 .title .menu {
-  font-size: 35px;
+  font-size: 2.1875rem;
 
   margin: 10px;
 
@@ -178,7 +178,7 @@ a:visited {
 }
 
 .title .user {
-  font-size: 35px;
+  font-size: 2.1875rem;
 
   margin: 10px;
 
@@ -206,7 +206,7 @@ a:visited {
 }
 
 #navbar li.nav-item a {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: bold;
 
   color: #495057;
@@ -275,6 +275,7 @@ table[data-toggle="table"] tbody td:last-child {
 .login form {
   width: 90%;
   padding: 40px;
+  min-width: 370px;
 
   border: 2px solid #e87511;
   border-radius: 5px;
@@ -292,8 +293,6 @@ table[data-toggle="table"] tbody td:last-child {
 }
 
 .login a {
-  line-height: 38px;
-
   text-shadow: 2px 2px 4px #000;
 }
 
@@ -318,8 +317,9 @@ table[data-toggle="table"] tbody td:last-child {
 .bodyinfo {
   width: 80%;
   /* min-width: 1000px; */
-  height: calc(100% - 190px);
-  margin: 150px auto 0;
+  height: auto;
+  min-height: calc(100% - 190px);
+  margin: 150px auto 40px;
 }
 
 @media(max-width: 1024px) {
@@ -336,9 +336,14 @@ table[data-toggle="table"] tbody td:last-child {
   }
 }
 
+.bodyinfo .search-input {
+ height: 43px;
+ width: 100%;
+}
+
 .bodyinfo .condition {
   width: 100%;
-  /* height: 60px; */
+  min-height: 30px;
 
   border-bottom: 2px solid gray;
 }
@@ -354,10 +359,19 @@ table[data-toggle="table"] tbody td:last-child {
 }
 
 @media(max-width: 576px) {
-  .bodyinfo {
-    height: calc(100% - 140px);
+  #navbar li.nav-item a {
+    font-size: 1.25rem;
   }
 
+  .bodyinfo {
+    min-height: calc(100vh - 140px);
+    height: auto;
+    margin-bottom: 50px;
+  }
+  .bodyinfo .info{
+    height: auto;
+    /* min-height: calc(100vh - 140px); */
+  }
   .bodyinfo .info .show {
     background: white;
     touch-action: none;
@@ -368,13 +382,13 @@ table[data-toggle="table"] tbody td:last-child {
     height: 100px;
   }
 
-  .bodyinfo .info .equipment-list .media-body h3 {
-    font-size: 18px;
+  .bodyinfo .info .equipment-list .media-body .equipment-title {
+    font-size: 1.25rem;
   }
 
   .bodyinfo .info .equipment-list .media-body p {
     margin-bottom: 5px;
-    font-size: 16px;
+    font-size: 1rem;
   }
 
   .bodyinfo .info .search {
@@ -422,10 +436,14 @@ table[data-toggle="table"] tbody td:last-child {
     display: block;
   }
 
+  .bodyinfo.equipment-show .photos {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+
 }
 
 .bodyinfo .info .search {
-
   width: 25%;
   max-width: 300px;
   min-width: 250px;
@@ -446,6 +464,74 @@ table[data-toggle="table"] tbody td:last-child {
   width: 100%;
   min-height: calc(100% - 80px);
   padding-bottom: 40px;
+}
+.bodyinfo.equipment-show .equipment-message{
+  min-width: 390px;
+}
+@media (min-width: 2000px){
+  .bodyinfo.equipment-show .equipment-message{
+    max-width: 600px;
+  }
+}
+@media (min-width: 1200px){
+  .bodyinfo.equipment-show .equipment-message{
+    max-width: 100%;
+    min-width: 50%;
+  }
+}
+@media (max-width: 1108px) and (min-width: 768px){
+  .bodyinfo.equipment-show .equipment-message{
+    min-width: 100%;
+  }
+}
+.bodyinfo.equipment-show .equipment-message label{
+  min-width: 80px;
+}
+.bodyinfo.equipment-show .equipment-message div{
+  padding: 0;
+  margin: 0;
+  /* min-width: 200px; */
+}
+.bodyinfo.equipment-show .photos-container{
+  margin: 0 0 20px 0;
+}
+.bodyinfo.equipment-show .photos {
+  max-width: 600px;
+  /* width: 30%; */
+  min-width: 460px;
+  height: 300px;
+}
+.bodyinfo.equipment-show .photo-title{
+  font-size: 1.125rem;
+  font-weight: bold;
+}
+
+.swiper-container {
+  width: 100%;
+  height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.swiper-slide {
+  background-size: cover;
+  background-position: center;
+}
+.gallery-top {
+  height: 80%;
+  width: 100%;
+}
+.gallery-thumbs {
+  height: 20%;
+  box-sizing: border-box;
+  padding: 10px 0;
+}
+.gallery-thumbs .swiper-slide {
+  width: 25%;
+  height: 100%;
+  opacity: 0.4;
+}
+.gallery-thumbs .swiper-slide-thumb-active {
+  opacity: 1;
 }
 
 footer {
@@ -470,7 +556,7 @@ footer {
 }
 
 .data .equipment-list .work-time-label {
-  font-size: 20px;
+  font-size: 1.25rem;
 }
 
 .sort p:first-child {
@@ -492,6 +578,6 @@ footer {
 }
 
 .search .form-group .control-label {
-  font-size: 18px;
+  font-size: 1rem;
   font-weight: bold;
 }

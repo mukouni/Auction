@@ -14,9 +14,10 @@ namespace Auction.Extensions
 
             var routeAction = (string)routeData.Values["action"];
             var routeControl = (string)routeData.Values["controller"];
+            var routeType = (string)html.ViewContext.ViewData["Type"];
 
-            var returnActive = control == routeControl &&
-                               action == routeAction;
+            var returnActive = control == routeControl && action == routeAction || 
+                               control == routeControl && routeType == action ;
 
             return new HtmlString(returnActive ? "active" : "");
         }

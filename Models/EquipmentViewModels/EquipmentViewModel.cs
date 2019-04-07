@@ -137,6 +137,12 @@ namespace Auction.Models.EquipmentViewModels
         [Display(Name = "成交货币币种")]
         public int? DealPriceCurrencyId { get; set; }
 
+        ///<summary>
+        /// 成交价格币种
+        /// </summary>
+        [Display(Name = "成交货币币种")]
+        public Currency DealPriceCurrency { get; set; }
+
         /// <summary>
         /// lotNo
         /// </summary>
