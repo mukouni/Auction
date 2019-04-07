@@ -2,8 +2,8 @@
     var workingTimeMin = parseInt("@Model.WorkingTimeMin") || parseInt("@ApplicationConstant.intDefaultValue");
     var workingTimeMax = parseInt("@Model.WorkingTimeMax") || parseInt("@ApplicationConstant.intDefaultValue");
     if(workingTimeMax > 0){
-        var workingTimeFrom = parseInt("@(Model.WorkingTimeRangeDefaultMin)") || WorkingTimeMin;
-        var workingTimeTo = parseInt("@(Model.WorkingTimeRangeDefaultMax)") || WorkingTimeMax;
+        var workingTimeFrom = parseInt("@(Model.WorkingTimeRangeDefaultMin)");
+        var workingTimeTo = parseInt("@(Model.WorkingTimeRangeDefaultMax)");
         $("#working-time-range-slider").ionRangeSlider({
             skin: "round",
             type: "double",
@@ -32,8 +32,8 @@
     var priceMin = moment("@Model.PriceMin") || moment("@ApplicationConstant.DateTimeMinValue");
     var priceMax = moment("@Model.PriceMin") || moment("@ApplicationConstant.DateTimeMinValue");
     if(priceMax > moment("@ApplicationConstant.DateTimeMinValue")){
-        var PriceFrom =  moment("@Model.PriceRangeDefaultMin") || priceMin;
-        var PriceTo =  moment("@Model.PriceRangeDefaultMax") || priceMax;
+        var PriceFrom =  moment("@Model.PriceRangeDefaultMin");
+        var PriceTo =  moment("@Model.PriceRangeDefaultMax");
         $("#price-range-slider").ionRangeSlider({
             skin: "round",
             type: "double",
@@ -62,8 +62,8 @@
     var dealPriceMin = parseInt("@Model.DealPriceMin") || parseInt("@ApplicationConstant.intDefaultValue");
     var dealPriceMax = parseInt("@Model.DealPriceMin") || parseInt("@ApplicationConstant.intDefaultValue");
     if(dealPriceMax > parseInt("@ApplicationConstant.intDefaultValue")){
-        var dealPriceFrom = parseInt("@Model.DealPriceRangeDefaultMin") || dealPriceMin;
-        var dealPriceTo = parseInt("@Model.DealPriceRangeDefaultMax") || dealPriceMax;
+        var dealPriceFrom = parseInt("@Model.DealPriceRangeDefaultMin");
+        var dealPriceTo = parseInt("@Model.DealPriceRangeDefaultMax");
         $("#deal-price-range-slider").ionRangeSlider({
             skin: "round",
             type: "double",

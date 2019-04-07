@@ -344,6 +344,7 @@ function initPhotoSwipeFromDOM(gallerySelector) {
             //         rect = thumbnail.getBoundingClientRect();
             //     return { x: rect.left, y: rect.top + pageYScroll, w: rect.width };
             // }
+            tapToClose: true
         };
         // PhotoSwipe opened from URL
         if (fromURL) {
