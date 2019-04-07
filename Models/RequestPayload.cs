@@ -24,7 +24,7 @@ namespace Auction.Models
         /// <summary>
         /// 分页大小
         /// </summary>
-        public int PageSize { get; set; } = 8;
+        public int PageSize { get; set; } = 20;
 
         /// <summary>
         /// 当前页码
