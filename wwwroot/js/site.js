@@ -215,7 +215,7 @@ $("#toggle-menu").click(function () {
 })
 
 // .search是侧栏 .show是滑动主面板 需要touch-action: none;
-if($('.info .show').get(0) && $('.info .search').get(0)){
+if ($('.info .show').get(0) && $('.info .search').get(0)) {
     var slideout = new Slideout({
         'panel': $('.info .show').get(0),
         'menu': $('.info .search').get(0),
@@ -228,7 +228,7 @@ if($('.info .show').get(0) && $('.info .search').get(0)){
 function initPhotoSwipeFromDOM(gallerySelector) {
     // parse slide data (url, title, size ...) from DOM elements
     // (children of gallerySelector)
-    var parseThumbnailElements = function(el) {
+    var parseThumbnailElements = function (el) {
         var thumbElements = el.childNodes,
             numNodes = thumbElements.length,
             items = [],
@@ -243,7 +243,7 @@ function initPhotoSwipeFromDOM(gallerySelector) {
                 continue;
             }
             linkEl = figureEl.children[0]; // <a> element
-            if(linkEl.getAttribute('data-size')){
+            if (linkEl.getAttribute('data-size')) {
                 size = linkEl.getAttribute('data-size').split('x');
                 // create slide object
                 item = {
@@ -270,12 +270,12 @@ function initPhotoSwipeFromDOM(gallerySelector) {
         return el && (fn(el) ? el : closest(el.parentNode, fn));
     };
     // triggers when user clicks on thumbnail
-    var onThumbnailsClick = function(e) {
+    var onThumbnailsClick = function (e) {
         e = e || window.event;
         e.preventDefault ? e.preventDefault() : e.returnValue = false;
         var eTarget = e.target || e.srcElement;
         // find root element of slide
-        var clickedListItem = closest(eTarget, function(el) {
+        var clickedListItem = closest(eTarget, function (el) {
             return (el.tagName && el.tagName.toUpperCase() === 'FIGURE');
         });
         if (!clickedListItem) {
@@ -305,7 +305,7 @@ function initPhotoSwipeFromDOM(gallerySelector) {
         return false;
     };
     // parse picture index and gallery index from URL (#&pid=1&gid=2)
-    var photoswipeParseHash = function() {
+    var photoswipeParseHash = function () {
         var hash = window.location.hash.substring(1),
             params = {};
         if (hash.length < 5) {
@@ -327,7 +327,7 @@ function initPhotoSwipeFromDOM(gallerySelector) {
         }
         return params;
     };
-    var openPhotoSwipe = function(index, galleryElement, disableAnimation, fromURL) {
+    var openPhotoSwipe = function (index, galleryElement, disableAnimation, fromURL) {
         var pswpElement = document.querySelectorAll('.pswp')[0],
             gallery,
             options,
@@ -373,7 +373,7 @@ function initPhotoSwipeFromDOM(gallerySelector) {
         }
         // Pass data to PhotoSwipe and initialize it
         gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
-        gallery.listen('imageLoadComplete', function(index, item) {
+        gallery.listen('imageLoadComplete', function (index, item) {
             var linkEl = item.el.children[0];
             var img = item.container.children[0];
             if (linkEl.getAttribute('data-size').split('x')[0] == '0' && linkEl.getAttribute('data-size').split('x')[1] == '0') {
@@ -384,7 +384,7 @@ function initPhotoSwipeFromDOM(gallerySelector) {
                 gallery.updateSize(true);
             }
         });
-      
+
         gallery.init();
     };
     // loop through all gallery elements and bind events
@@ -399,3 +399,127 @@ function initPhotoSwipeFromDOM(gallerySelector) {
         openPhotoSwipe(hashData.pid, galleryElements[hashData.gid - 1], true, true);
     }
 };
+
+function ScrollEndGet() {
+    this.hasMore = false; // 是否有下一页
+    this.lastKnownScrollPosition = 0; // 最后滚动的位置，滚动条上沿
+    this.windowHeight = 0; // viewpoint的高度
+    this.documentHeight = 0; // 窗口内容总高度
+    this.ticking = false; //是否正进行复杂操作
+    this.currentPage = 1;
+
+    this.scrollListening = function () {
+        var scrollEndGet = this;
+        $(window).scroll(function () {
+            if (scrollEndGet.hasMore) {
+                scrollEndGet.lastKnownScrollPosition = Math.ceil($(this).scrollTop()); // 不太准，有很长的小数位
+                scrollEndGet.documentHeight = $(document).height();
+                scrollEndGet.windowHeight = $(this).height();
+                var isScrollEnd = scrollEndGet.lastKnownScrollPosition + scrollEndGet.windowHeight >= scrollEndGet.documentHeight;
+
+                if (!scrollEndGet.ticking && isScrollEnd) {
+                    console.log(11)
+                    window.requestAnimationFrame(function () {
+                        scrollEndGet.getNextPage(scrollEndGet.currentPage);
+                        scrollEndGet.ticking = false;
+                    });
+                }
+                if (scrollEndGet.ticking && isScrollEnd) {
+                    scrollEndGet.ticking = true;
+                }
+
+            }
+        });
+    };
+
+    this.getNextPage = function(currentPage) {
+        searchEquipments("post", currentPage + 1)
+        // do something with the scroll position
+    }
+};
+var scrollEndGet = new ScrollEndGet();
+scrollEndGet.scrollListening();
+
+$.fn.serializeObject = function() {
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+        if (o[this.name]) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    return o;
+};
+
+
+function addRemoveElement(parentNode, chipElementId, resetValue){
+    var span = document.createElement("span");
+        span.className ="closebtn";
+        span.innerHTML = "&times;";
+        span.onclick = function(e){
+            var elem = document.getElementById(chipElementId);
+            elem.parentNode.removeChild(elem);
+            if(resetValue.length == 0){
+                resetValue();
+            }else{
+                resetValue(chipElementId.split("-chip")[0])
+            }
+            searchEquipments();
+        }
+    parentNode.appendChild(span);
+}
+
+function addOrUpdateChip(resetValue, ...args){
+    var existChip = document.getElementById(args[0]);
+    
+    if(existChip) {
+        if(args.length == 3 ){
+            existChip.innerText = args[1] + "—" + args[2];
+        } else {
+            existChip.innerText = args[1];
+        }
+        addRemoveElement(existChip, args[0], resetValue);
+    } else {            
+        var chip = document.createElement("div");
+            chip.className = "chip";
+            chip.id = args[0].toString();
+        if(args.length == 3 ){
+            chip.innerHTML = args[1] + "—" + args[2];
+        }else{
+            chip.innerHTML = args[1];
+        }
+        addRemoveElement(chip, args[0], resetValue);
+        document.getElementsByClassName("condition")[0].appendChild(chip);
+    }  
+    //searchEquipments();
+}
+
+var bindCheckBox = function(){
+    //$("#models-form-group").find("input[type='checkbox']:visible").each(function(i, ele){
+    $(".search input[type='checkbox']:visible").each(function(i, ele){
+        $(document).on("change click touch touchstart touchend", "#" + $(ele).attr("id"), function(){
+            var chipId = $(this).attr("id") + "-chip";
+            if($(this).is(':checked')){
+                var checkboxArrayId = $(this).attr("id").split("_").slice(0,2).join("_");  
+                var hiddenInputId = checkboxArrayId + "__Name";
+                var valueInput = $("#" + hiddenInputId);
+
+                //addOrUpdateChip(resetCheckboxStatus, chipId, valueInput.val());
+                searchEquipments();
+            }else{
+                $("#" + chipId).remove();
+                searchEquipments();
+            }
+            
+        })
+    });
+};
+function resetCheckboxStatus(id){
+    $("#" + id.toString()).prop('checked', false);     
+}
+bindCheckBox();

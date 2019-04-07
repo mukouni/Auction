@@ -732,6 +732,11 @@ namespace Auction.Controllers
                 if (Request.IsAjaxPostRequest())
                 {
                     // 翻页
+                    if(list.Count == 0){
+                        var response = ResponseModelFactory.CreateResultInstance;
+                        response.SetData("<p class=\"text-center\">没有更多数据了！</p>", list.Count);
+                        return Ok(response);
+                    }
                     return (IActionResult)PartialView("_AuctionListPartial", searchEquipment);
                 }
                 // 刷新

@@ -86,5 +86,11 @@
             'padding': 250,
             'tolerance': 70
         });
+
+        if(parseInt("@Model.Equipments.Count") == parseInt("@Model.PageSize")){
+            scrollEndGet.hasMore = true;
+        }
+        currentPage = parseInt("@Model.CurrentPage") || 1;
+        scrollEndGet.currentPage = currentPage;
     </script>
 }
