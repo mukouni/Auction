@@ -34,10 +34,12 @@
         function searchEquipments(method = "get", nextPage = 1, pageSize = parseInt("@Model.PageSize")){
             var formData = $("#filter-form").serializeObject();
             formData.KeyWord = $("#KeyWord").val();
-            var pageData = {
-                CurrentPage: nextPage,
-                PageSize: pageSize 
-            };
+            if(method == "post"){
+                var pageData = {
+                    CurrentPage: nextPage,
+                    PageSize: pageSize 
+                };
+            }
             $.ajax({
                 type: method,
                 url: "@Url.Action("Auctioned")",
