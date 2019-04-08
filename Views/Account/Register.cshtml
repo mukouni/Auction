@@ -10,12 +10,12 @@
                     
                     <div asp-validation-summary="All" class="text-danger"></div>
                     
-                    <span asp-validation-for="Phone" class="text-danger"></span>
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                     <div class="input-group mb-3">
                         <div class="label input-group-prepend">
                             <span class="input-group-text">手 机 号：</span>
                         </div>
-                        <input asp-for="Phone" class="form-control" placeholder="手机号"/>
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="手机号"/>
                     </div>
                     
                     <span asp-validation-for="RealName" class="text-danger"></span>
@@ -70,7 +70,7 @@
             $.ajax({
                 type: "post",
                 url: "@Url.Action("GetSMSCode")",
-                data: { Phone: $("#Phone").val(), 
+                data: { PhoneNumber: $("#PhoneNumber").val(), 
                         SMSType: "Register",
                         '__RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val(), },
                 success: function(result){

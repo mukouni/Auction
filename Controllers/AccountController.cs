@@ -78,7 +78,7 @@ namespace Auction.Controllers
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                String username = _context.Users.Where(u => u.PhoneNumber == model.Phone).Select(u => u.UserName).FirstOrDefault();
+                String username = _context.Users.Where(u => u.PhoneNumber == model.PhoneNumber).Select(u => u.UserName).FirstOrDefault();
                 if (username == null)
                 {
                     // model.Message ="没有找到手机号";
@@ -134,7 +134,7 @@ namespace Auction.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { PhoneNumber = model.Phone, UserName = model.UserName };
+                var user = new ApplicationUser { PhoneNumber = model.PhoneNumber, UserName = model.UserName };
                 if (model.SMSCode != HttpContext.Session.Get<string>("smsCode") ||
                     DateTime.Now <= HttpContext.Session.Get<DateTime>("smsTimeoutAt"))
                 {
@@ -142,7 +142,7 @@ namespace Auction.Controllers
                     return View(model);
                 }
 
-                if (_context.Users.Where(u => u.PhoneNumber == model.Phone).Count() > 0)
+                if (_context.Users.Where(u => u.PhoneNumber == model.PhoneNumber).Count() > 0)
                 {
                     ModelState.AddModelError(string.Empty, "手机号已被占用!");
                     return View(model);
@@ -162,10 +162,10 @@ namespace Auction.Controllers
                 }
 
                 await _userManager.AddToRoleAsync(
-                    await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == model.Phone),
+                    await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == model.PhoneNumber),
                     ApplicationRole.Guest);
                 // var securityStamp = await _userManager.GetSecurityStampAsync(user);
-                // var code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, model.Phone);
+                // var code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, model.PhoneNumber);
                 // var validCode = await _userManager.GenerateUserTokenAsync(user, _userManager.Options.Tokens.PasswordResetTokenProvider, "PhotoConfirmation");
                 if (result.Succeeded)
                 {
@@ -176,7 +176,7 @@ namespace Auction.Controllers
                     //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
                     //    "Please confirm your account by clicking this link: <a href=\"" + callbackUrl + "\">link</a>");
 
-                    // _smsSender.SendSmsAsync(model.Phone, code, "register");
+                    // _smsSender.SendSmsAsync(model.PhoneNumber, code, "register");
                     // await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(3, "User created a new account with password.");
                     return RedirectToLocal(returnUrl);
@@ -195,7 +195,7 @@ namespace Auction.Controllers
 
             var code = await _userManager.GeneratePhoneNumberTokenAsync(5);
 
-            await _smsSender.SendSmsAsync(model.Phone, code, model.SMSType);
+            await _smsSender.SendSmsAsync(model.PhoneNumber, code, model.SMSType);
 
             HttpContext.Session.Set<string>("smsCode", code);
             var smsSendAt = DateTime.Now;
@@ -356,7 +356,7 @@ namespace Auction.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = _userManager.FindByPhoneNumber(_context, model.Phone);
+                var user = _userManager.FindByPhoneNumber(_context, model.PhoneNumber);
                 if (model.SMSCode != HttpContext.Session.Get<string>("smsCode") ||
                     DateTime.Now <= HttpContext.Session.Get<DateTime>("smsTimeoutAt"))
                 {

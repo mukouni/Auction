@@ -66,7 +66,7 @@ namespace Auction.Controllers.Api
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                string username = _context.Users.Where(u => u.PhoneNumber == model.Phone).Select(u => u.UserName).FirstOrDefault();
+                string username = _context.Users.Where(u => u.PhoneNumber == model.PhoneNumber).Select(u => u.UserName).FirstOrDefault();
                 if (username == null)
                 {
                     response.SetFailed("没有找到手机号");

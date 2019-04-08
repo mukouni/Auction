@@ -106,7 +106,7 @@ namespace Auction.Controllers
             var list = query.Paged(searchEquipment.CurrentPage, searchEquipment.PageSize)
                             // .Select(equipment =>  _mapper.Map<EquipmentViewModel>(equipment)) //因为设置了延迟加载会报错
                             .ProjectTo<EquipmentViewModel>();
-            // .Project().To<EquipmentViewModel>()
+                            // .Project().To<EquipmentViewModel>()
 
             var totalCount = query.Count();
 
@@ -164,7 +164,7 @@ namespace Auction.Controllers
             var group1 = new SelectListGroup() { Name = "Group 1" };
             equipment.Currencies = _context.Currencies.Select(c => new SelectListItem
             {
-                Value = c.Name,
+                Value = c.Id.ToString(),
                 Text = c.Name
             }).ToList();
             equipment.Currencies.First().Selected = true;

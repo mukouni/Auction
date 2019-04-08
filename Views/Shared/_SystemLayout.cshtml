@@ -1,0 +1,84 @@
+@{
+    ViewData["Title"] = "系统设置";
+    Layout = "_Layout";
+}
+@section stylesheet{
+    <link href="~/lib/bootstrap-table/dist/bootstrap-table.min.css" media="all" rel="stylesheet" type="text/css"/>
+    <link href="~/lib/ion-rangeslider/css/ion.rangeSlider.min.css" media="all" rel="stylesheet" type="text/css"/>
+    <style>
+        .body{
+            background-image: none;
+        }
+        .bodyinfo {
+            width: 93%;
+        }
+        .bodyinfo .info .search {
+            width: 150px;
+            min-width: 150px;
+            border-right: none;
+            padding-bottom: 0; 
+        }
+        .bodyinfo .info .show .data {
+            min-height: 100%;
+            padding-bottom: 0;
+        }
+        .breadcrumb{
+            height: 40px;
+            padding: 0.6rem 0.8rem;
+        }
+    </style>
+    @RenderSection("stylesheet", required: false)
+}
+
+<div class="bodyinfo row">
+    
+    <div class="info d-flex"> 
+        <div class="search">
+            <div class="nav flex-column nav-pills pt-4" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <a id="user-search-history"
+                    asp-controller="Equipment" asp-action="Index"
+                    class='nav-link @Html.IsActive("Equipment", "Index")'>
+                    设备列表</a>
+                <a id="user-search-history"
+                    asp-controller="System" asp-action="Index"
+                    class='nav-link @Html.IsActive("System", "UserSearchHistory")'>
+                    用户搜索记录
+                </a>
+                <a id="user-login-history"
+                    asp-controller="System" asp-action="LoginHistory"
+                    class='nav-link @Html.IsActive("System", "LoginHistory")'>
+                    用户登陆记录
+                </a>
+                <a id="user-list-history"
+                    asp-controller="System" asp-action="Users"
+                    class='nav-link @Html.IsActive("System", "Users")'>
+                    用户列表
+                </a>
+            </div>
+        </div>
+        <div class="show flex-grow-1 pl-4 pt-4 manage-content text-dark">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    @foreach(var item in ViewData["breadcrumb"] as List<IDictionary<string, string>> ){
+                        <li class="breadcrumb-item">
+                            <a href=@item["href"]>@item["text"]</a>
+                        </li>
+                    }
+                </ol>
+            </nav>
+            @RenderBody()
+        </div>
+    </div>
+  
+</div>
+
+@section script{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    
+    <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
+    <script src="~/lib/bootstrap-table/dist/locale/bootstrap-table-zh-CN.min.js"></script>
+    <script src="~/lib/ion-rangeslider/js/ion.rangeSlider.min.js"></script>
+    
+    @RenderSection("script", required: false)
+
+}

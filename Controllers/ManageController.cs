@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Auction.Identity.Entities;
+using System.Collections.Generic;
 
 namespace Auctions.Controllers
 {
@@ -41,6 +42,18 @@ namespace Auctions.Controllers
         [HttpGet("[action]")]
         public async Task<IActionResult> Index(ManageMessageId? message = null)
         {
+            var breadcrumb = new List<IDictionary<string, string>>();
+            breadcrumb.Add(new Dictionary<string, string>()
+            {
+                { "text", "用户管理" },
+                { "href", "javascript: void(0)" }
+            });
+            breadcrumb.Add(new Dictionary<string, string>
+            {
+                { "text", "修改密码" },
+                { "href", "javascript: void(0)" }
+            });
+            ViewData["breadcrumb"] = breadcrumb;
             ViewData["StatusMessage"] =
                 message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
                 : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
@@ -239,6 +252,18 @@ namespace Auctions.Controllers
         [HttpGet("[action]")]
         public IActionResult ChangePassword()
         {
+            var breadcrumb = new List<IDictionary<string, string>>();
+            breadcrumb.Add(new Dictionary<string, string>()
+            {
+                { "text", "用户管理" },
+                { "href", "javascript: void(0)" }
+            });
+            breadcrumb.Add(new Dictionary<string, string>
+            {
+                { "text", "修改密码" },
+                { "href", "javascript: void(0)" }
+            });
+            ViewData["breadcrumb"] = breadcrumb;
             return View();
         }
 
@@ -256,7 +281,7 @@ namespace Auctions.Controllers
             var user = await GetCurrentUserAsync();
             if (user != null)
             {
-                
+
                 var result = await _userManager.ChangePasswordAsync(user, changePassword.OldPassword, changePassword.NewPassword);
                 if (result.Succeeded)
                 {

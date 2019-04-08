@@ -36,27 +36,23 @@
         <div class="search">
             <div class="nav flex-column nav-pills pt-4" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                 <a id="user-search-history"
-                    asp-controller="Equipment" asp-action="Index"
-                    class='nav-link @Html.IsActive("Equipment", "Index")'
-                    data-toggle="pill">
-                    设备列表</a>
-                <a id="user-search-history"
                     asp-controller="Manage" asp-action="Index"
-                    class='nav-link @Html.IsActive("Manage", "Index")'
-                    data-toggle="pill">
-                    用户搜索记录
+                    class='nav-link @Html.IsActive("Manage", "Index")'>
+                    个人信息</a>
+                <a id="user-search-history"
+                    asp-controller="Manage" asp-action="ChangePassword"
+                    class='nav-link @Html.IsActive("Manage", "ChangePassword")'>
+                    修改密码
                 </a>
                 <a id="user-login-history"
                     asp-controller="Manage" asp-action="LoginHistory"
-                    class='nav-link @Html.IsActive("Manage", "LoginHistory")'
-                    data-toggle="pill">
-                    用户登陆记录
+                    class='nav-link @Html.IsActive("Manage", "LoginHistory")'>
+                    登陆记录
                 </a>
-                <a id="user-list-history"
-                    asp-controller="User" asp-action="Index"
-                    class='nav-link @Html.IsActive("User", "Index")'
-                    data-toggle="pill">
-                    用户列表
+                <a id="user-login-history"
+                    asp-controller="Manage" asp-action="SearchHistory"
+                    class='nav-link @Html.IsActive("Manage", "SearchHistory")'>
+                    搜索记录
                 </a>
             </div>
         </div>

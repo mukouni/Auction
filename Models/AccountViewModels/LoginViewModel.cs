@@ -11,7 +11,7 @@ namespace Auction.Models.AccountViewModels
         [Required(ErrorMessage = "{0} 必须填写")]
         [Phone(ErrorMessage = "请输入有效的手机号")]
         [Display(Name = "手机号")]
-        public string Phone { get; set; }
+        public string PhoneNumber { get; set; }
 
         [Required(ErrorMessage = "{0} 必须填写")]
         [StringLength(100, ErrorMessage = "{0} 不少于 {2} 个字符长度", MinimumLength = 6)]
