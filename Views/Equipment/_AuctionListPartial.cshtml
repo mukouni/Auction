@@ -1,15 +1,22 @@
 @model SearchEquipmentViewModel
-
 @foreach (var item in @Model.Equipments){
-    <div class="media mb-3 equipment-list">
-        <img class="mr-3" src="@item.CoverPhoto.RequestPath" alt="@item.CoverPhoto.FileName">
-        <div class="media-body">
-            <a class="font-weight-bold equipment-title h3" 
-                asp-controller="Equipment" asp-action="show"
-                asp-route-type="@ViewData["Action"]"
-                asp-route-id="@item.Id"> 
-                @item.Manufacturer  @item.Model @item.Name  
-            </a>
+    <div class="media mb-3 equipment-list ">
+        <div style="background-image:url(@item.CoverPhoto.RequestPath);width: 240px;
+    height: 150px;
+    background-size: cover;" class="mr-2 @if(item.DealPrice != null && ViewData["Action"] == "InsteadAuction"){@Html.DisplayName("sold-out-new")}">
+
+        </div>
+        <!-- <img class="mr-3 sold-out-new" src="@item.CoverPhoto.RequestPath" alt="@item.CoverPhoto.FileName"> -->
+        <div class="media-body ">
+            <div class="d-flex justify-content-between">
+                <a class="font-weight-bold equipment-title h3" 
+                    asp-controller="Equipment" asp-action="show"
+                    asp-route-type="@ViewData["Action"]"
+                    asp-route-id="@item.Id"> 
+                    @item.Manufacturer  @item.Model @item.Name  
+                </a>
+                <b class="price">@item.PriceCurrency?.SymbolCode@item.Price</b>
+            </div>
             <p>
                 @Html.DisplayNameFor(model => item.WorkingTime):
                 <b>@item.WorkingTime Hr*</b>
@@ -18,17 +25,12 @@
                 @Html.DisplayNameFor(model => item.ProductionDate):
                 <b>@(((DateTime)item.ProductionDate).Year)</b>
             </p>
-            @if(item.Price != null){
-            <p>
-                @Html.DisplayNameFor(model => item.Price):
-                <b>@item.Price@item.PriceCurrency?.SymbolCode</b>
-            </p>
-            }
-            <p>
             <p>
                 @Html.DisplayNameFor(model => item.Code):
                 <b>@item.Code</b>
             </p>
         </div>
+        <!-- <div class="sold-out">
+        </div> -->
     </div>
 }
