@@ -14,10 +14,12 @@
 
     <div class="photos-container pt-3">
         <span class="row equipment-name font-weight-bold h3 col" style="color: #EAB82D">
-            @Model.Manufacturer  @Model.Model @Model.Name
             @if(Model.DealPrice != null && Model.DealPrice != 0 && ViewData["Type"].ToString() == "InsteadAuction"){
                 <span class="sold-out-new"></span>
             }
+            <span @if(Model.DealPrice != null && Model.DealPrice != 0 && ViewData["Type"].ToString() == "InsteadAuction"){ @Html.DisplayName("style=text-indent:5rem;")}>
+                @Model.Manufacturer  @Model.Model @Model.Name
+            </span>
         </span>
         <div class="row ">
             <div class="first-photos photos col-md-3  order-1  order-md-0" itemscope itemtype="http://schema.org/ImageGallery">

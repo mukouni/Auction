@@ -451,6 +451,14 @@ table[data-toggle="table"] tbody td:last-child {
     min-width: 100% !important;
   }
 
+  .sold-out-new:before {
+    top: calc(50% - .5rem) !important;
+  }
+
+  .sold-out-new:after {
+    top: calc(50% - .9rem) !important;
+  }
+
 }
 
 .bodyinfo .info .search {
@@ -513,7 +521,7 @@ table[data-toggle="table"] tbody td:last-child {
   margin: 0 0 20px 0;
 }
 
-.bodyinfo.equipment-show .photos-container .equipment-name{
+.bodyinfo.equipment-show .photos-container .equipment-name {
   position: relative;
 }
 
@@ -594,7 +602,7 @@ footer {
 
 .data .equipment-list .price {
   color: #e87511;
-  font-size: 1.75rem;
+  font-size: 1.8rem;
   position: absolute;
   bottom: 0;
   right: 0;
@@ -646,15 +654,15 @@ footer {
   border-radius: 10px;
   border: 5px solid red;
   color: red;
-  width: 5rem;
-  height: 3rem;
-  font-size: 1.8rem;
+  width: 7rem;
+  height: 3.5rem;
+  font-size: 2.5rem;
   font-weight: bold;
-  transform:rotate(-10deg);
-  -ms-transform:rotate(-10deg);
-  -moz-transform:rotate(-10deg);
-  -webkit-transform:rotate(-10deg);
-  -o-transform:rotate(-10deg);
+  transform: rotate(-10deg);
+  -ms-transform: rotate(-10deg);
+  -moz-transform: rotate(-10deg);
+  -webkit-transform: rotate(-10deg);
+  -o-transform: rotate(-10deg);
 }
 
 .sold-out:before {
@@ -675,11 +683,11 @@ footer {
   height: 2.5rem;
   border-radius: 5px;
   border: 5px solid red;
-  transform:rotate(-10deg);
-  -ms-transform:rotate(-10deg);
-  -moz-transform:rotate(-10deg);
-  -webkit-transform:rotate(-10deg);
-  -o-transform:rotate(-10deg);
+  transform: rotate(-10deg);
+  -ms-transform: rotate(-10deg);
+  -moz-transform: rotate(-10deg);
+  -webkit-transform: rotate(-10deg);
+  -o-transform: rotate(-10deg);
 }
 
 .sold-out-new:after {
@@ -691,9 +699,9 @@ footer {
   line-height: 3rem;
   color: red;
   font-weight: bold;
-  transform:rotate(-10deg);
-  -ms-transform:rotate(-10deg);
-  -moz-transform:rotate(-10deg);
-  -webkit-transform:rotate(-10deg);
-  -o-transform:rotate(-10deg);
+  transform: rotate(-10deg);
+  -ms-transform: rotate(-10deg);
+  -moz-transform: rotate(-10deg);
+  -webkit-transform: rotate(-10deg);
+  -o-transform: rotate(-10deg);
 }
