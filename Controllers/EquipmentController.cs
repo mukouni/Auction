@@ -577,6 +577,10 @@ namespace Auction.Controllers
         [HttpPost("[action]")]
         public IActionResult NoAuction(SearchEquipmentViewModel searchEquipment)
         {
+            ViewData["Title"] = "未拍卖设备";
+            ViewData["Action"] = "NoAuction";
+            ViewData["ShowSoltAtSort"] = true;
+            ViewData["ShowPriceSort"] = true;
             using (_context)
             {
                 var query = _context.Equipments.AsQueryable<Equipment>();
@@ -619,6 +623,11 @@ namespace Auction.Controllers
                 if (Request.IsAjaxPostRequest())
                 {
                     // 翻页
+                     if(list.Count == 0){
+                        var response = ResponseModelFactory.CreateResultInstance;
+                        response.SetData("<p class=\"text-center\">没有更多数据了！</p>", list.Count);
+                        return Ok(response);
+                    }
                     return (IActionResult)PartialView("_AuctionListPartial", searchEquipment);
                 }
                 // 刷新
@@ -633,6 +642,10 @@ namespace Auction.Controllers
         [HttpPost("[action]")]
         public IActionResult Auctioned(SearchEquipmentViewModel searchEquipment)
         {
+            ViewData["Title"] = "已拍卖设备";
+            ViewData["Action"] = "Auctioned";
+            ViewData["ShowSoltAtSort"] = true;
+            ViewData["ShowPriceSort"] = true;
             using (_context)
             {
                 var query = _context.Equipments.AsQueryable<Equipment>();
@@ -674,6 +687,11 @@ namespace Auction.Controllers
                 if (Request.IsAjaxPostRequest())
                 {
                     // 翻页
+                    if(list.Count == 0){
+                        var response = ResponseModelFactory.CreateResultInstance;
+                        response.SetData("<p class=\"text-center\">没有更多数据了！</p>", list.Count);
+                        return Ok(response);
+                    }
                     return (IActionResult)PartialView("_AuctionListPartial", searchEquipment);
                 }
                 // 刷新

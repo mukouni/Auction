@@ -1,3 +1,4 @@
+@inject SignInManager<ApplicationUser> SignInManager
 @model SearchEquipmentViewModel
 @foreach (var item in @Model.Equipments){
     <div class="media pb-3 mb-3 equipment-list ">
@@ -21,18 +22,39 @@
             @if(item.DealPrice == null && ViewData["Action"] == "InsteadAuction"){
                 <b class="price pb-md-2 pb-sm-1">@item.PriceCurrency?.SymbolCode@item.Price</b>
             }
-            <p>
-                @Html.DisplayNameFor(model => item.WorkingTime):
-                <b>@item.WorkingTime Hr*</b>
-            </p>
+            @if(ViewData["Action"] == "Auctioned"){
+                <b class="price pb-md-2 pb-sm-1">@item.DealPriceCurrency?.SymbolCode@item.DealPrice</b>
+            }
+            @if (SignInManager.IsSignedIn(User) && (User.IsInRole(ApplicationRole.Admin) || User.IsInRole(ApplicationRole.Staff))){
+                <p>
+                    @Html.DisplayNameFor(model => item.Code):
+                    <b>@item.Code</b>
+                </p>
+             }
             <p>
                 @Html.DisplayNameFor(model => item.ProductionDate):
                 <b>@(((DateTime)item.ProductionDate).Year)</b>
             </p>
             <p>
-                @Html.DisplayNameFor(model => item.Code):
-                <b>@item.Code</b>
+                @Html.DisplayNameFor(model => item.WorkingTime):
+                <b>@item.WorkingTime Hr*</b>
             </p>
+            <p>
+                @Html.DisplayNameFor(model => item.Country)@Html.DisplayNameFor(model => item.City):
+                <b>@item.Country @item.City</b>
+            </p>
+            @if(ViewData["Action"] == "NoAuction" || ViewData["Action"] == "Auctioned"){
+            <p>
+                @Html.DisplayNameFor(model => item.SoldAt)@Html.DisplayName(":")
+                <b>@Html.DisplayFor(model => item.SoldAt)</b>
+            </p>
+            }
+            @if(ViewData["Action"] == "NoAuction"){
+            <p>
+                @Html.DisplayNameFor(model => item.LotNo)@Html.DisplayName(":")
+                <b>@Html.DisplayFor(model => item.LotNo)</b>
+            </p>
+            }
         </div>
         <!-- <div class="sold-out">
         </div> -->
