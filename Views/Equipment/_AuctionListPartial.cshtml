@@ -12,12 +12,12 @@
             }
         </div>
         <div class="media-body ">
-            <p class="font-weight-bold equipment-title h3" 
+            <a class="font-weight-bold equipment-title h3 mb-2 d-flex" 
                 asp-controller="Equipment" asp-action="show"
                 asp-route-type="@ViewData["Action"]"
                 asp-route-id="@item.Id"> 
                 @item.Manufacturer  @item.Model @item.Name  
-            </p>
+            </a>
             @if(item.DealPrice == null && ViewData["Action"] == "InsteadAuction"){
                 <b class="price pb-3">@item.PriceCurrency?.SymbolCode@item.Price</b>
             }
