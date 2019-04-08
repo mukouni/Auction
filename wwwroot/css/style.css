@@ -355,7 +355,7 @@ table[data-toggle="table"] tbody td:last-child {
 
 .bodyinfo .info .equipment-list img {
   width: 240px;
-  height: 150px;
+  height: auto;
 }
 
 .bodyinfo .info .equipment-list .media-body p {
@@ -385,11 +385,16 @@ table[data-toggle="table"] tbody td:last-child {
 
   .bodyinfo .info .equipment-list img {
     width: 140px;
-    height: 100px;
+    height: auto;
   }
 
   .bodyinfo .info .equipment-list .media-body .equipment-title {
     font-size: 1.25rem;
+  }
+
+  .data .equipment-list .price {
+    bottom: 0;
+    left: 0;
   }
 
   .bodyinfo .info .equipment-list .media-body p {
@@ -508,11 +513,18 @@ table[data-toggle="table"] tbody td:last-child {
   margin: 0 0 20px 0;
 }
 
+.bodyinfo.equipment-show .photos-container .equipment-name{
+  position: relative;
+}
+
 .bodyinfo.equipment-show .photos {
   max-width: 600px;
   /* width: 30%; */
   min-width: 460px;
   height: 300px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  padding-top: 10px;
 }
 
 .bodyinfo.equipment-show .photo-title {
@@ -528,7 +540,8 @@ table[data-toggle="table"] tbody td:last-child {
 }
 
 .swiper-slide {
-  background-size: cover;
+  background-size: contain;
+  background-repeat: no-repeat;
   background-position: center;
 }
 
@@ -585,7 +598,6 @@ footer {
   position: absolute;
   bottom: 0;
   right: 0;
-
 }
 
 .data .equipment-list .work-time-label {
@@ -657,27 +669,31 @@ footer {
 .sold-out-new:before {
   content: "";
   position: absolute;
-  /* z-index: 99; */
-  /* display: flex; */
-  /* text-align: center; */
-  /* align-items: center; */
-  border-radius: 50%;
+  left: .3rem;
+  top: calc(50% - 1.5rem);
+  width: 4.5rem;
+  height: 2.5rem;
+  border-radius: 5px;
   border: 5px solid red;
-  /* color: red; */
-  width: 70px;
-  height: 70px;
-
-  left: calc(50% - 35px);
-  top: calc(50% - 35px);
+  transform:rotate(-10deg);
+  -ms-transform:rotate(-10deg);
+  -moz-transform:rotate(-10deg);
+  -webkit-transform:rotate(-10deg);
+  -o-transform:rotate(-10deg);
 }
 
 .sold-out-new:after {
-  content: "罄";
+  content: "已售";
   position: absolute;
-  font-size: 2.5rem;
-  line-height: 2.5rem;
+  left: .8rem;
+  top: calc(50% - 1.4rem - 6px);
+  width: 4.5rem;
+  line-height: 3rem;
   color: red;
   font-weight: bold;
-  left: calc(50% - 1.25rem);
-  top: calc(50% - 1.25rem);
+  transform:rotate(-10deg);
+  -ms-transform:rotate(-10deg);
+  -moz-transform:rotate(-10deg);
+  -webkit-transform:rotate(-10deg);
+  -o-transform:rotate(-10deg);
 }

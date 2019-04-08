@@ -15,6 +15,9 @@
     <div class="photos-container pt-3">
         <span class="row equipment-name font-weight-bold h3 col" style="color: #EAB82D">
             @Model.Manufacturer  @Model.Model @Model.Name
+            @if(Model.DealPrice != null && Model.DealPrice != 0 && ViewData["Type"].ToString() == "InsteadAuction"){
+                <span class="sold-out-new"></span>
+            }
         </span>
         <div class="row ">
             <div class="first-photos photos col-md-3  order-1  order-md-0" itemscope itemtype="http://schema.org/ImageGallery">
@@ -25,7 +28,7 @@
                             <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
                                 <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
                             </a>
-                            <figcaption>Image caption 2.2</figcaption>
+                            <figcaption></figcaption>
                         </figure>
                     }
                     </div>
@@ -189,7 +192,7 @@
                             <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
                                 <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
                             </a>
-                            <figcaption>Image caption 2.2</figcaption>
+                            <figcaption></figcaption>
                         </figure>
                     }
                     </div>
@@ -227,7 +230,7 @@
                             <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
                                 <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
                             </a>
-                            <figcaption>Image caption 2.2</figcaption>
+                            <figcaption></figcaption>
                         </figure>
                     }
                     </div>
@@ -265,7 +268,7 @@
                             <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
                                 <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
                             </a>
-                            <figcaption>Image caption 2.2</figcaption>
+                            <figcaption></figcaption>
                         </figure>
                     }
                     </div>
@@ -305,7 +308,7 @@
                             <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
                                 <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
                             </a>
-                            <figcaption>Image caption 2.2</figcaption>
+                            <figcaption></figcaption>
                         </figure>
                     }
                     </div>
@@ -342,7 +345,7 @@
                             <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
                                 <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
                             </a>
-                            <figcaption>Image caption 2.2</figcaption>
+                            <figcaption></figcaption>
                         </figure>
                     }
                     </div>
