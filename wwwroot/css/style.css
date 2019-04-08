@@ -569,6 +569,7 @@ footer {
 
 .data .equipment-list {
   border-bottom: 1px dotted #8f8f8f;
+  position: relative;
 }
 
 .data .equipment-list .equipment-title {
@@ -577,7 +578,11 @@ footer {
 
 .data .equipment-list .price {
   color: #e87511;
-  font-size: 1.5rem;
+  font-size: 1.75rem;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  
 }
 
 .data .equipment-list .work-time-label {
@@ -606,22 +611,31 @@ footer {
   font-size: 1rem;
   font-weight: bold;
 }
-
+.cover-photo{
+  height: 100%;
+  position: relative;
+}
+.cover-photo.is-sold-out img{
+  opacity: 0.4;
+}
 .sold-out {
   display: flex;
+  position: absolute;
+  top: calc(50% - 35px);
+  left: calc(50% - 35px);
   text-align: center;
   align-items: center;
-  border-radius: 50%;
+  border-radius: 10px;
   border: 5px solid red;
   color: red;
-  width: 70px;
-  height: 70px;
-  font-size: 2.5rem;
+  width: 5rem;
+  height: 3rem;
+  font-size: 1.8rem;
   line-height: 100px;
   font-weight: bold;
 }
 .sold-out:before{
-  content: "罄";
+  content: "已售";
   width: 100%;
 }
 

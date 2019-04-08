@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "详情";
     var FirstPhotos = new List<PhotoViewModel>();
+    if(Model.CoverPhoto != null)  { FirstPhotos.Add(Model.CoverPhoto); }
     if(Model.ExteriorPhotos.Count > 0)  { FirstPhotos.Add(Model.ExteriorPhotos.First()); }
     if(Model.TrackedChassisPhotos.Count > 0) { FirstPhotos.Add(Model.TrackedChassisPhotos.First()); }
     if(Model.CabPhotos.Count > 0) { FirstPhotos.Add(Model.CabPhotos.First()); }
