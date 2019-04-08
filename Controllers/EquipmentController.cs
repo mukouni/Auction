@@ -582,7 +582,10 @@ namespace Auction.Controllers
                 var query = _context.Equipments.AsQueryable<Equipment>();
                 if (!string.IsNullOrEmpty(searchEquipment.KeyWord))
                 {
-                    query = query.Where(x => x.Name.Contains(searchEquipment.KeyWord.Trim()) || x.Code.Contains(searchEquipment.KeyWord.Trim()));
+                    query = query.Where(x => 
+                        x.Name.Contains(searchEquipment.KeyWord.Trim()) || 
+                        x.Code.Contains(searchEquipment.KeyWord.Trim()) ||
+                        x.Model.Contains(searchEquipment.KeyWord.Trim()));
                 }
                 query = query.Where(x => x.AuctionHouse != null && x.DealPrice == null);
                 query = query.Where(x => x.IsDeleted == CommonEnum.IsDeleted.No || x.IsDeleted == null);
@@ -635,7 +638,10 @@ namespace Auction.Controllers
                 var query = _context.Equipments.AsQueryable<Equipment>();
                 if (!string.IsNullOrEmpty(searchEquipment.KeyWord))
                 {
-                    query = query.Where(x => x.Name.Contains(searchEquipment.KeyWord.Trim()) || x.Code.Contains(searchEquipment.KeyWord.Trim()));
+                    query = query.Where(x => 
+                        x.Name.Contains(searchEquipment.KeyWord.Trim()) || 
+                        x.Code.Contains(searchEquipment.KeyWord.Trim()) ||
+                        x.Model.Contains(searchEquipment.KeyWord.Trim()));
                 }
                 query = query.Where(x => x.AuctionHouse != null && x.DealPrice != null);
                 query = query.Where(x => x.IsDeleted == CommonEnum.IsDeleted.No || x.IsDeleted == null);
@@ -692,7 +698,10 @@ namespace Auction.Controllers
                 var query = _context.Equipments.AsQueryable<Equipment>();
                 if (!string.IsNullOrEmpty(searchEquipment.KeyWord))
                 {
-                    query = query.Where(x => x.Name.Contains(searchEquipment.KeyWord.Trim()) || x.Code.Contains(searchEquipment.KeyWord.Trim()));
+                    query = query.Where(x => 
+                        x.Name.Contains(searchEquipment.KeyWord.Trim()) || 
+                        x.Code.Contains(searchEquipment.KeyWord.Trim()) ||
+                        x.Model.Contains(searchEquipment.KeyWord.Trim()));
                 }
                 query = query.Where(x => x.AuctionHouse == null);
                 query = query.Where(x => x.IsDeleted == CommonEnum.IsDeleted.No || x.IsDeleted == null);
