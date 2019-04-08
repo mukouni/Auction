@@ -5,8 +5,8 @@
     height: 150px;
     background-size: cover;" class="mr-2 @if(item.DealPrice != null && ViewData["Action"] == "InsteadAuction"){@Html.DisplayName("sold-out-new")}">
         </div> -->
-        <div class="cover-photo @if(item.DealPrice != null && ViewData["Action"] == "InsteadAuction"){@Html.DisplayName("is-sold-out")}">
-            <img class="mr-3 sold-out-new" src="@item.CoverPhoto.RequestPath" alt="@item.CoverPhoto.FileName">
+        <div class="cover-photo @if(item.DealPrice != null && ViewData["Action"] == "InsteadAuction"){@Html.DisplayName("is-sold-out")}  d-flex justify-content-center align-items-center mr-3">
+            <img class="sold-out-new" src="@item.CoverPhoto.RequestPath" alt="@item.CoverPhoto.FileName">
             @if(item.DealPrice != null && ViewData["Action"] == "InsteadAuction"){
                 <div class="sold-out"></div>
             }

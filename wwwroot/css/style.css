@@ -358,6 +358,10 @@ table[data-toggle="table"] tbody td:last-child {
   height: 150px;
 }
 
+.bodyinfo .info .equipment-list .media-body p {
+  margin-bottom: .5rem;
+}
+
 @media(max-width: 576px) {
   #navbar li.nav-item a {
     font-size: 1.25rem;
@@ -389,7 +393,6 @@ table[data-toggle="table"] tbody td:last-child {
   }
 
   .bodyinfo .info .equipment-list .media-body p {
-    margin-bottom: 5px;
     font-size: 1rem;
   }
 
@@ -582,7 +585,7 @@ footer {
   position: absolute;
   bottom: 0;
   right: 0;
-  
+
 }
 
 .data .equipment-list .work-time-label {
@@ -611,18 +614,21 @@ footer {
   font-size: 1rem;
   font-weight: bold;
 }
-.cover-photo{
+
+.cover-photo {
   height: 100%;
   position: relative;
 }
-.cover-photo.is-sold-out img{
+
+.cover-photo.is-sold-out img {
   opacity: 0.4;
 }
+
 .sold-out {
   display: flex;
   position: absolute;
-  top: calc(50% - 35px);
-  left: calc(50% - 35px);
+  /* top: calc(50% - 1.5rem);
+  left: calc(50% - 2.5rem - 10px); */
   text-align: center;
   align-items: center;
   border-radius: 10px;
@@ -631,18 +637,24 @@ footer {
   width: 5rem;
   height: 3rem;
   font-size: 1.8rem;
-  line-height: 100px;
   font-weight: bold;
+  transform:rotate(-10deg);
+  -ms-transform:rotate(-10deg);
+  -moz-transform:rotate(-10deg);
+  -webkit-transform:rotate(-10deg);
+  -o-transform:rotate(-10deg);
 }
-.sold-out:before{
+
+.sold-out:before {
   content: "已售";
   width: 100%;
 }
 
-.sold-out-new{
+.sold-out-new {
   position: relative;
 }
-.sold-out-new:before{
+
+.sold-out-new:before {
   content: "";
   position: absolute;
   /* z-index: 99; */
@@ -654,11 +666,12 @@ footer {
   /* color: red; */
   width: 70px;
   height: 70px;
-  
+
   left: calc(50% - 35px);
   top: calc(50% - 35px);
 }
-.sold-out-new:after{
+
+.sold-out-new:after {
   content: "罄";
   position: absolute;
   font-size: 2.5rem;
@@ -668,5 +681,3 @@ footer {
   left: calc(50% - 1.25rem);
   top: calc(50% - 1.25rem);
 }
-
-
