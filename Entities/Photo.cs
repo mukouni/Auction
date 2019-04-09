@@ -62,7 +62,7 @@ namespace Auction.Entities
         /// <summary>
         /// 是否在售出后隐藏
         /// </summary>
-        public bool? IsHiddenAfterSold { get; set; }
+        public bool IsHiddenAfterSold { get; set; }
 
         //导航属性
         // [JsonIgnore]

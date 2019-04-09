@@ -97,16 +97,16 @@ namespace Auction.Identity.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? LastUpdatedAt { get; set; }
 
-        // 导航属性
-        /// <summary>
-        /// 登陆日志
-        /// </summary>
-        public virtual ICollection<LoginLogging> LoginLogging { get; set; }
 
+        /// <summary>
+        /// 用户的角色中间表
+        /// </summary>
+        public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
 
         // /// <summary>
         // /// 用户的角色
         // /// </summary>
-        // public ICollection<UserRole> UserRoles { get; set; }
+        // [NotMapped]
+        // public ICollection<ApplicationRole> Roles { get; set; }
     }
 }

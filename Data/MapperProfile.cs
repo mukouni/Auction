@@ -84,6 +84,29 @@ namespace Auction.Data.AutoMapper
 
             CreateMap<ApplicationUser, Models.ManageViewModels.IndexViewModel>();
             CreateMap<Models.ManageViewModels.IndexViewModel, ApplicationUser>();
+
+
+            CreateMap<ApplicationUser, ApplicationUserViewModel>()
+                .ForMember(x => x.UserRoles, opt => opt.MapFrom(x => x.UserRoles))
+                .ForMember(x => x.Roles, opt =>
+                {
+                    opt.MapFrom((src, dest, destMember, context) =>
+                    {
+                        if(src.UserRoles != null && src.UserRoles.Count > 0){
+                            return src.UserRoles.Select(ur => ur.Role).ToList();
+                        }
+                        return null;
+                    });
+                });
+            CreateMap<ApplicationUserViewModel, ApplicationUser>()
+                .ForMember(x => x.UserRoles, opt => opt.MapFrom(x => x.UserRoles));
+
+            CreateMap<ApplicationUserRole, ApplicationUserRoleViewModel>();
+            CreateMap<ApplicationUserRoleViewModel, ApplicationUserRole>();
+
+            
+            CreateMap<ApplicationRole, ApplicationRoleViewModel>();
+            CreateMap<ApplicationRoleViewModel, ApplicationRole>();
         }
     }
 }

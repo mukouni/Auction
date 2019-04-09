@@ -26,12 +26,17 @@
                 <div class="swiper-container gallery-top">
                     <div class="swiper-wrapper my-gallery">
                     @foreach(var photo in @FirstPhotos){
-                        <figure class="swiper-slide" style="background-image:url(@photo.RequestPath); " itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-                            <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
-                                <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
-                            </a>
-                            <figcaption></figcaption>
-                        </figure>
+                        @if(photo.IsHiddenAfterSold &&
+                            (ViewData["Type"].ToString() == "Auctioned" ||
+                            ViewData["Type"].ToString() == "InsteadAuction" && Model.DealPrice != null)){
+                        }else{
+                            <figure class="swiper-slide" style="background-image:url(@photo.RequestPath); " itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                                <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
+                                    <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
+                                </a>
+                                <figcaption></figcaption>
+                            </figure>
+                        }
                     }
                     </div>
                     <!-- Add Arrows -->
@@ -43,7 +48,12 @@
                 <div class="swiper-container gallery-thumbs">
                     <div class="swiper-wrapper">
                         @foreach(var photo in @FirstPhotos){
-                            <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                            @if(photo.IsHiddenAfterSold &&
+                            (ViewData["Type"].ToString() == "Auctioned" ||
+                            ViewData["Type"].ToString() == "InsteadAuction" && Model.DealPrice != null)){
+                            }else{
+                                <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                            }
                         }
                     </div>
                 <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
@@ -51,42 +61,12 @@
             </div>
             <div class="equipment-message col-md-4 col-lg-5 col-sm-12 d-inline order-0  order-md-1">
                 <div class="col-md-6  float-left">
-                    <label asp-for="Manufacturer"></label>:
-                    @Html.DisplayFor(modelItem => modelItem.Manufacturer)
+                    <label>@Html.DisplayNameFor(model => Model.Country)@Html.DisplayNameFor(model => Model.City)</label>:
+                    <span>
+                        @Html.DisplayFor(modelItem => modelItem.Country)@Html.DisplayFor(modelItem => modelItem.City)
+                    </span>
                 </div>
-                @if(Model.ProductionDate != null){
-                    <div class="col-md-6  float-left">
-                        <label asp-for="ProductionDate"></label>:
-                        <span>
-                            @Html.DisplayFor(modelItem => modelItem.ProductionDate)
-                        </span>
-                    </div>
-                }
-                @if(Model.WorkingTime != 0){
-                    <div class="col-md-6  float-left">
-                        <label asp-for="WorkingTime"></label>:
-                        <span>
-                            @Html.DisplayFor(modelItem => modelItem.WorkingTime)
-                        </span>
-                    </div>
-                }
-                @if(Model.WorkingDistance != null){
-                    <div class="col-md-6  float-left">
-                        <label asp-for="WorkingDistance"></label>:
-                        <span>
-                            @Html.DisplayFor(modelItem => modelItem.WorkingDistance)@Html.DisplayFor(modelItem => modelItem.WorkingDistanceUnit)
-                        </span>
-                    </div>
-                }
-                @if(Model.DealPrice != null){
-                    <div class="col-md-6  float-left">
-                        <label asp-for="DealPrice"></label>:
-                        <span>
-                            @Html.DisplayFor(modelItem => modelItem.DealPrice)@Html.DisplayFor(modelItem => modelItem.DealPriceCurrency.SymbolCode)
-                        </span>
-                    </div>
-                }
-                @if(Model.Price != null){
+                @if(ViewData["Type"].ToString() == "InsteadAuction"){
                     <div class="col-md-6  float-left">
                         <label asp-for="Price"></label>:
                         <span>
@@ -94,39 +74,58 @@
                         </span>
                     </div>
                 }
-                @if(Model.SoldAt != null){
-                    <div class="col-md-6  float-left">
-                        <label asp-for="SoldAt"></label>:
-                        <span>
-                            @Html.DisplayFor(modelItem => modelItem.SoldAt)
-                        </span>
-                    </div>
-                }
-                @if(Model.AuctionHouse != null){
+                <div class="clearfix"></div>
+
+                @if(ViewData["Type"].ToString() == "NoAuction" || ViewData["Type"].ToString() == "Auctioned"){
                     <div class="col-md-6  float-left">
                         <label asp-for="AuctionHouse"></label>:
                         <span>
                             @Html.DisplayFor(modelItem => modelItem.AuctionHouse)
                         </span>
                     </div>
-                }
-                @if(Model.Country != null){
                     <div class="col-md-6  float-left">
-                        <label asp-for="Country"></label>:
+                        <label asp-for="SoldAt"></label>:
                         <span>
-                            @Html.DisplayFor(modelItem => modelItem.Country)
+                            @Html.DisplayFor(modelItem => modelItem.SoldAt)
                         </span>
                     </div>
-                }
-                @if(Model.City != null){
-                    <div class="col-md-6  float-left">
-                        <label asp-for="City"></label>:
-                        <span>
-                            @Html.DisplayFor(modelItem => modelItem.City)
-                        </span>
-                    </div>
+                    <div class="col-md-12">&nbsp;</div>
                 }
 
+                <div class="col-md-6  float-left">
+                    <label asp-for="ProductionDate"></label>:
+                    <span>
+                        @Html.DisplayFor(modelItem => modelItem.ProductionDate)
+                    </span>
+                </div>
+                <div class="col-md-6  float-left">
+                    <label asp-for="WorkingTime"></label>:
+                    <span>
+                        @Html.DisplayFor(modelItem => modelItem.WorkingTime)
+                    </span>
+                </div>
+                
+                @if(ViewData["Type"].ToString() == "NoAuction" || 
+                    (ViewData["Type"].ToString() == "InsteadAuction" && Model.DealPrice == null)){
+                    @if(Model.FrameNo != null){
+                        <div class="col-md-6  float-left">
+                            <label asp-for="FrameNo"></label>:
+                            <span>
+                                @Html.DisplayFor(modelItem => modelItem.FrameNo)
+                            </span>
+                        </div>
+                    }
+                    @if(Model.EngineNo != null){
+                        <div class="col-md-6  float-left">
+                            <label asp-for="EngineNo"></label>:
+                            <span>
+                                @Html.DisplayFor(modelItem => modelItem.EngineNo)
+                            </span>
+                        </div>
+                    }
+                }
+                
+                <div class="col-md-12">&nbsp;</div>
                 @if(Model.Long != null){
                     <div class="col-md-6  float-left">
                         <label asp-for="Long"></label>:
@@ -190,12 +189,17 @@
                 <div class="swiper-container gallery-top">
                     <div class="swiper-wrapper my-gallery">
                     @foreach(var photo in @Model.ExteriorPhotos?.OrderBy(p => p.FileName)){
-                        <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-                            <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
-                                <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
-                            </a>
-                            <figcaption></figcaption>
-                        </figure>
+                        @if(photo.IsHiddenAfterSold &&
+                            (ViewData["Type"].ToString() == "Auctioned" ||
+                            ViewData["Type"].ToString() == "InsteadAuction" && Model.DealPrice != null)){
+                        }else{
+                            <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                                <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
+                                    <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
+                                </a>
+                                <figcaption></figcaption>
+                            </figure>
+                        }
                     }
                     </div>
                     <!-- Add Arrows -->
@@ -207,7 +211,12 @@
                 <div class="swiper-container gallery-thumbs">
                     <div class="swiper-wrapper">
                         @foreach(var photo in @Model.ExteriorPhotos?.OrderBy(p => p.FileName)){
-                            <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                            @if(photo.IsHiddenAfterSold &&
+                            (ViewData["Type"].ToString() == "Auctioned" ||
+                            ViewData["Type"].ToString() == "InsteadAuction" && Model.DealPrice != null)){
+                            }else{
+                                <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                            }
                         }
                     </div>
                 <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
@@ -228,12 +237,17 @@
                 <div class="swiper-container gallery-top">
                     <div class="swiper-wrapper my-gallery">
                     @foreach(var photo in @Model.TrackedChassisPhotos?.OrderBy(p => p.FileName)){
-                        <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-                            <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
-                                <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
-                            </a>
-                            <figcaption></figcaption>
-                        </figure>
+                        @if(photo.IsHiddenAfterSold &&
+                            (ViewData["Type"].ToString() == "Auctioned" ||
+                            ViewData["Type"].ToString() == "InsteadAuction" && Model.DealPrice != null)){
+                        }else{
+                            <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                                <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
+                                    <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
+                                </a>
+                                <figcaption></figcaption>
+                            </figure>
+                        }
                     }
                     </div>
                     <!-- Add Arrows -->
@@ -244,7 +258,12 @@
                 <div class="swiper-container gallery-thumbs">
                     <div class="swiper-wrapper">
                         @foreach(var photo in @Model.TrackedChassisPhotos?.OrderBy(p => p.FileName)){
-                            <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                            @if(photo.IsHiddenAfterSold &&
+                                (ViewData["Type"].ToString() == "Auctioned" ||
+                                ViewData["Type"].ToString() == "InsteadAuction" && Model.DealPrice != null)){
+                            }else{
+                                <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                            }
                         }
                     </div>
                     <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
@@ -266,12 +285,17 @@
                 <div class="swiper-container gallery-top">
                     <div class="swiper-wrapper my-gallery">
                     @foreach(var photo in @Model.CabPhotos?.OrderBy(p => p.FileName)){
-                        <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-                            <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
-                                <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
-                            </a>
-                            <figcaption></figcaption>
-                        </figure>
+                        @if(photo.IsHiddenAfterSold &&
+                            (ViewData["Type"].ToString() == "Auctioned" ||
+                            ViewData["Type"].ToString() == "InsteadAuction" && Model.DealPrice != null)){
+                        }else{
+                            <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                                <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
+                                    <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
+                                </a>
+                                <figcaption></figcaption>
+                            </figure>
+                        }
                     }
                     </div>
                     <!-- Add Arrows -->
@@ -284,7 +308,12 @@
                 <div class="swiper-container gallery-thumbs">
                     <div class="swiper-wrapper">
                         @foreach(var photo in @Model.CabPhotos?.OrderBy(p => p.FileName)){
-                            <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                            @if(photo.IsHiddenAfterSold &&
+                            (ViewData["Type"].ToString() == "Auctioned" ||
+                            ViewData["Type"].ToString() == "InsteadAuction" && Model.DealPrice != null)){
+                            }else{
+                                <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                            }
                         }
                     </div>
                     <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
@@ -306,12 +335,17 @@
                 <div class="swiper-container gallery-top">
                     <div class="swiper-wrapper my-gallery">
                     @foreach(var photo in @Model.BoomPhotos?.OrderBy(p => p.FileName)){
-                        <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-                            <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
-                                <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
-                            </a>
-                            <figcaption></figcaption>
-                        </figure>
+                        @if(photo.IsHiddenAfterSold &&
+                            (ViewData["Type"].ToString() == "Auctioned" ||
+                            ViewData["Type"].ToString() == "InsteadAuction" && Model.DealPrice != null)){
+                        }else{
+                            <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                                <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
+                                    <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
+                                </a>
+                                <figcaption></figcaption>
+                            </figure>
+                        }
                     }
                     </div>
                     <!-- Add Arrows -->
@@ -322,7 +356,12 @@
                 <div class="swiper-container gallery-thumbs">
                     <div class="swiper-wrapper">
                         @foreach(var photo in @Model.BoomPhotos?.OrderBy(p => p.FileName)){
-                            <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                            @if(photo.IsHiddenAfterSold &&
+                            (ViewData["Type"].ToString() == "Auctioned" ||
+                            ViewData["Type"].ToString() == "InsteadAuction" && Model.DealPrice != null)){
+                            }else{
+                                <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                            }
                         }
                     </div>
                     <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
@@ -343,12 +382,17 @@
                 <div class="swiper-container gallery-top">
                     <div class="swiper-wrapper my-gallery">
                     @foreach(var photo in @Model.EnginePhotos?.OrderBy(p => p.FileName)){
-                        <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-                            <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
-                                <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
-                            </a>
-                            <figcaption></figcaption>
-                        </figure>
+                        @if(photo.IsHiddenAfterSold &&
+                            (ViewData["Type"].ToString() == "Auctioned" ||
+                            ViewData["Type"].ToString() == "InsteadAuction" && Model.DealPrice != null)){
+                        }else{
+                            <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                                <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
+                                    <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
+                                </a>
+                                <figcaption></figcaption>
+                            </figure>
+                        }
                     }
                     </div>
                     <!-- Add Arrows -->
@@ -360,7 +404,12 @@
                 <div class="swiper-container gallery-thumbs">
                     <div class="swiper-wrapper">
                         @foreach(var photo in @Model.EnginePhotos?.OrderBy(p => p.FileName)){
-                            <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                            @if(photo.IsHiddenAfterSold &&
+                            (ViewData["Type"].ToString() == "Auctioned" ||
+                            ViewData["Type"].ToString() == "InsteadAuction" && Model.DealPrice != null)){
+                            }else{
+                                <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                            }
                         }
                     </div>
                 <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>

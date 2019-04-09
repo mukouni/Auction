@@ -1,0 +1,122 @@
+@using System.Web.Optimization
+@using X.PagedList
+@using X.PagedList.Mvc
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Mvc.Common
+@model SearchApplicationUserViewModel
+
+<div class="pt-3 d-flex align-items-center">
+</div>
+
+<div class="pt-3" style="padding-bottom:40px;">
+    <table class="table" data-toggle="table" data-classes="table">
+        <thead>
+            <tr>
+                <th data-field="RealName" data-sortable="true" class="sortClass">
+                    @Html.DisplayNameFor(model => Model.ApplicationUsers.First().RealName)
+                </th>
+                <th data-field="PhoneNumber" data-sortable="true">
+                    @Html.DisplayNameFor(model => Model.ApplicationUsers.First().PhoneNumber)
+                </th>
+                <th data-field="Role" data-sortable="true" class="sortClass">
+                    角色
+                </th>
+                <th data-field="DeadlineAt" data-sortable="true">
+                    @Html.DisplayNameFor(model => Model.ApplicationUsers.First().DeadlineAt)
+                </th>
+                <th data-field="LastUpdatedAt" data-sortable="true">
+                    @Html.DisplayNameFor(model => Model.ApplicationUsers.First().LastUpdatedAt)
+                </th>
+                <th data-field="IsDeleted" data-sortable="true">
+                    @Html.DisplayNameFor(model => Model.ApplicationUsers.First().IsDeleted)
+                </th>
+                <th style="min-width: 85px;">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (ApplicationUserViewModel item in Model?.ApplicationUsers)
+            {
+                <tr id="@item.Id">
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" 
+                            class="edit_link">@Html.DisplayFor(modelItem => item.RealName)</a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                    </td>
+                    <td>
+                        @{
+                            var roleNames = "";
+                            if(item.Roles != null){
+                                roleNames = String.Join(",", item.Roles.Select(r => r.Name).ToArray());
+                            }
+                        }
+                        @Html.DisplayFor(modelItem => @roleNames)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DeadlineAt)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastUpdatedAt)
+                    </td>
+                    <td class="isDeleted">
+                        @Html.DisplayFor(modelItem => item.IsDeleted)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="fa fa-remove fa-lg" style="color: green">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form asp-action="Delete" asp-route-id="@item.Id"
+                            data-ajax="true" data-ajax-confirm="确认删除 @item.RealName 吗?" 
+                            data-ajax-success="deleteItem(this)" class="d-inline">
+                            <button type="submit" class="fa fa-remove fa-lg link" 
+                                style="color: red; border: none; background: none;">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                        <form asp-action="Delete" asp-route-id="@item.Id"
+                            data-ajax="true" data-ajax-confirm="确认成为会员 @item.RealName 吗?" 
+                            data-ajax-success="deleteItem(this)" class="d-inline">
+                            <button type="submit" class="fa fa-remove fa-lg link" 
+                                style="color: red; border: none; background: none;">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation example" class="flex-grow-1 d-flex justify-content-center">
+        @Html.PagedListPager(
+            (IPagedList)Model?.ApplicationUsers, 
+            page => Url.Action("Index", 
+                new SearchEquipmentViewModel{ 
+                    CurrentPage = page, 
+                    PageSize = @Model.PageSize, 
+                    KeyWord = @Model.KeyWord}),
+            PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+                new PagedListRenderOptions()
+                {
+                    DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                    DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                    Display = PagedListDisplayMode.IfNeeded,
+                    LiElementClasses = new List<string> { "page-item" },
+                    PageClasses = new string[] { "page-link" },
+                    MaximumPageNumbersToDisplay = 20
+                },
+                new AjaxOptions() { 
+                    HttpMethod = "GET", 
+                    UpdateTargetId = "equipment—index-table",
+                    OnSuccess = "onSearchEquipmentSuccess",
+                    OnFailure = "onSearchEquipmentFailure" }))
+        <div class="form-group pl-2">
+            <select asp-for="@Model.PageSize" asp-items="@Model.PageSizeOptions" 
+                class="form-control"
+                onchange="selectPageSizeChange(this, '/System/Users')"></select>
+        </div>
+        <div class="form-group pl-2 d-flex align-items-end text-dark">
+            <label>共 @Model.Count 条</label>
+        </div>           
+    </nav>
+</div>

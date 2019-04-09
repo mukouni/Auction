@@ -87,7 +87,7 @@
                         <img src="@item.CoverPhoto?.RequestPath" width="80px">
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id" 
+                        <a asp-action="ShowAll" asp-route-id="@item.Id" 
                             class="edit_link">@Html.DisplayFor(modelItem => item.Name)</a>
                     </td>
                     <td>
@@ -157,7 +157,7 @@
         <div class="form-group pl-2">
             <select asp-for="@Model.PageSize" asp-items="@Model.PageSizeOptions" 
                 class="form-control"
-                onchange="selectPageSizeChange(this)"></select>
+                onchange="selectPageSizeChange(this, '/equipment/index')"></select>
         </div>
         <div class="form-group pl-2 d-flex align-items-end text-dark">
             <label>共 @Model.Count 条</label>

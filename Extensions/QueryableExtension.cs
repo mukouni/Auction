@@ -78,18 +78,14 @@ namespace Auction.Extensions
                     orderByFunc = item => item.RealName;
                 else if ("DeadlineAt" == searchEquipment.Sort?.Field)
                     orderByFunc = item => item.DeadlineAt;
-                else if ("LoginLogging" == searchEquipment.Sort?.Field)
-                    orderByFunc = item => item.LoginLogging.Last().CreatedAt;
+                else if ("CreatedAt" == searchEquipment.Sort?.Field)
+                    orderByFunc = item => item.CreatedAt;
                 else if ("PhoneNumber" == searchEquipment.Sort?.Field)
                     orderByFunc = item => item.PhoneNumber;
                 else if ("Email" == searchEquipment.Sort?.Field)
                     orderByFunc = item => item.Email;
-                else if ("DeadlineAt" == searchEquipment.Sort?.Field)
-                    orderByFunc = item => item.DeadlineAt;
                 else if ("IsDeleted" == searchEquipment.Sort?.Field)
                     orderByFunc = item => item.IsDeleted;
-                else if ("DeadlineAt" == searchEquipment.Sort?.Field)
-                    orderByFunc = item => item.DeadlineAt;
 
                 if (searchEquipment.Sort.Direction == "desc")
                 {

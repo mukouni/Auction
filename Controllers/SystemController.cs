@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Auction;
 using Auction.Api.Extensions;
 using Auction.Data;
+using Auction.Entities;
 using Auction.Extensions;
 using Auction.Identity.Entities;
 using Auction.Models.AccountViewModels;
@@ -15,6 +16,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using X.PagedList;
@@ -29,6 +32,7 @@ namespace Auctions.Controllers
     {
         private readonly AuctionDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
@@ -122,9 +126,20 @@ namespace Auctions.Controllers
                 { "text", "用户列表" },
                 { "href", "javascript: void(0)" }
             });
+            ViewData["breadcrumb"] = breadcrumb;
+            searchApplicationUser.PageSizeOptions = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "20", Text = "每页20条" },
+                new SelectListItem { Value = "50", Text = "每页50条" },
+                new SelectListItem { Value = "100", Text = "每页100"  },
+                new SelectListItem { Value = "1000", Text = "每页1000"  },
+            };
 
-            var user = await GetCurrentUserAsync();
-            IQueryable<ApplicationUser> query = _userManager.Users;
+            // var user = await GetCurrentUserAsync();
+            var query = _userManager.Users;
+            // var query = _context.ApplicationUsers.AsQueryable<ApplicationUser>();
+                    
+            // var query = _context.ApplicationUsers.AsQueryable<ApplicationUser>();
             if (!string.IsNullOrEmpty(searchApplicationUser.KeyWord))
             {
                 query = query.Where(x => x.RealName.Contains(searchApplicationUser.KeyWord.Trim()) || x.PhoneNumber.Contains(searchApplicationUser.KeyWord.Trim()));
@@ -132,10 +147,42 @@ namespace Auctions.Controllers
             query = query.OrderByDescending(e => e.LastUpdatedAt).ThenByDescending(e => e.CreatedAt).ThenBy(e => e.RealName);
 
             var list = query.Paged(searchApplicationUser.CurrentPage, searchApplicationUser.PageSize)
-                            // .Select(ApplicationUser =>  _mapper.Map<ApplicationUserViewModel>(ApplicationUser)) //因为设置了延迟加载会报错
-                            .ProjectTo<ApplicationUserViewModel>();
+                            .Include(u => u.UserRoles)
+                                .ThenInclude(ur => ur.Role)
+                            .Select(u => new ApplicationUserViewModel{
+                                RealName = u.RealName,
+                                PhoneNumber =  u.PhoneNumber,
+                                AvatorPath =  u.AvatorPath,
+                                DeadlineAt = u.DeadlineAt,
+                                AccessFailedCount = u.AccessFailedCount,
+                                IsDeleted = u.IsDeleted,
+                                CreatedAt = u.CreatedAt,
+                                LastUpdatedAt = u.LastUpdatedAt,
+                                UserRoles = _mapper.Map<ICollection<ApplicationUserRoleViewModel>>(u.UserRoles.ToList()),
+                                Roles = _mapper.Map<ICollection<ApplicationRoleViewModel>>(u.UserRoles.Select(ur => ur.Role).ToList()),
+                            });
+                            // .ProjectTo<ApplicationUserViewModel>().ToList();
             // .Project().To<ApplicationUserViewModel>()
 
+            // foreach(var user in list){
+            //     user.Roles = user.UserRoles.Select(
+            //          ur => new ApplicationRoleViewModel()
+            //          {
+            //              Id = ur.RoleId,
+            //              Name = _context.Roles.Find(ur.RoleId).Name
+            //          }
+            //      ).ToList();
+            // }
+            // list.Select<ApplicationUserViewModel, List<ApplicationRoleViewModel>>(user =>
+            // {
+            //     return user.UserRoles.Select(
+            //          ur => new ApplicationRoleViewModel()
+            //          {
+            //              Id = ur.RoleId,
+            //              Name = _context.Roles.Find(ur.RoleId).Name
+            //          }
+            //      ).ToList();
+            // });
             var totalCount = query.Count();
 
             searchApplicationUser.ApplicationUsers = new StaticPagedList<ApplicationUserViewModel>(

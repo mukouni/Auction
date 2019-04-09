@@ -304,6 +304,18 @@ namespace Auction.Controllers
             return View(equipment);
         }
 
+        [HttpGet("[action]/{id:Guid}")]
+        public async Task<IActionResult> ShowAll(Guid id, string type)
+        {
+            var equipment = _mapper.Map<EquipmentViewModel>(await _context.Equipments.FindAsync(id));
+             if (equipment == null)
+            {
+                return NotFound();
+            }
+            ViewData["Type"] = type;
+            return View(equipment);
+        }
+
         // [HttpPost("[action]")]
         // [DisableFormValueModelBinding]
         // // [ValidateAntiForgeryToken]

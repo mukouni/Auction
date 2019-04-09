@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Auction.Entities;
 using Auction.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using static Auction.Entities.Enums.CommonEnum;
 
 namespace Auction.Models.AccountViewModels
 {
     public class ApplicationUserViewModel
     {
+        public Guid? Id { get; set; }
         // [Required(ErrorMessage = "{0} 必须填写")]
         // [EmailAddress]
         // [Display(Name = "Email")]
@@ -21,6 +24,9 @@ namespace Auction.Models.AccountViewModels
         [Display(Name = "用户名")]
         public string UserName { get; set; }
 
+        [Display(Name = "邮箱")]
+        public string Email { get; set; }
+
         [Required(ErrorMessage = "{0} 必须填写")]
         [MinLength(2, ErrorMessage = "{0} 不能少于{1}个字符")]
         [Display(Name = "真实姓名")]
@@ -30,6 +36,8 @@ namespace Auction.Models.AccountViewModels
         [Phone(ErrorMessage = "请输入有效的手机号")]
         [Display(Name = "手机号")]
         public string PhoneNumber { get; set; }
+
+        public string AvatorPath { get; set; }
 
         [Required(ErrorMessage = "{0} 必须填写")]
         [StringLength(6, ErrorMessage = "请输入{2}位验证码", MinimumLength = 4)]
@@ -47,9 +55,42 @@ namespace Auction.Models.AccountViewModels
         [Compare("Password", ErrorMessage = "密码不一致")]
         public string ConfirmPassword { get; set; }
 
-        
+
         [DataType(DataType.Date)]
-        [Display(Name = "合同到期日期")]
+        [Display(Name = "会员到期日期")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? DeadlineAt { get; set; }
+
+        [DataType(DataType.Date)]
+        [Display(Name = "注册日期")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? CreatedAt { get; set; }
+
+
+        [Display(Name = "登陆失败次数")]
+        public int? AccessFailedCount { get; set; }
+
+
+        public IsDeleted? IsDeleted { get; set; }
+
+        [DataType(DataType.Date)]
+        [Display(Name = "更新时间")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
+        public DateTime? LastUpdatedAt { get; set; }
+
+
+        [Display(Name = "注册时间")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
+        public DateTime? CeateedAt { get; set; }
+        
+        [Display(Name = "浏览设备记录")]
+        public virtual ICollection<SearchEquipmentLog> SearchEquipmentLog { get; set; } = new List<SearchEquipmentLog>();
+
+        public ICollection<ApplicationUserRoleViewModel> UserRoles { get; set; } = new List<ApplicationUserRoleViewModel>();
+
+
+        [Display(Name = "角色")]
+        public ICollection<ApplicationRoleViewModel> Roles { get; set; } = new List<ApplicationRoleViewModel>();
     }
 }

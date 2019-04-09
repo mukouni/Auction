@@ -55,7 +55,7 @@ namespace Auction.Models
         /// 是否在出售后隐藏
         /// </summary>
         [Display(Name = "出售后隐藏")]
-        public bool? IsHiddenAfterSold { get; set; }
+        public bool IsHiddenAfterSold { get; set; }
 
         /// <summary>
         /// 图片格式

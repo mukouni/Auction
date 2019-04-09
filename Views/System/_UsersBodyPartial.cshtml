@@ -1,0 +1,16 @@
+<div class="pt-3 d-flex align-items-center justify-content-end">
+    <a asp-action="New" class="btn btn-primary mr-auto">新建</a>
+    <form asp-controller="Equipment" asp-action="Index" asp-route-returnurl="@ViewData["ReturnUrl"]" method="get" class="form-inline" role="form" style="padding: 0; margin:0">
+        <div class="form-group ml-4">
+            <div class="input-group">
+                <input type="text" name="KeyWord" value="@Model.KeyWord" class="form-control" placeholder="设备或code" aria-label="设备或code" aria-describedby="button-addon2">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit" id="button-addon2">搜索</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div id="equipment—index-table">
+    @await Html.PartialAsync("_UsersTablePartial", Model, ViewData)
+</div>

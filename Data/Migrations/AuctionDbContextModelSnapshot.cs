@@ -19,6 +19,19 @@ namespace Auction.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Auction.Entities.ApplicationUserRole", b =>
+                {
+                    b.Property<Guid>("UserId");
+
+                    b.Property<Guid>("RoleId");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("st_user_roles");
+                });
+
             modelBuilder.Entity("Auction.Entities.Currency", b =>
                 {
                     b.Property<int>("Id")
@@ -147,41 +160,6 @@ namespace Auction.Migrations
                     b.HasIndex("PriceCurrencyId");
 
                     b.ToTable("ac_equipment");
-                });
-
-            modelBuilder.Entity("Auction.Entities.LoginLogging", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime?>("CreatedAt");
-
-                    b.Property<Guid?>("CreatedByUserGuid");
-
-                    b.Property<string>("CreatedByUserName")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Ip");
-
-                    b.Property<int?>("IsDeleted");
-
-                    b.Property<DateTime?>("LastUpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate();
-
-                    b.Property<Guid?>("ModifiedByUserGuid");
-
-                    b.Property<string>("ModifiedByUserName")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Platform");
-
-                    b.Property<Guid?>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("st_login_log");
                 });
 
             modelBuilder.Entity("Auction.Entities.Photo", b =>
@@ -420,19 +398,6 @@ namespace Auction.Migrations
                     b.ToTable("st_user_logins");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
-                {
-                    b.Property<Guid>("UserId");
-
-                    b.Property<Guid>("RoleId");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("st_user_roles");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
                     b.Property<Guid>("UserId");
@@ -448,6 +413,19 @@ namespace Auction.Migrations
                     b.ToTable("st_user_tokens");
                 });
 
+            modelBuilder.Entity("Auction.Entities.ApplicationUserRole", b =>
+                {
+                    b.HasOne("Auction.Identity.Entities.ApplicationRole", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Auction.Identity.Entities.ApplicationUser", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("Auction.Entities.Equipment", b =>
                 {
                     b.HasOne("Auction.Entities.Currency", "DealPriceCurrency")
@@ -457,13 +435,6 @@ namespace Auction.Migrations
                     b.HasOne("Auction.Entities.Currency", "PriceCurrency")
                         .WithMany()
                         .HasForeignKey("PriceCurrencyId");
-                });
-
-            modelBuilder.Entity("Auction.Entities.LoginLogging", b =>
-                {
-                    b.HasOne("Auction.Identity.Entities.ApplicationUser", "User")
-                        .WithMany("LoginLogging")
-                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Auction.Entities.Photo", b =>
@@ -516,19 +487,6 @@ namespace Auction.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("Auction.Identity.Entities.ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
-                {
-                    b.HasOne("Auction.Identity.Entities.ApplicationRole")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("Auction.Identity.Entities.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")

@@ -20,7 +20,7 @@ namespace Auction.Identity.Entities
 
         public const string Other = "Other";
 
-        // public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+        // public virtual ICollection<UserRole> UserRoles { get; set; } = new List<ApplicationUserRole>();
         // public virtual ICollection<RoleClaim> RoleClaims { get; set; } = new List<RoleClaim>();
     }
 }

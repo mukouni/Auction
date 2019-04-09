@@ -43,10 +43,10 @@ var cookieUtil = {
 };
 
 
-function selectPageSizeChange(obj) {
+function selectPageSizeChange(obj, url) {
     $.ajax({
         type: "get",
-        url: "/equipment/index",
+        url: url,
         data: {
             PageSize: $(obj).val()
         },

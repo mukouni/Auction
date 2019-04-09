@@ -13,7 +13,9 @@ namespace Auction.Data
     /// <summary>
     /// 
     /// </summary>
-    public class AuctionDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
+    public class AuctionDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid, IdentityUserClaim<Guid>,
+                                                        ApplicationUserRole, IdentityUserLogin<Guid>,
+                                                        IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
     {
         /// <summary>
         /// 
@@ -45,10 +47,8 @@ namespace Auction.Data
         /// </summary>
         public DbSet<Equipment> Equipments { get; set; }
 
-        public DbSet<LoginLogging> LoginLoggings { get; set; }
-
         public DbSet<Currency> Currencies { get; set; }
-        public DbSet<Currency> ApplicationUsers { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
         #region DbQuery
         /// <summary>
@@ -87,10 +87,25 @@ namespace Auction.Data
             //         .ValueGeneratedOnAddOrUpdate()
             //         .HasDefaultValueSql("getdate()");
             // });
+            builder.Entity<ApplicationUser>(b =>
+            {
+                b.HasMany(u => u.UserRoles)
+                    .WithOne(ur => ur.User)
+                    .HasForeignKey(ur => ur.UserId)
+                    .IsRequired();
+            });
 
+            builder.Entity<ApplicationRole>(role =>
+            {
+                role.HasMany<ApplicationUserRole>()
+                    .WithOne(ur => ur.Role)
+                    .HasForeignKey(ur => ur.RoleId)
+                    .IsRequired();
+            });
+            
             builder.Entity<ApplicationUser>().ToTable("st_users");
             builder.Entity<ApplicationRole>().ToTable("st_roles");
-            builder.Entity<IdentityUserRole<Guid>>().ToTable("st_user_roles");
+            builder.Entity<ApplicationUserRole>().ToTable("st_user_roles");
             builder.Entity<IdentityRoleClaim<Guid>>().ToTable("st_role_claims");
             builder.Entity<IdentityUserClaim<Guid>>().ToTable("st_user_claims");
             builder.Entity<IdentityUserLogin<Guid>>().ToTable("st_user_logins");
