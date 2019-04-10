@@ -1,0 +1,13 @@
+
+@model ApplicationUserViewModel
+@{
+    ViewData["Title"] = "修改用户";
+    ViewData["Action"] = "UserEdit";
+    Layout = "_SystemLayout";
+}
+@await Html.PartialAsync("_UserFormPartial", Model, ViewData)
+@section script {
+    $(document).Ready(function(){
+        $("#Password").val("");
+    });
+}

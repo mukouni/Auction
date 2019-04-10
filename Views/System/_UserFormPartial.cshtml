@@ -1,0 +1,102 @@
+@model ApplicationUserViewModel
+
+<form asp-controller="System" asp-action='@ViewData["Action"]' asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
+    <h4>Create a new account.</h4>
+    <hr />
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <input asp-for="Id" type="hidden">
+    <input asp-for="UserName" type="hidden">
+    <div class="form-group">
+        <label asp-for="PhoneNumber" class="col-md-12 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="PhoneNumber" class="form-control" 
+                readonly="@(ViewData["Action"].ToString() == "UserEdit")" />
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label asp-for="RealName" class="col-md-12 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="RealName" class="form-control" />
+            <span asp-validation-for="RealName" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="DeadlineAt" class="col-md-12 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="DeadlineAt" class="form-control" />
+            <span asp-validation-for="DeadlineAt" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Role" class="col-md-4 control-label"></label>
+        <div class="input-group col-md-10">
+            <div class="input-group-append">
+                @Html.DropDownListFor(a => a.Role, Model.RoleOptions, "请选择", new { @class = "custom-select" })
+            </div>
+        </div>
+    </div>
+    
+
+    <div class="form-group">
+        <label asp-for="Password" class="col-md-12 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Password" class="form-control" />
+            <span asp-validation-for="Password" class="text-danger" autocomplete="off"></span>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label asp-for="ConfirmPassword" class="col-md-12 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="ConfirmPassword" class="form-control" />
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <div class="col-md-10">
+            @if(@Model.IsDeleted == CommonEnum.IsDeleted.Yes)
+            {
+                <input name="IsDeleted" value="@Model.IsDeleted" type="checkbox" checked/>
+            }
+            else
+            {
+                <input name="IsDeleted" value="@Model.IsDeleted" type="checkbox"/>
+            }
+            <label asp-for="IsDeleted" class="form-check-label">已删除</label>
+            <span asp-validation-for="IsDeleted" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-10">
+            <input asp-for="LockoutEnabled" class=""/>
+            <label asp-for="LockoutEnabled" class="form-check-label"></label>
+            <span asp-validation-for="LockoutEnabled" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="LockoutEnd" class="col-md-12 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="LockoutEnd" class="form-control" />
+            <span asp-validation-for="LockoutEnd" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Email" class="col-md-12 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-primary">提交</button>
+        </div>
+    </div>
+</form>

@@ -5,16 +5,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Auction.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
 
 namespace Auction.Models.AccountViewModels
 {
     public class RegisterViewModel
     {
-        // [Required(ErrorMessage = "{0} 必须填写")]
-        // [EmailAddress]
-        // [Display(Name = "Email")]
-        // public string Email { get; set; }
+        [EmailAddress]
+        [Display(Name = "Email")]
+        public string Email { get; set; }
 
         [Required(ErrorMessage = "{0} 必须填写")]
         [MinLength(2, ErrorMessage = "{0} 不能少于{1}个字符")]
@@ -47,14 +47,16 @@ namespace Auction.Models.AccountViewModels
         [Compare("Password", ErrorMessage = "密码不一致")]
         public string ConfirmPassword { get; set; }
 
-        
+
         [DataType(DataType.Date)]
         [Display(Name = "合同到期日期")]
         public DateTime? DeadlineAt { get; set; }
 
-         /// <summary>
+        /// <summary>
         /// 发送类型： Register ResetPassword
         /// </summary>
         public string SMSType { get; set; }
+
+        
     }
 }

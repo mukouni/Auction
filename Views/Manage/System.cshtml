@@ -53,12 +53,6 @@
     <script src="~/lib/bootstrap-table/dist/bootstrap-table.min.js" async></script>
     <script src="~/lib/bootstrap-table/dist/locale/bootstrap-table-zh-CN.min.js" async></script>
     <script>
-        function deleteItem(form) {
-            $(form).closest("tr").find(".isDeleted").text("Yes");
-        }
-    </script>
-
-    <script>
         $(".title .nav-item .nav-link[href='/manage/system']")
             .closest(".nav-item")
             .css("background-color","white")
@@ -67,6 +61,5 @@
             $('[data-toggle="table"]').bootstrapTable();
             $("#PageSize").bind("change", selectPageSizeChange);
         }
-
     </script>
 }

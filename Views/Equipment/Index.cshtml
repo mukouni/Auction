@@ -9,17 +9,11 @@
     Layout = "_SystemLayout";
 }
 
-
     @await Html.PartialAsync("_IndexBodyPartial", Model,
                             new ViewDataDictionary(ViewData)
-                            {})
-    
+                            {})    
 @section script {
     <script>
-        
-        function deleteItem(form) {
-            $(form).closest("tr").find(".isDeleted").text("Yes");
-        }
         function onSearchEquipmentSuccess(){
             $('[data-toggle="table"]').bootstrapTable();
         }

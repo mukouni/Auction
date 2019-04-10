@@ -87,17 +87,17 @@ namespace Auction.Data
             //         .ValueGeneratedOnAddOrUpdate()
             //         .HasDefaultValueSql("getdate()");
             // });
-            builder.Entity<ApplicationUser>(b =>
+            builder.Entity<ApplicationUser>(entity =>
             {
-                b.HasMany(u => u.UserRoles)
+                entity.HasMany(u => u.UserRoles)
                     .WithOne(ur => ur.User)
                     .HasForeignKey(ur => ur.UserId)
                     .IsRequired();
             });
 
-            builder.Entity<ApplicationRole>(role =>
+            builder.Entity<ApplicationRole>(entity =>
             {
-                role.HasMany<ApplicationUserRole>()
+                entity.HasMany<ApplicationUserRole>()
                     .WithOne(ur => ur.Role)
                     .HasForeignKey(ur => ur.RoleId)
                     .IsRequired();

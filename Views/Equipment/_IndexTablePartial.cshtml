@@ -120,7 +120,7 @@
                         </a>
                         <form asp-action="Delete" asp-route-id="@item.Id"
                             data-ajax="true" data-ajax-confirm="确认删除 @item.Name 吗?" 
-                            data-ajax-success="deleteItem(this)" class="d-inline">
+                            data-ajax-success="deleteItemSuccessCallback(this)" class="d-inline">
                             <button type="submit" class="fa fa-remove fa-lg link" 
                                 style="color: red; border: none; background: none;">
                                 <i class="fas fa-trash-alt"></i>

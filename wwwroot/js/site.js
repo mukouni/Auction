@@ -523,3 +523,12 @@ function resetCheckboxStatus(id){
     $("#" + id.toString()).prop('checked', false);     
 }
 bindCheckBox();
+
+
+function deleteItemSuccessCallback(form) {
+    $(form).closest("tr").find(".isDeleted").text("Yes");
+}
+
+function becomMemberItemSuccessCallback(form) {
+    $(form).closest("tr").find(".role").text("Member");
+}
