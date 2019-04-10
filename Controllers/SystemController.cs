@@ -222,10 +222,10 @@ namespace Auctions.Controllers
             // };
             if (Request.Headers["Referer"].ToString().Contains("manage/system"))
             {
-                return (IActionResult)PartialView("_IndexBodyPartial", searchApplicationUser);
+                return (IActionResult)PartialView("_UsersBodyPartial", searchApplicationUser);
             }
             return Request.IsAjaxRequest()
-                ? (IActionResult)PartialView("_IndexTablePartial", searchApplicationUser)
+                ? (IActionResult)PartialView("_UsersTablePartial", searchApplicationUser)
                 : View(searchApplicationUser);
         }
 
