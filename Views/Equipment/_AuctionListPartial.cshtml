@@ -16,8 +16,8 @@
             <a class="font-weight-bold equipment-title h3 mb-2 d-flex" 
                 asp-controller="Equipment" asp-action="show"
                 asp-route-type="@ViewData["Action"]"
-                asp-route-id="@item.Id"> 
-                @item.Manufacturer  @item.Model @item.Name  
+                asp-route-id="@item.Id" target="_blank">
+                @item.Manufacturer  @item.Model @item.Name
             </a>
             @if(item.DealPrice == null && ViewData["Action"] == "InsteadAuction"){
                 <b class="price pb-md-2 pb-sm-1">@item.PriceCurrency?.SymbolCode@item.Price</b>
