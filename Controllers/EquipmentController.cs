@@ -187,7 +187,7 @@ namespace Auction.Controllers
         [HttpGet("{id:Guid}/[action]")]
         [Authorize(Roles = "Admin, Staff, Develpment")]
         [GenerateAntiforgeryTokenCookieForAjax]
-        [CustomAuthorize]
+        [CustomAuthorize(Roles = "Admin, Staff, Develpment")]
         public async Task<IActionResult> Edit(Guid? id)
         {
             var breadcrumb = new List<IDictionary<string, string>>();
@@ -716,7 +716,7 @@ namespace Auction.Controllers
         /// </summary>
         [HttpGet("[action]")]
         [HttpPost("[action]")]
-        [Authorize(Roles = "Admin, Development, Staff, Member")]
+        [CustomAuthorize(Roles = "Admin, Development, Staff, Member")]
         public IActionResult InsteadAuction(SearchEquipmentViewModel searchEquipment)
         {
             ViewData["Title"] = "代购拍卖设备";

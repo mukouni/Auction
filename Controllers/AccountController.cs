@@ -77,36 +77,66 @@ namespace Auction.Controllers
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout
+                var user = _context.Users
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                String username = _context.Users.Where(u => u.PhoneNumber == model.PhoneNumber).Select(u => u.UserName).FirstOrDefault();
-                if (username == null)
+                                        .Where(u => u.PhoneNumber == model.PhoneNumber)
+                                        .FirstOrDefault();
+
+                if (user == null)
                 {
                     // model.Message ="没有找到手机号";
                     // ModelState.AddModelError(string.Empty, "没有找到手机号");
                     return View(model).WithWarning("错误", "没有找到用户!"); ;
                 }
-                var result = await _signInManager.PasswordSignInAsync(username, model.Password, model.RememberMe, lockoutOnFailure: false);
-                if (result.RequiresTwoFactor)
+                // if (user.DeadlineAt < DateTime.Now)
+                // {
+                //     var roles = await _userManager.GetRolesAsync(user);
+                //     await _userManager.RemoveFromRolesAsync(user, roles);
+                //     await _userManager.AddToRoleAsync(user, ApplicationRole.Guest);
+                // }
+
+                var passwordIsCorrect = await _userManager.CheckPasswordAsync(user, model.Password);
+                if (passwordIsCorrect)
                 {
-                    return RedirectToAction(nameof(SendCode), new { ReturnUrl = returnUrl, RememberMe = model.RememberMe })
-                            .WithInfo("提示", "请双因子登陆");
-                }
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation(1, "User logged in.");
+                    var DeadlineAt = user.DeadlineAt == null ? 
+                                        DateTime.MaxValue.ToString("yyyy-MM-dd") : 
+                                        ((DateTime)user.DeadlineAt).ToString("yyyy-MM-dd");
+
+                    var customClaims = new[]
+                    {
+                        new Claim("DeadlineAt", DeadlineAt)
+                    };
+                    await _signInManager.SignInUserAsync(user, model.RememberMe, customClaims);
                     return RedirectToLocal(returnUrl).WithSuccess("登陆成功", "欢迎回来!");
-                }
-                if (result.IsLockedOut)
-                {
-                    // ModelState.AddModelError(string.Empty, "账户被锁定");
-                    _logger.LogWarning(2, "User account locked out.");
-                    return View("Lockout").WithDanger("提示", "账户已经被锁定");
                 }
                 else
                 {
-                    // ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return View(model).WithDanger("错误", "密码错误");
+                    ModelState.AddModelError(string.Empty, "密码错误");
+                    return View(model);
                 }
+                // var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
+
+                // if (result.RequiresTwoFactor)
+                // {
+                //     return RedirectToAction(nameof(SendCode), new { ReturnUrl = returnUrl, RememberMe = model.RememberMe })
+                //             .WithInfo("提示", "请双因子登陆");
+                // }
+                // if (result.Succeeded)
+                // {
+                //     _logger.LogInformation(1, "User logged in.");
+                //     return RedirectToLocal(returnUrl).WithSuccess("登陆成功", "欢迎回来!");
+                // }
+                // if (result.IsLockedOut)
+                // {
+                //     // ModelState.AddModelError(string.Empty, "账户被锁定");
+                //     _logger.LogWarning(2, "User account locked out.");
+                //     return View("Lockout").WithDanger("提示", "账户已经被锁定");
+                // }
+                // else
+                // {
+                //     // ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                //     return View(model).WithDanger("错误", "密码错误");
+                // }
             }
 
             // If we got this far, something failed, redisplay form
@@ -210,10 +240,10 @@ namespace Auction.Controllers
         [HttpGet("[action]")]
         public IActionResult AccessDenied()
         {
-           
+
             return View();
         }
-        
+
         //
         // GET: /Account/LogOff
         [HttpGet("[action]")]
@@ -373,7 +403,7 @@ namespace Auction.Controllers
                 await _userManager.RemovePasswordAsync(user);
 
                 await _userManager.AddPasswordAsync(user, model.Password);
-                
+
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {

@@ -46,7 +46,7 @@ namespace Auction.Identity
                 //         .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
                 //         {
                 //             //认证失败，会自动跳转到这个地址
-                //             options.LoginPath = "/Home/Login";
+                //             options.LoginPath = "/account/login";
                 //         });
 
                 // services.Configure<CookiePolicyOptions>(options =>

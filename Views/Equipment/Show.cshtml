@@ -70,7 +70,7 @@
                     <div class="col-md-6  float-left">
                         <label asp-for="Price"></label>:
                         <span>
-                            @Html.DisplayFor(modelItem => modelItem.Price)@Html.DisplayFor(modelItem => modelItem.PriceCurrency.SymbolCode)
+                            @Model.Price@Html.DisplayFor(modelItem => modelItem.PriceCurrency.SymbolCode)
                         </span>
                     </div>
                 }
@@ -140,14 +140,6 @@
                         <label asp-for="Width"></label>:
                         <span>
                             @Html.DisplayFor(modelItem => modelItem.Width)
-                        </span>
-                    </div>
-                }
-                @if(Model.Height != null){
-                    <div class="col-md-6  float-left">
-                        <label asp-for="Height"></label>:
-                        <span>
-                            @Html.DisplayFor(modelItem => modelItem.Height)
                         </span>
                     </div>
                 }

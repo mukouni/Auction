@@ -8,7 +8,7 @@
 
 <div class="bodyinfo row flex-column">
     <div class="search-input  pt-2 d-flex justify-content-center">
-        <div class="form-group col-md-7">
+        <div class="form-group col-md-6">
             <form asp-controller="Equipment" asp-action='@ViewData["Action"]' method="get" id="searchform" class="form-inline justify-content-center">
                 <input asp-for="@Model.KeyWord" class="form-control col-md-8 col-sm-6 col-8">
                 <button type="submit" value="Submit" class="btn btn-primary ml-2">搜索设备</button>

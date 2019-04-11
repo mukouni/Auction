@@ -1,7 +1,14 @@
-﻿using Auction.Extensions.CustomException;
+﻿using Auction.Data;
+using Auction.Extensions.CustomException;
+using Auction.Identity.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
+using System.Globalization;
+using System.Linq;
+using System.Net;
+using System.Security.Claims;
 
 namespace Auction.Extensions.AuthContext
 {
@@ -33,9 +40,30 @@ namespace Auction.Extensions.AuthContext
                 // it isn't needed to set unauthorized result 
                 // as the base class already requires the user to be authenticated
                 // this also makes redirect to a login page work properly
-                //context.Result = new UnauthorizedResult();
-                //return;
+                // context.Result = new UnauthorizedResult();
+                // context.Result = nreView(nameof(login));
+                // context.Result = new ForbidResult();
+                // context.Result = new StatusCodeResult(System.Net.HttpStatusCode.Forbidden);
+                // return;
                 // throw new UnauthorizeException();
+            }
+            else
+            {
+                string[] roles = Roles.Split(",").Select(p => p.Trim()).ToArray();
+                
+                // // NameClaim.
+                // // return;
+                if(roles.Contains(ApplicationRole.Member)){
+                var DeadlineAtStr = user.Claims.Where(c => c.Type == "DeadlineAt").Select(c => c.Value).First();
+                var DeadlineAt = DateTime.ParseExact(DeadlineAtStr, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                if(DeadlineAt < DateTime.Now){
+                    context.Result = new ForbidResult();
+                    return;
+                }
+                //     var _context = context.HttpContext.RequestServices.GetService(typeof(AuctionDbContext));
+                //     // var cl = user.Claims.Select(c => c.Type == typeName).First().Value();
+                }
+
             }
 
             // you can also use registered services
