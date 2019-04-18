@@ -9,6 +9,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Auction.Identity.Entities;
 using System.Collections.Generic;
+using AutoMapper;
+using Auction.Models.AccountViewModels;
+using Action.Services;
+using Auction.Extensions.Filters;
 
 namespace Auctions.Controllers
 {
@@ -21,6 +25,8 @@ namespace Auctions.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
+        private readonly IUserService _userService;
+        private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
         public ManageController(
@@ -28,18 +34,23 @@ namespace Auctions.Controllers
         SignInManager<ApplicationUser> signInManager,
         IEmailSender emailSender,
         ISmsSender smsSender,
+        IUserService userService,
+        IMapper mapper,
         ILoggerFactory loggerFactory)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _smsSender = smsSender;
+            _userService = userService;
+            _mapper = mapper;
             _logger = loggerFactory.CreateLogger<ManageController>();
         }
 
         //
         // GET: /Manage/Index
         [HttpGet("[action]")]
+        [GenerateAntiforgeryTokenCookieForAjax]
         public async Task<IActionResult> Index(ManageMessageId? message = null)
         {
             var breadcrumb = new List<IDictionary<string, string>>();
@@ -50,7 +61,7 @@ namespace Auctions.Controllers
             });
             breadcrumb.Add(new Dictionary<string, string>
             {
-                { "text", "修改密码" },
+                { "text", "个人信息" },
                 { "href", "javascript: void(0)" }
             });
             ViewData["breadcrumb"] = breadcrumb;
@@ -63,17 +74,21 @@ namespace Auctions.Controllers
                 : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
                 : "";
 
-            var user = await GetCurrentUserAsync();
-            var model = new IndexViewModel
-            {
-                HasPassword = await _userManager.HasPasswordAsync(user),
-                PhoneNumber = await _userManager.GetPhoneNumberAsync(user),
-                TwoFactor = await _userManager.GetTwoFactorEnabledAsync(user),
-                Logins = await _userManager.GetLoginsAsync(user),
-                BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user),
-                AuthenticatorKey = await _userManager.GetAuthenticatorKeyAsync(user)
-            };
-            return View(model);
+            var currentUser = await GetCurrentUserAsync();
+            var user = _mapper.Map<ApplicationUserViewModel>(currentUser);
+            user.Role = (await _userService.GetRole(currentUser)).Name;
+            // await _userManager.GetRolesAsync(currentUser).First();
+            // user.Role = await _userManager.GetRolesAsync(currentUser).First();
+            // var model = new IndexViewModel
+            // {
+            //     HasPassword = await _userManager.HasPasswordAsync(user),
+            //     PhoneNumber = await _userManager.GetPhoneNumberAsync(user),
+            //     TwoFactor = await _userManager.GetTwoFactorEnabledAsync(user),
+            //     Logins = await _userManager.GetLoginsAsync(user),
+            //     BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user),
+            //     AuthenticatorKey = await _userManager.GetAuthenticatorKeyAsync(user)
+            // };
+            return View(user);
         }
 
 

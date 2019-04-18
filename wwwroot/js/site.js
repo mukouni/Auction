@@ -432,7 +432,7 @@ function ScrollEndGet() {
         });
     };
 
-    this.getNextPage = function(currentPage) {
+    this.getNextPage = function (currentPage) {
         searchEquipments("post", currentPage + 1)
         // do something with the scroll position
     }
@@ -440,10 +440,10 @@ function ScrollEndGet() {
 var scrollEndGet = new ScrollEndGet();
 scrollEndGet.scrollListening();
 
-$.fn.serializeObject = function() {
+$.fn.serializeObject = function () {
     var o = {};
     var a = this.serializeArray();
-    $.each(a, function() {
+    $.each(a, function () {
         if (o[this.name]) {
             if (!o[this.name].push) {
                 o[this.name] = [o[this.name]];
@@ -457,70 +457,71 @@ $.fn.serializeObject = function() {
 };
 
 
-function addRemoveElement(parentNode, chipElementId, resetValue){
+function addRemoveElement(parentNode, chipElementId, resetValue) {
     var span = document.createElement("span");
-        span.className ="closebtn";
-        span.innerHTML = "&times;";
-        span.onclick = function(e){
-            var elem = document.getElementById(chipElementId);
-            elem.parentNode.removeChild(elem);
-            if(resetValue.length == 0){
-                resetValue();
-            }else{
-                resetValue(chipElementId.split("-chip")[0])
-            }
-            searchEquipments();
+    span.className = "closebtn";
+    span.innerHTML = "&times;";
+    span.onclick = function (e) {
+        var elem = document.getElementById(chipElementId);
+        elem.parentNode.removeChild(elem);
+        if (resetValue.length == 0) {
+            resetValue();
+        } else {
+            resetValue(chipElementId.split("-chip")[0])
         }
+        searchEquipments();
+    }
     parentNode.appendChild(span);
 }
 
-function addOrUpdateChip(resetValue, ...args){
+function addOrUpdateChip(resetValue, ...args) {
     var existChip = document.getElementById(args[0]);
-    
-    if(existChip) {
-        if(args.length == 3 ){
+
+    if (existChip) {
+        if (args.length == 3) {
             existChip.innerText = args[1] + "—" + args[2];
         } else {
             existChip.innerText = args[1];
         }
         addRemoveElement(existChip, args[0], resetValue);
-    } else {            
+    } else {
         var chip = document.createElement("div");
-            chip.className = "chip";
-            chip.id = args[0].toString();
-        if(args.length == 3 ){
+        chip.className = "chip";
+        chip.id = args[0].toString();
+        if (args.length == 3) {
             chip.innerHTML = args[1] + "—" + args[2];
-        }else{
+        } else {
             chip.innerHTML = args[1];
         }
         addRemoveElement(chip, args[0], resetValue);
         document.getElementsByClassName("condition")[0].appendChild(chip);
-    }  
+    }
     //searchEquipments();
 }
 
-var bindCheckBox = function(){
+var bindCheckBox = function () {
     //$("#models-form-group").find("input[type='checkbox']:visible").each(function(i, ele){
-    $(".search input[type='checkbox']:visible").each(function(i, ele){
-        $(document).on("change click touch touchstart touchend", "#" + $(ele).attr("id"), function(){
+    $(".search input[type='checkbox']:visible").each(function (i, ele) {
+        $(document).on("change click touch touchstart touchend", "#" + $(ele).attr("id"), function () {
             var chipId = $(this).attr("id") + "-chip";
-            if($(this).is(':checked')){
-                var checkboxArrayId = $(this).attr("id").split("_").slice(0,2).join("_");  
+            if ($(this).is(':checked')) {
+                var checkboxArrayId = $(this).attr("id").split("_").slice(0, 2).join("_");
                 var hiddenInputId = checkboxArrayId + "__Name";
                 var valueInput = $("#" + hiddenInputId);
 
                 //addOrUpdateChip(resetCheckboxStatus, chipId, valueInput.val());
                 searchEquipments();
-            }else{
+            } else {
                 $("#" + chipId).remove();
                 searchEquipments();
             }
-            
+
         })
     });
 };
-function resetCheckboxStatus(id){
-    $("#" + id.toString()).prop('checked', false);     
+
+function resetCheckboxStatus(id) {
+    $("#" + id.toString()).prop('checked', false);
 }
 bindCheckBox();
 
@@ -531,4 +532,26 @@ function deleteItemSuccessCallback(form) {
 
 function becomMemberItemSuccessCallback(form) {
     $(form).closest("tr").find(".role").text("Member");
+}
+
+
+function applicationMembers(obj, id) {
+    $.ajax({
+        type: "post",
+        url: "/account/applyformember",
+        dataType: 'json',
+        contentType: "application/json",
+        headers: {
+            "X-XSRF-Token": $('#RequestVerificationToken').val(),
+            "id": id
+        },
+        data: JSON.stringify({
+            "id": id
+        }),
+        success: function (response) {
+            if (response.code == 200) {
+                $(obj).prop('disabled', true);
+            }
+        }
+    });
 }

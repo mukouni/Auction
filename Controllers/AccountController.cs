@@ -98,8 +98,8 @@ namespace Auction.Controllers
                 var passwordIsCorrect = await _userManager.CheckPasswordAsync(user, model.Password);
                 if (passwordIsCorrect)
                 {
-                    var DeadlineAt = user.DeadlineAt == null ? 
-                                        DateTime.MaxValue.ToString("yyyy-MM-dd") : 
+                    var DeadlineAt = user.DeadlineAt == null ?
+                                        DateTime.MaxValue.ToString("yyyy-MM-dd") :
                                         ((DateTime)user.DeadlineAt).ToString("yyyy-MM-dd");
 
                     var customClaims = new[]
@@ -659,6 +659,25 @@ namespace Auction.Controllers
                 ModelState.AddModelError(string.Empty, "Invalid code.");
                 return View(model);
             }
+        }
+        // 发送申请会员的邮件
+        [HttpPost("[action]")]
+        [Authorize(Roles = "Guest, Member")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ApplyForMember([FromBody]ApplicationUser user)
+        {
+            var response = ResponseModelFactory.CreateResultInstance;
+            if (user == null && user.Id == null)
+            {
+                response.SetError("not found user");
+                return Ok(response);
+            }
+            user = await _userManager.FindByIdAsync(user.Id.ToString());
+            await _emailSender.SendApplyForEmailAsync(user.PhoneNumber, user.RealName, "申请会员");
+            user.DeadlineAt = DateTime.MinValue;
+            await _userManager.UpdateAsync(user);
+            response.SetData(user.Id);
+            return Ok(response);
         }
 
         #region Helpers

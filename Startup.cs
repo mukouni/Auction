@@ -19,6 +19,9 @@ using Microsoft.Extensions.FileProviders;
 using Auction.Data.AutoMapper;
 using Newtonsoft.Json.Serialization;
 using System;
+using Microsoft.AspNetCore.Identity;
+using Action.Services;
+using Auction.Identity.Entities;
 
 namespace Auction
 {
@@ -59,13 +62,16 @@ namespace Auction
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
+                // options.CheckConsentNeeded = context => true;
+                // options.MinimumSameSitePolicy = SameSiteMode.None;
             });
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
             var auctionSettingsSection = _configuration.GetSection("AuctionSettings");
             services.Configure<AuctionSettings>(auctionSettingsSection);
             services.AddAntiforgery(options => options.HeaderName = "X-XSRF-TOKEN");
+
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddDbContext<AuctionDbContext>(options =>
             {
@@ -99,12 +105,17 @@ namespace Auction
                 options.Cookie.IsEssential = true;
             });
 
-            services.AddMvc()
+            services.AddMvc(options =>
+                    {
+                        options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                    })
                     .AddJsonOptions(options =>
                     {
                         // options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                        options.SerializerSettings.ContractResolver =  new Newtonsoft.Json.Serialization.DefaultContractResolver(); 
+                        // 开启大小写，大写开头字段名
+                        // options.SerializerSettings.ContractResolver = new DefaultContractResolver();
                         options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore; // 忽略在对象图中找到的循环引用
+                        // options.SerializerSettings.DateFormatString = "yyyy-MM-dd";
                     })
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -122,7 +133,7 @@ namespace Auction
 
             // https://docs.microsoft.com/zh-cn/aspnet/core/fundamentals/http-context?view=aspnetcore-2.2
             services.AddHttpContextAccessor();
-    
+
             _services = services;
         }
 

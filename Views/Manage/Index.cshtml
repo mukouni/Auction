@@ -1,43 +1,69 @@
-﻿@model IndexViewModel
+﻿@model ApplicationUserViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
 @{
     ViewData["Title"] = "用户设置";
     Layout = "_ManageLayout";
 }
-<div class="body row justify-content-center align-content-center">
-    <div class="login d-flex flex-column justify-content-center align-items-center">
-        <form asp-controller="Manage" asp-action="ChangePassword" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
-            <h3 class="mt-3 mb-4 text-center">修改密码</h3>
-                <div asp-validation-summary="All" class="text-danger"></div>
-                
-                <span asp-validation-for="ChangePassword.OldPassword" class="text-danger"></span>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">旧密码：</span>
-                    </div>
-                    <input asp-for="ChangePassword.OldPassword" class="form-control"/>
-                </div>
-                
-                <span asp-validation-for="ChangePassword.NewPassword" class="text-danger"></span>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">新密码：</span>
-                    </div>
-                    <input asp-for="ChangePassword.NewPassword" class="form-control"/>
-                </div>
-
-                <span asp-validation-for="ChangePassword.ConfirmPassword" class="text-danger"></span>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">确认密码：</span>
-                    </div>
-                    <input asp-for="ChangePassword.ConfirmPassword" class="form-control"/>
-                </div>
-
-                <div class="text-right">
-                    <button type="submit" class="btn btn-primary m">提交</button>
-                </div>
-        </form>
-    </div>
+<input type="hidden" id="RequestVerificationToken" 
+       name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
+<div class="col-md-6  float-left">
+    <label>@Html.DisplayNameFor(model => Model.UserName)</label>:
+    <span>
+        @Html.DisplayFor(modelItem => modelItem.UserName)
+    </span>
+</div>
+<div class="col-md-6  float-left">
+    <label>@Html.DisplayNameFor(model => Model.PhoneNumber)</label>:
+    <span>
+        @Html.DisplayFor(modelItem => modelItem.PhoneNumber)
+    </span>
+</div>
+<div class="col-md-6  float-left">
+    <label>@Html.DisplayNameFor(model => Model.RealName)</label>:
+    <span>
+        @Html.DisplayFor(modelItem => modelItem.RealName)
+    </span>
+</div>
+<div class="col-md-6  float-left">
+    <label>@Html.DisplayNameFor(model => Model.Role)</label>:
+    <span>
+        @if(Model.Role == ApplicationRole.Member){
+            @Html.Raw("会员")
+        }else if(Model.Role == ApplicationRole.Guest){
+            @Html.Raw("普通用户")
+        }else{
+            @Html.DisplayFor(modelItem => Model.Role)
+        }
+    </span>
+</div>
+<div class="col-md-6  float-left">
+    <label>@Html.DisplayNameFor(model => Model.DeadlineAt)</label>:
+    <span>
+        @if(@Model.Role != ApplicationRole.Admin && @Model.Role != ApplicationRole.Staff)
+        {
+            @if(@Model.DeadlineAt == DateTime.MinValue)
+            {
+               <button class="btn btn-info" disabled="true">已提交申请成为会员</button>
+               <button class="btn btn-info" onclick="applicationMembers(this, '@Model.Id')">申请为会员</button>
+            } else if(@Model.DeadlineAt < DateTime.Now || @Model.DeadlineAt == null)
+            {
+                 @Html.DisplayFor(modelItem => modelItem.DeadlineAt)<button class="btn btn-info" onclick="applicationMembers(this, '@Model.Id')">申请为会员</button>
+            } else
+            {
+                @Html.DisplayFor(modelItem => modelItem.DeadlineAt)
+            }
+        }
+        else
+        {
+            @Html.DisplayFor(modelItem => modelItem.DeadlineAt)
+        }
+    </span>
 </div>
     @*
     <h4>Change your account settings</h4>

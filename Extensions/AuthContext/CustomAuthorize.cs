@@ -50,18 +50,22 @@ namespace Auction.Extensions.AuthContext
             else
             {
                 string[] roles = Roles.Split(",").Select(p => p.Trim()).ToArray();
-                
-                // // NameClaim.
-                // // return;
-                if(roles.Contains(ApplicationRole.Member)){
-                var DeadlineAtStr = user.Claims.Where(c => c.Type == "DeadlineAt").Select(c => c.Value).First();
-                var DeadlineAt = DateTime.ParseExact(DeadlineAtStr, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                if(DeadlineAt < DateTime.Now){
-                    context.Result = new ForbidResult();
-                    return;
-                }
-                //     var _context = context.HttpContext.RequestServices.GetService(typeof(AuctionDbContext));
-                //     // var cl = user.Claims.Select(c => c.Type == typeName).First().Value();
+
+                if (roles.Contains(ApplicationRole.Member))
+                {
+                    var DeadlineAtStr = user.Claims.Where(c => c.Type == "DeadlineAt").Select(c => c.Value);
+
+                    if (DeadlineAtStr.Count() > 0)
+                    {
+                        var DeadlineAt = DateTime.ParseExact(DeadlineAtStr.First(), "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                        if (DeadlineAt < DateTime.Now)
+                        {
+                            context.Result = new ForbidResult();
+                            return;
+                        }
+                    }
+                    //     var _context = context.HttpContext.RequestServices.GetService(typeof(AuctionDbContext));
+                    //     // var cl = user.Claims.Select(c => c.Type == typeName).First().Value();
                 }
 
             }

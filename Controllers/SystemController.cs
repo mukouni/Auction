@@ -9,6 +9,7 @@ using Auction.Entities;
 using Auction.Entities.Enums;
 using Auction.Extensions;
 using Auction.Extensions.Alerts;
+using Auction.Extensions.Filters;
 using Auction.Identity.Entities;
 using Auction.Identity.Services;
 using Auction.Models.AccountViewModels;
@@ -58,6 +59,7 @@ namespace Auctions.Controllers
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailSender = emailSender;
             _mapper = mapper;
             _logger = loggerFactory.CreateLogger<SystemController>();
             _appSettings = appSettings.Value;
@@ -380,7 +382,7 @@ namespace Auctions.Controllers
 
                 // var ecurityStamp = await _userManager.UpdateSecurityStampAsync(user).Result;
                 var FormUser = _mapper.Map<ApplicationUser>(model);
-                
+
                 user.RealName = FormUser.RealName;
                 user.DeadlineAt = FormUser.DeadlineAt;
                 user.Email = FormUser.Email;
@@ -388,7 +390,7 @@ namespace Auctions.Controllers
                 user.LockoutEnabled = FormUser.LockoutEnabled;
                 user.LockoutEnd = FormUser.LockoutEnd;
                 user.AvatorPath = FormUser.AvatorPath;
-                
+
                 var result = await _userManager.UpdateAsync(user);
                 _context.SaveChanges();
                 if (!result.Succeeded)

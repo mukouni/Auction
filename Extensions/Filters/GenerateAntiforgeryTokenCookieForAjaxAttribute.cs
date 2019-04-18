@@ -17,7 +17,7 @@ namespace Auction.Extensions.Filters
             context.HttpContext.Response.Cookies.Append(
                 "XSRF-TOKEN",
                 tokens.RequestToken,
-                new CookieOptions() { HttpOnly = false });
+                new CookieOptions() { HttpOnly = true });
         }
     }
 }

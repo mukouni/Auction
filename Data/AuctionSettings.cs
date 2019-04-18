@@ -45,6 +45,8 @@ namespace Auction
         public int EmailPort { get; set; }
         public string AdminEmailUserName { get; set; }
         public string AdminEmailPassword { get; set; }
+        public string EmailUserName { get; set; }
+        public string EmailPassword { get; set; }
         public string SMSAppid { get; set; }
         public string SMSsecretKey { get; set; }
 

@@ -10,7 +10,8 @@ namespace Auction.Identity.Services
 {
     public interface IEmailSender
     {
-        Task SendEmailAsync(string email, string userName, string subject, string callbackUrl);
+        Task SendEmailAsync(string toEmail, string toUserName, string subject, string callbackUrl);
+        Task SendApplyForEmailAsync(string fromPhoneNumber, string formUserName, string subject);
     }
 
     // This class is used by the application to send email for account confirmation and password reset.
@@ -23,11 +24,11 @@ namespace Auction.Identity.Services
         }
 
         public AuctionSettings _options { get; }
-        public Task SendEmailAsync(string email, string userName, string subject, string callbackUrl)
+        public Task SendEmailAsync(string toEmail, string toUserName, string subject, string callbackUrl)
         {
             // return Task.CompletedTask;
 
-            return ExecuteAsync(email, userName, subject, callbackUrl);
+            return ExecuteAsync(toEmail, toUserName, subject, callbackUrl);
         }
 
         public async Task ExecuteAsync(string emailAdrr, string userName, string subject, string callbackUrl)
@@ -99,6 +100,50 @@ namespace Auction.Identity.Services
                 await client.DisconnectAsync(true);
             }
             // return Task.CompletedTask;
+        }
+
+        public async Task SendApplyForEmailAsync(string fromPhoneNumber, string formRealName, string subject)
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("中机电", _options.AdminEmailUserName));
+            message.To.Add(new MailboxAddress(_options.EmailUserName, _options.EmailUserName));
+            message.Subject = subject;
+
+            var builder = new BodyBuilder();
+            // var rootFolder = Directory.GetCurrentDirectory();
+            // rootFolder = rootFolder.Substring(0,
+            //             rootFolder.IndexOf(@"\Project\", StringComparison.Ordinal) + @"\Project\".Length);
+            // PathToData = Path.GetFullPath(Path.Combine(rootFolder, "Data"));
+
+            // var Parser = Parser();
+            // var d = new FileStream(Path.Combine(PathToData, $"{dataFileName}.txt"), FileMode.Open);
+            // var fs = new StreamReader(d, Encoding.UTF8);
+            using (StreamReader SourceReader = System.IO.File.OpenText($@"{Directory.GetCurrentDirectory()}\Identity\Templates\ApplyEmailTemplates.cshtml"))
+            {
+                builder.HtmlBody = SourceReader.ReadToEnd();
+            }
+            message.Body = new TextPart("html")
+            {
+                Text = builder.HtmlBody.Replace("#{RealName}", formRealName)
+                                        .Replace("#{PhoneNumber}", fromPhoneNumber)
+                                        .Replace("#{Now}", DateTime.Now.ToShortDateString())
+
+            };
+            // message.HtmlBody = builder.HtmlBody;
+
+            using (var client = new SmtpClient())
+            {
+                // For demo-purposes, accept all SSL certificates (in case the server supports STARTTLS)
+                // client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+
+                client.Connect(_options.EmailHost, _options.EmailPort, false);
+
+                // Note: only needed if the SMTP server requires authentication
+                client.Authenticate(_options.AdminEmailUserName, _options.AdminEmailPassword);
+
+                await client.SendAsync(message);
+                await client.DisconnectAsync(true);
+            }
         }
     }
 }

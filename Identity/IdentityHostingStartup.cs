@@ -99,7 +99,7 @@ namespace Auction.Identity
                         return ctx.Request.Path.StartsWithSegments("/api") ? JwtBearerDefaults.AuthenticationScheme : null;
                     };
                     options.Cookie.HttpOnly = true;
-                    options.ExpireTimeSpan = TimeSpan.FromHours(12); //FromMinutes(5);
+                    options.ExpireTimeSpan = TimeSpan.FromHours(12); //FromMinutes(5); 自动退出登陆的时间
 
                     options.LoginPath = "/Account/Login";
                     options.AccessDeniedPath = "/Account/AccessDenied";

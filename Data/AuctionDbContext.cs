@@ -69,30 +69,27 @@ namespace Auction.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // modelBuilder.Entity<User>(entity =>
-            // {
-            //     entity.Property(e => e.Guid)
-            //         .ValueGeneratedNever()
-            //         .HasDefaultValueSql("newid()");
-            //     entity.Property(e => e.IsDelete)
-            //         .HasDefaultValue(IsDeleted.No);
-            //     entity.Property(e => e.IsLocked)
-            //         .HasDefaultValue(IsLocked.UnLocked);
-            //     entity.Property(e => e.Role)
-            //         .HasDefaultValue(UserRole.Guest);
-            //     entity.Property(e => e.CreatedAt)
-            //         .ValueGeneratedOnAdd()
-            //         .HasDefaultValueSql("getdate()");
-            //     entity.Property(e => e.LastUpdatedAt)
-            //         .ValueGeneratedOnAddOrUpdate()
-            //         .HasDefaultValueSql("getdate()");
-            // });
             builder.Entity<ApplicationUser>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("newid()");
                 entity.HasMany(u => u.UserRoles)
                     .WithOne(ur => ur.User)
                     .HasForeignKey(ur => ur.UserId)
                     .IsRequired();
+                entity.Property(e => e.CreatedAt)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("getdate()");
+                entity.Property(e => e.LastUpdatedAt)
+                    .ValueGeneratedOnAddOrUpdate()
+                    .HasDefaultValueSql("getdate()");
+                entity.Property(e => e.CreatedAt)
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValueSql("getdate()");
+                entity.Property(e => e.LastUpdatedAt)
+                    .ValueGeneratedOnAddOrUpdate()
+                    .HasDefaultValueSql("getdate()");
             });
 
             builder.Entity<ApplicationRole>(entity =>
@@ -102,7 +99,7 @@ namespace Auction.Data
                     .HasForeignKey(ur => ur.RoleId)
                     .IsRequired();
             });
-            
+
             builder.Entity<ApplicationUser>().ToTable("st_users");
             builder.Entity<ApplicationRole>().ToTable("st_roles");
             builder.Entity<ApplicationUserRole>().ToTable("st_user_roles");

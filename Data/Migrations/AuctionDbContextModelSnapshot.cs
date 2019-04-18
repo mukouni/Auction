@@ -277,7 +277,8 @@ namespace Auction.Migrations
             modelBuilder.Entity("Auction.Identity.Entities.ApplicationUser", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("newid()");
 
                     b.Property<int>("AccessFailedCount");
 
@@ -287,7 +288,9 @@ namespace Auction.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
-                    b.Property<DateTime?>("CreatedAt");
+                    b.Property<DateTime?>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<DateTime?>("DeadlineAt");
 
@@ -302,7 +305,8 @@ namespace Auction.Migrations
                     b.Property<int?>("IsDeleted");
 
                     b.Property<DateTime?>("LastUpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate();
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<bool>("LockoutEnabled");
 
