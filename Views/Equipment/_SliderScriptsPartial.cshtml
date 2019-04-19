@@ -1,8 +1,10 @@
 <script id="slider-script">
     var workingTimeMin = parseInt("@Model.WorkingTimeMin") || parseInt("@ApplicationConstant.intDefaultValue");
+    if(workingTimeMin < 0) workingTimeMin = 0;
     var workingTimeMax = parseInt("@Model.WorkingTimeMax") || parseInt("@ApplicationConstant.intDefaultValue");
     if(workingTimeMax > 0){
         var workingTimeFrom = parseInt("@(Model.WorkingTimeRangeDefaultMin)");
+        if(workingTimeFrom <= 0) workingTimeFrom = 0;
         var workingTimeTo = parseInt("@(Model.WorkingTimeRangeDefaultMax)");
         $("#working-time-range-slider").ionRangeSlider({
             skin: "round",
@@ -15,6 +17,8 @@
             grid_snap: true,
             from_fixed: false,  // fix position of FROM handle
             to_fixed: false,
+            postfix: "小时",
+            step: 10,
             onFinish: function (data) {
                 $("#WorkingTimeRangeMin").val(data.from);
                 $("#WorkingTimeRangeMax").val(data.to);
@@ -101,10 +105,13 @@
             max: productionDateMax,
             from: productionDateFrom,
             to: productionDateTo,
-            grid: false,
+            grid: true,
             grid_snap: true,
             from_fixed: false,  // fix position of FROM handle
             to_fixed: false,
+            postfix: "年",
+            hide_min_max: false,    // show/hide MIN and MAX labels
+            hide_from_to: false,
             onFinish: function (data) {
                 $("#ProductionDateRangeMin").val(data.from);
                 $("#ProductionDateRangeMax").val(data.to);
