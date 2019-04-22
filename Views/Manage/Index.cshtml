@@ -50,7 +50,6 @@
             @if(@Model.DeadlineAt == DateTime.MinValue)
             {
                <button class="btn btn-info" disabled="true">已提交申请成为会员</button>
-               <button class="btn btn-info" onclick="applicationMembers(this, '@Model.Id')">申请为会员</button>
             } else if(@Model.DeadlineAt < DateTime.Now || @Model.DeadlineAt == null)
             {
                  @Html.DisplayFor(modelItem => modelItem.DeadlineAt)<button class="btn btn-info" onclick="applicationMembers(this, '@Model.Id')">申请为会员</button>

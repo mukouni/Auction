@@ -51,7 +51,7 @@ namespace Auction.Extensions.AuthContext
             {
                 string[] roles = Roles.Split(",").Select(p => p.Trim()).ToArray();
 
-                if (roles.Contains(ApplicationRole.Member))
+                if (roles.Contains(ApplicationRole.Member) && user.IsInRole(ApplicationRole.Member))
                 {
                     var DeadlineAtStr = user.Claims.Where(c => c.Type == "DeadlineAt").Select(c => c.Value);
 

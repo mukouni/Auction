@@ -35,23 +35,23 @@ namespace Auction
         {
             var host = CreateWebHostBuilder(args).Build();
 
-            using (var scope = host.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                var loggerFactory = services.GetRequiredService<ILoggerFactory>();
-                var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-                var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
-                try
-                {
-                    var auctionDBContext = services.GetRequiredService<AuctionDbContext>();
-                    AuctionDbContextSeed.SeedAsync(auctionDBContext, userManager, roleManager).Wait();
-                }
-                catch (Exception ex)
-                {
-                    var logger = loggerFactory.CreateLogger<Program>();
-                    logger.LogError(ex, "An error occurred seeding the DB.");
-                }
-            }
+            // using (var scope = host.Services.CreateScope())
+            // {
+            //     var services = scope.ServiceProvider;
+            //     var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+            //     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+            //     var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
+            //     try
+            //     {
+            //         var auctionDBContext = services.GetRequiredService<AuctionDbContext>();
+            //         AuctionDbContextSeed.SeedAsync(auctionDBContext, userManager, roleManager).Wait();
+            //     }
+            //     catch (Exception ex)
+            //     {
+            //         var logger = loggerFactory.CreateLogger<Program>();
+            //         logger.LogError(ex, "An error occurred seeding the DB.");
+            //     }
+            // }
 
             host.Run();
         }

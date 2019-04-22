@@ -164,7 +164,7 @@ namespace Auction.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { PhoneNumber = model.PhoneNumber, UserName = model.UserName };
+                var user = new ApplicationUser { PhoneNumber = model.PhoneNumber, UserName = model.UserName, RealName = model.RealName };
                 if (model.SMSCode != HttpContext.Session.Get<string>("smsCode") ||
                     DateTime.Now <= HttpContext.Session.Get<DateTime>("smsTimeoutAt"))
                 {

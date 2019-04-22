@@ -39,7 +39,7 @@
                     asp-controller="Equipment" asp-action="Index"
                     class='nav-link @Html.IsActive("Equipment", "Index")'>
                     设备列表</a>
-                <a id="user-search-history"
+                <!-- <a id="user-search-history"
                     asp-controller="System" asp-action="Index"
                     class='nav-link @Html.IsActive("System", "UserSearchHistory")'>
                     用户搜索记录
@@ -48,12 +48,14 @@
                     asp-controller="System" asp-action="LoginHistory"
                     class='nav-link @Html.IsActive("System", "LoginHistory")'>
                     用户注册记录
-                </a>
+                </a> -->
+                @if(User.IsInRole(ApplicationRole.Admin)){
                 <a id="user-list-history"
                     asp-controller="System" asp-action="Users"
                     class='nav-link @Html.IsActive("System", "Users")'>
                     用户列表
                 </a>
+                }
             </div>
         </div>
         <div class="show flex-grow-1 pl-4 pt-4 manage-content text-dark">

@@ -30,7 +30,7 @@ using static Auction.Controllers.AccountController;
 namespace Auctions.Controllers
 {
 
-    [Authorize(Roles = "Admin, Development, Staff")]
+    [Authorize(Roles = "Admin, Development")]
     [Route("[controller]")]
     public class SystemController : Controller
     {
