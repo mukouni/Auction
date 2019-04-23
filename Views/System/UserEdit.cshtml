@@ -5,6 +5,8 @@
     ViewData["Action"] = "UserEdit";
     Layout = "_SystemLayout";
 }
+<h4>Edit account.</h4>
+<hr />
 @await Html.PartialAsync("_UserFormPartial", Model, ViewData)
 @section script {
     $(document).Ready(function(){

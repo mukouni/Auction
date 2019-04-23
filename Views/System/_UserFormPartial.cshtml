@@ -1,8 +1,6 @@
 @model ApplicationUserViewModel
 
 <form asp-controller="System" asp-action='@ViewData["Action"]' asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
-    <h4>Create a new account.</h4>
-    <hr />
     <div asp-validation-summary="All" class="text-danger"></div>
     <input asp-for="Id" type="hidden">
     <input asp-for="UserName" type="hidden">

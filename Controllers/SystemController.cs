@@ -390,6 +390,7 @@ namespace Auctions.Controllers
                 user.LockoutEnabled = FormUser.LockoutEnabled;
                 user.LockoutEnd = FormUser.LockoutEnd;
                 user.AvatorPath = FormUser.AvatorPath;
+                user.LastUpdatedAt = DateTime.Now;
 
                 var result = await _userManager.UpdateAsync(user);
                 _context.SaveChanges();

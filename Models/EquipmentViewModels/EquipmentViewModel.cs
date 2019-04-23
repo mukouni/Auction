@@ -257,11 +257,11 @@ namespace Auction.Models.EquipmentViewModels
 
         [Display(Name = "履带底架照片")]
         public ICollection<EquipmentPhotoViewModel> TrackedChassisPhotos { get; set; } = new List<EquipmentPhotoViewModel>();
-        [Display(Name = "驾驶室照片")]
+        [Display(Name = "臂架照片")]
         public ICollection<EquipmentPhotoViewModel> BoomPhotos { get; set; } = new List<EquipmentPhotoViewModel>();
 
 
-        [Display(Name = "臂架照片")]
+        [Display(Name = "驾驶室照片")]
         public ICollection<EquipmentPhotoViewModel> CabPhotos { get; set; } = new List<EquipmentPhotoViewModel>();
 
         [Display(Name = "引擎照片")]
