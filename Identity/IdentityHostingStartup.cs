@@ -37,7 +37,7 @@ namespace Auction.Identity
                         // .AddUserStore<ApplicationUser>()
                         .AddSignInManager()
                         .AddDefaultTokenProviders();
-                
+
                 // IdentityModelEventSource.ShowPII = true;
 
                 // JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
@@ -104,7 +104,7 @@ namespace Auction.Identity
                     options.LoginPath = "/Account/Login";
                     options.AccessDeniedPath = "/Account/AccessDenied";
                     options.SlidingExpiration = true;
-                    
+
                     options.Cookie.Expiration = TimeSpan.FromDays(1);
 
                     options.Cookie = new CookieBuilder

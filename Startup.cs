@@ -107,7 +107,7 @@ namespace Auction
 
             services.AddMvc(options =>
                     {
-                        options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                        // options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                     })
                     .AddJsonOptions(options =>
                     {

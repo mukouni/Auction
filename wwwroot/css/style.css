@@ -608,6 +608,12 @@ footer {
   right: 0;
 }
 
+@media (min-width: 1024px) {
+  .data .equipment-list .price {
+    font-size: 2.5rem;
+  }
+}
+
 .data .equipment-list .work-time-label {
   font-size: 1.25rem;
 }

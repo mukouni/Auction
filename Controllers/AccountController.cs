@@ -663,8 +663,8 @@ namespace Auction.Controllers
         // 发送申请会员的邮件
         [HttpPost("[action]")]
         [Authorize(Roles = "Guest, Member")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ApplyForMember([FromBody]ApplicationUser user)
+        // [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ApplyForMember(ApplicationUser user)
         {
             var response = ResponseModelFactory.CreateResultInstance;
             if (user == null && user.Id == null)

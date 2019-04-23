@@ -394,6 +394,15 @@ namespace Auctions.Controllers
 
                 var result = await _userManager.UpdateAsync(user);
                 _context.SaveChanges();
+
+                if (model.Role == ApplicationRole.Guest)
+                {
+                    user.DeadlineAt = new DateTime(1900, 1, 1);
+                    _context.Entry(user).Property(u => u.DeadlineAt).IsModified = true;
+                    await _context.SaveChangesAsync();
+                }
+                var roles = await _userManager.GetRolesAsync(user);
+
                 if (!result.Succeeded)
                 {
                     foreach (var error in result.Errors)
@@ -485,6 +494,13 @@ namespace Auctions.Controllers
             var roles = await _userManager.GetRolesAsync(user);
             await _userManager.RemoveFromRolesAsync(user, roles);
             await _userManager.AddToRoleAsync(user, roleName);
+            // 会员一次一年期限
+            if (roleName == ApplicationRole.Member)
+            {
+                user.DeadlineAt = DateTime.Now.AddYears(1);
+                _context.Entry(user).Property(u => u.DeadlineAt).IsModified = true;
+                await _context.SaveChangesAsync();
+            }
         }
         #endregion
     }

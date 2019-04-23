@@ -106,7 +106,7 @@ namespace Auction.Controllers
             var list = query.Paged(searchEquipment.CurrentPage, searchEquipment.PageSize)
                             // .Select(equipment =>  _mapper.Map<EquipmentViewModel>(equipment)) //因为设置了延迟加载会报错
                             .ProjectTo<EquipmentViewModel>();
-                            // .Project().To<EquipmentViewModel>()
+            // .Project().To<EquipmentViewModel>()
 
             var totalCount = query.Count();
 
@@ -296,7 +296,7 @@ namespace Auction.Controllers
         public async Task<IActionResult> Show(Guid id, string type)
         {
             var equipment = _mapper.Map<EquipmentViewModel>(await _context.Equipments.FindAsync(id));
-             if (equipment == null)
+            if (equipment == null)
             {
                 return NotFound();
             }
@@ -308,7 +308,7 @@ namespace Auction.Controllers
         public async Task<IActionResult> ShowAll(Guid id, string type)
         {
             var equipment = _mapper.Map<EquipmentViewModel>(await _context.Equipments.FindAsync(id));
-             if (equipment == null)
+            if (equipment == null)
             {
                 return NotFound();
             }
@@ -598,8 +598,8 @@ namespace Auction.Controllers
                 var query = _context.Equipments.AsQueryable<Equipment>();
                 if (!string.IsNullOrEmpty(searchEquipment.KeyWord))
                 {
-                    query = query.Where(x => 
-                        x.Name.Contains(searchEquipment.KeyWord.Trim()) || 
+                    query = query.Where(x =>
+                        x.Name.Contains(searchEquipment.KeyWord.Trim()) ||
                         x.Code.Contains(searchEquipment.KeyWord.Trim()) ||
                         x.Model.Contains(searchEquipment.KeyWord.Trim()));
                 }
@@ -635,7 +635,8 @@ namespace Auction.Controllers
                 if (Request.IsAjaxPostRequest())
                 {
                     // 翻页
-                     if(list.Count == 0){
+                    if (list.Count == 0)
+                    {
                         var response = ResponseModelFactory.CreateResultInstance;
                         response.SetData("<p class=\"text-center\">没有更多数据了！</p>", list.Count);
                         return Ok(response);
@@ -663,8 +664,8 @@ namespace Auction.Controllers
                 var query = _context.Equipments.AsQueryable<Equipment>();
                 if (!string.IsNullOrEmpty(searchEquipment.KeyWord))
                 {
-                    query = query.Where(x => 
-                        x.Name.Contains(searchEquipment.KeyWord.Trim()) || 
+                    query = query.Where(x =>
+                        x.Name.Contains(searchEquipment.KeyWord.Trim()) ||
                         x.Code.Contains(searchEquipment.KeyWord.Trim()) ||
                         x.Model.Contains(searchEquipment.KeyWord.Trim()));
                 }
@@ -699,7 +700,8 @@ namespace Auction.Controllers
                 if (Request.IsAjaxPostRequest())
                 {
                     // 翻页
-                    if(list.Count == 0){
+                    if (list.Count == 0)
+                    {
                         var response = ResponseModelFactory.CreateResultInstance;
                         response.SetData("<p class=\"text-center\">没有更多数据了！</p>", list.Count);
                         return Ok(response);
@@ -728,8 +730,8 @@ namespace Auction.Controllers
                 var query = _context.Equipments.AsQueryable<Equipment>();
                 if (!string.IsNullOrEmpty(searchEquipment.KeyWord))
                 {
-                    query = query.Where(x => 
-                        x.Name.Contains(searchEquipment.KeyWord.Trim()) || 
+                    query = query.Where(x =>
+                        x.Name.Contains(searchEquipment.KeyWord.Trim()) ||
                         x.Code.Contains(searchEquipment.KeyWord.Trim()) ||
                         x.Model.Contains(searchEquipment.KeyWord.Trim()));
                 }
@@ -771,7 +773,8 @@ namespace Auction.Controllers
                 if (Request.IsAjaxPostRequest())
                 {
                     // 翻页
-                    if(list.Count == 0){
+                    if (list.Count == 0)
+                    {
                         var response = ResponseModelFactory.CreateResultInstance;
                         response.SetData("<p class=\"text-center\">没有更多数据了！</p>", list.Count);
                         return Ok(response);

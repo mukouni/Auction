@@ -75,61 +75,70 @@ function UploadPhoto(uploadUrl, deleteUrl, setHiddenPhototUrl, modelId) {
         // {'X-XSRF-TOKEN': cookieUtil.getItem("XSRF-TOKEN")}
         var $fileInput = $(inputId)
         $fileInput.fileinput({
-            "language": 'zh',
-            "theme": 'explorer-fas',
-            uploadUrl: this.uploadUrl,
-            ajaxSettings: {
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('X-XSRF-TOKEN', cookieUtil.getItem("XSRF-TOKEN"))
-                }
-            },
-            uploadExtraData: {
-                '__RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val(),
-                'EquipmentId': this.modelId,
-                'PhotoType': photoType
-            },
-            allowedFileTypes: ["image"],
-            overwriteInitial: false,
-            initialPreviewAsData: true,
-            initialPreview: _initialPreview,
-            initialPreviewConfig: _initialPreviewConfig
-        }).on("filebatchselected", function (event, files) {
-            $fileInput.fileinput("upload");
-        }).on('filepreupload', function (event, data, previewId, index) {
-            //data.form.append('IsHiddenAfterSold', $("input#" + previewId).is(":checked"))
-        }).on("fileuploaded", function (event, data, previewId, index) {
-            _addData([data.response])
+                "language": 'zh',
+                "theme": 'explorer-fas',
+                uploadUrl: this.uploadUrl,
+                ajaxSettings: {
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('X-XSRF-TOKEN', cookieUtil.getItem("XSRF-TOKEN"))
+                    }
+                },
+                uploadExtraData: {
+                    '__RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val(),
+                    'EquipmentId': this.modelId,
+                    'PhotoType': photoType
+                },
+                allowedFileTypes: ["image"],
+                overwriteInitial: false,
+                initialPreviewAsData: true,
+                initialPreview: _initialPreview,
+                initialPreviewConfig: _initialPreviewConfig
+            }).on("filebatchselected", function (event, files) {
+                $fileInput.fileinput("upload");
+            }).on('filepreupload', function (event, data, previewId, index) {
+                //data.form.append('IsHiddenAfterSold', $("input#" + previewId).is(":checked"))
+            }).on("fileuploaded", function (event, data, previewId, index) {
+                _addData([data.response])
 
-            if (data.response.Message == "操作成功") {
-                var caption = $("#" + previewId).find(".explorer-caption")
-                caption.attr("title", data.response.Data.FileName)
-                caption.text(data.response.Data.FileName)
-                $('input:checkbox[name="IsHiddenAfterSold"]:visible').on("click", this.SetHiddenPhototAfterSold)
-            }
-            newPhotos.push({
-                PreviewId: previewId,
-                FileName: data.response.Data.FileName,
-                PhotoId: data.response.Data.Id
-            })
-        }).on('filesorted', function (event, params) {}).on('filebatchpreupload', function (event, data, jqXHR) {}).on("filesuccessremove", function (event, id, fileindex) {
-            var previewId = $("#" + id).data("previewid")
-            $.each(newPhotos, function (i, p) {
-                if (p.PreviewId == previewId) {
-                    $.ajax({
-                        type: "post",
-                        url: "/equipment/deletephoto",
-                        data: {
-                            photoName: p.FileName
-                        },
-                        success: function (result) {
-                            if (result.Message == "操作成功") {
-                                delete newPhotos[i]
-                            }
-                        }
-                    })
+                if (data.response.Message == "操作成功") {
+                    var caption = $("#" + previewId).find(".explorer-caption")
+                    caption.attr("title", data.response.data.fileName)
+                    caption.text(data.response.data.fileName)
+                    $('input:checkbox[name="IsHiddenAfterSold"]:visible').on("click", this.SetHiddenPhototAfterSold)
                 }
-            })
-        });
+                newPhotos.push({
+                    PreviewId: previewId,
+                    FileName: data.response.data.fileName,
+                    PhotoId: data.response.data.id
+                });
+                console.log(newPhotos);
+            }).on('filesorted', function (event, params) {})
+            .on('filebatchpreupload', function (event, data, jqXHR) {})
+            .on("filesuccessremove", function (event, id, fileindex) {
+                console.log(id)
+                var previewId = $("#" + id).data("previewid")
+                console.log(previewId)
+                console.log(newPhotos)
+                $.each(newPhotos, function (i, p) {
+                    if (p.PreviewId == previewId) {
+                        $.ajax({
+                            url: "/equipment/deletephoto",
+                            type: "post",
+                            dataType: 'json',
+                            contentType: "application/json",
+                            data: JSON.stringify({
+                                photoName: p.FileName,
+                                id: p.PhotoId
+                            }),
+                            success: function (result) {
+                                if (result.Message == "操作成功") {
+                                    delete newPhotos[i]
+                                }
+                            }
+                        })
+                    }
+                })
+            });
 
         //初始化 initialPreview initialPreviewConfig
         function _addData(photos) {
@@ -539,15 +548,13 @@ function applicationMembers(obj, id) {
     $.ajax({
         type: "post",
         url: "/account/applyformember",
-        dataType: 'json',
-        contentType: "application/json",
         headers: {
             "X-XSRF-Token": $('#RequestVerificationToken').val(),
             "id": id
         },
-        data: JSON.stringify({
+        data: {
             "id": id
-        }),
+        },
         success: function (response) {
             if (response.code == 200) {
                 $(obj).prop('disabled', true);
