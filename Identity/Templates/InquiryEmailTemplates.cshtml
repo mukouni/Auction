@@ -1,0 +1,1734 @@
+@using Auction.Models
+@model Auction.Models.InquiryViewModel
+
+<html lang="en" data-livestyle-extension="available">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: Microsoft YaHei
+        }
+
+        :focus {
+            outline: none
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p {
+            margin: 0;
+            padding: 0
+        }
+
+        a,
+        a:focus,
+        a:visited {
+            text-decoration: none;
+            -moz-user-select: -moz-none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        a:hover {
+            cursor: pointer;
+            text-decoration: none
+        }
+
+        ul {
+            list-style-type: none
+        }
+
+        .clearfix {
+            *zoom: 1
+        }
+
+        .clearfix:after,
+        .clearfix:before {
+            display: table;
+            line-height: 0;
+            content: ""
+        }
+
+        .clearfix:after {
+            clear: both
+        }
+
+        .pull-left {
+            float: left
+        }
+
+        .pull-right {
+            float: right
+        }
+
+        .text-center {
+            text-align: center
+        }
+
+        .text-left {
+            text-align: left
+        }
+
+        .text-right {
+            text-align: right
+        }
+
+        .unvisible {
+            display: none
+        }
+
+        .list-inline li {
+            display: inline-block
+        }
+
+        input {
+            border: 0
+        }
+
+        .current-page {
+            overflow: hidden
+        }
+
+        .popup-overlay.visible {
+            visibility: visible;
+            opacity: 1
+        }
+
+        .popup-overlay {
+            z-index: 10200;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, .8);
+            z-index: 9990;
+            opacity: .6;
+            -webkit-transition-duration: .4s;
+            transition-duration: .4s
+        }
+
+        .none {
+            display: none;
+        }
+
+        .form {
+            display: flex;
+            justify-content: center;
+        }
+
+        .form .form-group .invalid-name,
+        .form .form-group .invalid-email,
+        .form .form-group .invalid-phone,
+        .form .form-group .invalid-text,
+        .form .form-group .invalid-tel {
+            color: #dc3545;
+        }
+
+        .custom-select.is-invalid,
+        .form-control.is-invalid,
+        .was-validated .custom-select:invalid,
+        .was-validated .form-control:invalid {
+            border-color: #dc3545;
+            border-top-color: rgb(220, 53, 69);
+            border-right-color: rgb(220, 53, 69);
+            border-bottom-color: rgb(220, 53, 69);
+            border-left-color: rgb(220, 53, 69);
+        }
+
+        .form .form-group-inline {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-flow: row wrap;
+            flex-flow: row wrap;
+            -ms-flex-align: center;
+            align-items: center;
+            margin: 10px 10px 25px 10px;
+        }
+
+        .form .form-group .message {
+            clear: both;
+            display: block;
+            position: absolute;
+            font-size: small;
+        }
+
+        .form .form-group .error-message {
+            color: rgb(204, 204, 204);
+        }
+
+        .form .form-group label {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-align: center;
+            align-items: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            margin-bottom: 0;
+        }
+
+        .form .form-group-inline label {
+            /* width: 80px; */
+            line-height: 35px;
+            margin: 0 15px;
+            font-size: 0.8125rem;
+        }
+
+        .form .form-group input[type="text"] {
+            width: 150px;
+        }
+
+        .form .form-group input[type="tel"] {
+            width: 200px;
+        }
+
+        .form .form-group input[type="email"] {
+            width: 250px;
+        }
+
+        .form .form-group input {
+            /* width: 200px; */
+            height: 35px;
+            border: 1px solid #ccc;
+            text-indent: 14px
+        }
+
+        .form .form-group .code {
+            width: 198px
+        }
+
+        .form .form-group .send_code {
+            width: 128px;
+            height: 40px;
+            display: block;
+            border: 1px solid #1054ff;
+            color: #1054ff;
+            font-size: 14px;
+            line-height: 40px;
+            margin-left: 8px;
+            text-indent: 0;
+            cursor: pointer
+        }
+
+        .form .form-group .able_send:hover {
+            background: #fff;
+            border: 1px solid #1951fc;
+            -webkit-box-shadow: 0 3px 12px 0 rgba(0, 0, 0, .1);
+            box-shadow: 0 3px 12px 0 rgba(0, 0, 0, .1)
+        }
+
+        .form .form-group .disabled {
+            color: #666;
+            border: 1px solid #666
+        }
+
+        .must {
+            color: red
+        }
+
+        input[type=password],
+        input[type=text] {
+            height: 38px;
+            border: 1px solid #ddd
+        }
+
+        input[type=password]::-webkit-input-placeholder,
+        input[type=text]::-webkit-input-placeholder {
+            color: #aaa
+        }
+
+        input[type=password]:-ms-input-placeholder,
+        input[type=text]:-ms-input-placeholder {
+            color: #aaa
+        }
+
+        input[type=password]::placeholder,
+        input[type=text]::placeholder {
+            color: #aaa
+        }
+
+        input[type=password].placeholder,
+        input[type=text].placeholder,
+        input[type=tel].placeholder,
+        input[type=email].placeholder {
+            color: #aaa
+        }
+
+        input[type=password]:focus,
+        input[type=text]:focus {
+            border: 1px solid #1054ff;
+            background: #e7eeff
+        }
+
+        input[type=password].error:focus,
+        input[type=password].tiperror:focus,
+        input[type=text].error:focus,
+        input[type=text].tiperror:focus {
+            color: red;
+            border: 1px solid red;
+            background: #ffd5d5
+        }
+
+        input[readonly=readonly]:focus {
+            border: 1px solid #ddd
+        }
+
+        input.error,
+        input.tiperror {
+            color: red;
+            border: 1px solid red;
+            background: #ffd5d5
+        }
+
+        .error-input-text {
+            color: red;
+            font-size: 12px;
+            position: absolute;
+            top: 13px;
+            right: 10px
+        }
+
+        .w-2 {
+            width: 50%
+        }
+
+        .w-3 {
+            width: 33.33333%
+        }
+
+        .w-1 {
+            width: 100%
+        }
+
+        .main {
+            width: 920px;
+            margin: 50px auto;
+            margin-top: 20px
+        }
+
+        .main input {
+            border: none
+        }
+
+        .iconfont {
+            font-family: iconfont !important;
+            font-size: 16px;
+            font-style: normal;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale
+        }
+
+        .icon-sanjiaoxing:before {
+            content: "\25B2"
+        }
+
+        .icon-sanjiaoxing-copy-copy:before {
+            content: "\25BC";
+        }
+
+        .icon-shanchu3-copy:before {
+            content: "\E625"
+        }
+
+        .main .logo {
+            margin-bottom: 38px;
+            border: none
+        }
+
+        .main .select_departure {
+            width: 776px;
+            border: 2px solid #1951fc;
+            margin: 0 auto;
+            margin-bottom: 30px;
+            background: #e7eeff
+        }
+
+        .main .select_departure li {
+            float: left;
+            width: 370px;
+            height: 54px;
+            position: relative
+        }
+
+        .main .start_departure {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            font-size: 14px;
+            color: #1054ff;
+            border: none;
+            font-weight: 600;
+            background: #e7eeff
+        }
+
+        .main .start_departure.placeholder {
+            font-weight: 500;
+            color: #1054ff
+        }
+
+        .main .start_departure:focus {
+            border: none
+        }
+
+        .main .start_departure::-webkit-input-placeholder {
+            color: #1054ff;
+            font-weight: 500
+        }
+
+        .main .start_departure:-moz-placeholder,
+        .main .start_departure::-moz-placeholder {
+            color: #1054ff;
+            opacity: 1;
+            font-weight: 500
+        }
+
+        .main .start_departure:-ms-input-placeholder {
+            color: #1054ff;
+            font-weight: 500
+        }
+
+
+        .main .end_departure {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            font-size: 14px;
+            color: #1054ff;
+            border: none;
+            font-weight: 600;
+            background: #e7eeff
+        }
+
+        .main .end_departure.placeholder {
+            font-weight: 500;
+            color: #1054ff
+        }
+
+        .main .end_departure:focus {
+            border: none
+        }
+
+        .main .end_departure::-webkit-input-placeholder {
+            color: #1054ff;
+            font-weight: 500
+        }
+
+        .main .end_departure:-moz-placeholder,
+        .main .end_departure::-moz-placeholder {
+            color: #1054ff;
+            opacity: 1;
+            font-weight: 500
+        }
+
+        .main .end_departure:-ms-input-placeholder {
+            color: #1054ff;
+            font-weight: 500
+        }
+
+        .main .end_departure:hover,
+        .main .start_departure:hover {
+            background: #dae4fd
+        }
+
+        .main .select_departure .to_departure {
+            width: 36px
+        }
+
+        .main .select_departure .to_departure a {
+            cursor: default
+        }
+
+        .main .select_departure li a {
+            display: block;
+            text-align: center;
+            line-height: 54px;
+            font-size: 14px;
+            margin-top: 20px;
+            color: #1951fc;
+        }
+
+        .main .select_departure li.active>a {
+            font-weight: 600
+        }
+
+        .main .select_departure li a:hover {
+            background: #dae4fd
+        }
+
+        .main .select_departure .to_departure a:hover {
+            background: #e7eeff
+        }
+
+        .main .end_search {
+            position: relative
+        }
+
+        .main .end_search i {
+            font-size: 16px;
+            cursor: pointer;
+            position: absolute;
+            right: 12px;
+            top: 12px;
+            color: #333
+        }
+
+        .main .end_search i:hover {
+            color: #666
+        }
+
+        .main .end_router {
+            height: 36px;
+            width: 100%;
+            border: 0;
+            text-indent: 540px;
+            line-height: 40px;
+            background: #1951fc;
+            font-size: 12px;
+            color: #fff;
+            position: relative
+        }
+
+        .main .end_router img {
+            position: absolute;
+            top: -6px;
+            right: 175px
+        }
+
+        .main .router_area {
+            width: 764px;
+            height: 40px;
+            overflow: hidden
+        }
+
+        .main .allPodWithRoute {
+            position: absolute;
+            width: 764px;
+            right: -3px;
+            top: 54px;
+            z-index: 999;
+            background: #fff;
+            height: 380px;
+            border: 1px solid #e9e9e9;
+            -webkit-box-shadow: 0 8px 8px 0 rgba(0, 0, 0, .04);
+            box-shadow: 0 8px 8px 0 rgba(0, 0, 0, .04)
+        }
+
+        .main .allPodWithRoute .Route_type li {
+            float: left;
+            width: 90px
+        }
+
+        .main .allPodWithRoute .Route_type li a {
+            display: block
+        }
+
+        .main .allPodWithRoute .router_area li {
+            float: left;
+            width: 90px;
+            height: 36px;
+            line-height: 36px
+        }
+
+        .main .allPodWithRoute .router_area li:first-child {
+            width: 120px
+        }
+
+        .main .allPodWithRoute .router_area li a {
+            display: block;
+            height: 36px;
+            line-height: 36px;
+            font-size: 12px;
+            border-bottom: 1px solid #e9e9e9;
+            color: #333;
+            font-weight: 700;
+        }
+
+        .main .allPodWithRoute .router_area li.actived a {
+            border-left: 1px solid #e9e9e9;
+            border-right: 1px solid #e9e9e9;
+            border-bottom: 1px solid #fff
+        }
+
+        .main .area {
+            width: 120px
+        }
+
+        .main .area li {
+            width: 114px;
+            text-align: left;
+            height: 36px;
+            line-height: 36px;
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
+            text-indent: 18px
+        }
+
+        .main .allPodWithRoute .router_area li a:hover,
+        .main .area li:hover,
+        .main .item li:hover {
+            background: #e7eeff
+        }
+
+        .main .area li img {
+            height: 14px;
+            vertical-align: middle;
+            display: none
+        }
+
+        .main .area li.actived {
+            color: #1054ff
+        }
+
+        .main .area li.actived:after {
+            content: "\27A4";
+            position: absolute;
+            right: 5px;
+            /* margin-right: 5px; */
+        }
+
+        .main .area li.actived img {
+            /* display: inline-block */
+            display: none;
+        }
+
+        .main .area_ditail {
+            width: 100%
+        }
+
+        .main .item {
+            height: 290px;
+            width: 640px;
+            overflow-y: scroll;
+            overflow-x: hidden
+        }
+
+        .main .item li {
+            float: left;
+            width: 205px;
+            text-align: left;
+            height: 36px;
+            line-height: 36px;
+            font-size: 12px;
+            color: #333;
+            cursor: pointer;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        .main .searchPod {
+            width: 280px;
+            position: absolute;
+            top: 56px;
+            z-index: 99;
+            background: #fff;
+            border: 1px solid #e9e9e9;
+            -webkit-box-shadow: 0 8px 8px 0 rgba(0, 0, 0, .04);
+            box-shadow: 0 8px 8px 0 rgba(0, 0, 0, .04);
+            border-top: 0;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            -ms-transform: translateX(-50%);
+            transform: translateX(-50%)
+        }
+
+        .main .searchPod .content {
+            margin: 0 auto
+        }
+
+        .main .searchPod p {
+            background: #1951fc;
+            z-index: 999;
+            height: 36px;
+            line-height: 36px;
+            text-indent: 16px;
+            font-size: 14px;
+            color: #fff;
+            position: relative;
+            min-width: 200px
+        }
+
+        .main .searchPod p img {
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            -ms-transform: translateX(-50%);
+            transform: translateX(-50%)
+        }
+
+        .main .searchPod #searchPod_list {
+            overflow-y: auto;
+            overflow-x: hidden;
+            max-height: 288px
+        }
+
+        .main .searchPod #searchPod_list li {
+            height: 36px;
+            line-height: 36px;
+            cursor: pointer;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 12px;
+            text-indent: 19px;
+            color: #151515;
+            width: auto;
+            float: inherit
+        }
+
+        .main .searchPod #searchPod_list li:hover {
+            background: #e7eeff
+        }
+
+        .main .searchPod #searchPod_list li.hover {
+            background: #e7eeff
+        }
+
+        .main .Match_box {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 10px
+        }
+
+        .main .Match_box img {
+            margin-right: 5px
+        }
+
+        .main .Match_box a {
+            color: #1951fc
+        }
+
+        .main .Match_box a:hover {
+            text-decoration: underline
+        }
+
+        .main .Match_box_list {
+            margin-bottom: 20px;
+            border: 1px solid #eee
+        }
+
+        .main .Match_box_list .list_item_title {
+            font-size: 12px;
+            color: #666;
+            background: #f5f5f5;
+            padding: 15px 0 10px;
+            padding-left: 52px;
+            padding-right: 14px
+        }
+
+        .main .Match_box_list .list_item {
+            position: relative;
+            padding-left: 52px;
+            padding-right: 8px;
+            background: #f5f5f5;
+            padding-bottom: 24px
+        }
+
+        .main .Match_box_list .list_item:last-child {
+            padding-bottom: 20px
+        }
+
+        .main .Match_box_list .list_item .plus {
+            position: absolute;
+            top: 5px;
+            left: 8px;
+            width: 34px;
+            height: 34px;
+            cursor: pointer;
+            background-image:
+                url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAiCAYAAAA6RwvCAAAAAXNSR0IArs4c6QAAAopJREFUWAnNWLFuE0EQnd0gJRJFcBNQGgpLtCh8QTow4gdi0fEJoDQIikQ0UfIJlDg/gGKo4AtAlEFyQROcNEeKSKbITd7b+Kyzfbvn8/kuWcm+vd2Zee9mdudmz0iB1le9a/7JUxV5DrUmrutGZZ0m1MiJETlBt4frkd6Trw+MueDcLA06+e0s0o1Y5J2qtCC9kq/hJAbGSNeK7K41zM88nSCRKNKH/0U+wEgbJIKyPiCQgeOksyzyttEwf7xyvomzc23Fl3IIK6s+mSLjeIpzuyRba6umm6UHz02300hfx7F8XhQJItAWbdL2NKJMu9uRUNnPEl7UmDXy5n7DHKTtjcXdhYOeUMn0VFqxTB/rJrZWXqTDNCLiFqbKr0WGI0SWa2bZyONkAd9JhLk7ipJ48uoyUXfXHx+Xxu5DN8Qa7siXlHMhYJ5Avx1SrGiuPcS+JoJk9X7ePFGGIDGZKGnDMm1j4FkZg2V0gd0iB8t3BwzNmrbLYPp0V8jBYtHwBXajjRy4WJs3yuIavGn+RnqM/PvIR2Zyi/rk8saDW9vIb5vUE3mGqpwnh0pTeRHylpVVEYUqZF1114/0G/by5jwAk+snuA4CAHgJfmdoegGZuqZ6KA3kqC40Hw45WFbbEBj4hGoYH5CDZcmPGH2pATATAthdcnDbF387GECmrbcRE9i7RHVEhueOTr00HFonOfPcmlLReYTcWDvy3AF3oVapthGDWEm9SrQREd6wqoaLttmvshEjXcETaxSaNDDPNli5e8i4Y0TTMvP06QmSmDzT0FYmEU7ciiMnidB1PHfgKT7hN/fWpi5t0NZkOIiTNK9HEgFeh58lWOmzyJ61vl3cZ4k0Gfar/FBzBdgX5eTro0UJAAAAAElFTkSuQmCC)
+        }
+
+        .main .Match_box_list .list_item .plus:hover {
+            background-image:
+                url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAiCAYAAAA6RwvCAAAAAXNSR0IArs4c6QAAAjZJREFUWAnNmL1Lw0AYxt9cKkVBUBAFF90FdRfU2cWPwcHV0YKLi/+ALi6Cjo46OPixdFbBXQVndRErgoJQEW2rv+jFmDbpRZOmD5Skx+V9nru8d/e8sYrFYkUM8fIqcnKh5OhMyU1B5P7RksKT5Tzd01GR7s6K9PWIjA+XZXSwLK1Zw8Cf3SwTIZfXlmwe2I6A1zez4NmWL0ELUyUZ6K8/1lAhtw+WrO3acniqzNgDek2OlGVptiS9XcGCAoUcnytZ3MjIczEgesTm9jaR9dy7jA2Vaz5ZU8hW3pbVHVsqwQOoGaxeo/WZTstzJZmfKFV1zfhbELGybfubY/nPwHRsv5hfL5/XwUwkDTjg8sL9R2KSE3G/Di+ZvocDLjg1XCGsjqiJebtni/eng5pc4YJTwxHCPvHfJaoDRrnCCTdwhGzs/yiLEiiOvmyUQLFt+xMnDgLTGBwXaFCcHabbtmnwKP3gRoNCUdpAg+IUTRtoyHCUh4HlaYqwvr0z1du6josGpf2Ebkzjiob0E+R75ApnlTbQkMHeXd0F50nYu/XnRFjfsMGiQeEx0wYaFEY3baBB4bYxumkBbjQoLH+Qj2yEOGYDDc7yzU0HbzZJi6HcAI4Q6g4sf6MBp655XBePbZtYbons0v4qnvIiv/rm1jruzkrxQ92B5U8acMDlLbhcIZCTtNQdSQMO/wKpqmt0vdHoAsvNEf8sNEXJqUU1RRGuxXDF8uP0mSVTfxvrZwmvGO6T/FDzAR9RDjI5vYssAAAAAElFTkSuQmCC)
+        }
+
+        .main .Match_box_list .list_item .mine {
+            position: absolute;
+            top: 5px;
+            left: 8px;
+            width: 34px;
+            height: 34px;
+            cursor: pointer;
+            background-image:
+                url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAiCAYAAAA6RwvCAAAAAXNSR0IArs4c6QAAAhpJREFUWAnFWFlywyAMFYvTSY7TK/VcvVIv0p/+1JnaBqonDHbqOM4k1GjGG4veQ4CQrNq2DXSnoOHgNA3ekA9KrsBPiFKB9HhZ7cgaT7FGqjdvdrMFN3Be0Y9rqGcSDHm1Cwj5cUidY7V9oIbJvJiejN4e600iUH4eLBMwqwSuspJCJf1AvjGOjnYQq621XyUyeE1td6CwYoE1hctyELI8pYZOh46s9ssmXAJbLwSm/S5CYlKNAUGnTNtUnN8WFkHDc9/kBmVfeKpH3QczXKi+sAim49wvuF10KPEBDGDNJX9hYWJNrO2Keafn3yNW2vrQl4lgdzy/MO+nCCxgJhEi8BNxi6bifZ7ABDZEiMBZ7TMlgjm7RUeJAvF50WPO6nd8BTb8rsbZUccaabRKzi+NA6y2gIPGKVpbwMFuEXl9c0V4fryvWx4c9NypFEF8QAk4ZIf2QP+iXTQiq9oCDurzawi1dw5CS404s7ZIrAs2tUUsgmibxMnWohMk4tdwZ4i2awmwwUG2L0L+OlYJkm7ACEIEeQdC/r0FmCnnyQ5N8o4d14piLGAmyUTgVJB37DNFEWvuTDMRMEPyc2wmlolt6Scw/iZaU/Q6oqV8I6YVpUMEng4mkTDmA1wQQSUaauULpZwRDmviVsqpbv2WwPH8eBKexht35MNJONTIAm56cmyhrd8SCXZ6FvwtkZRir590R4Gzjv/6UfMLoRDvx+BSl0EAAAAASUVORK5CYII=)
+        }
+
+        .main .Match_box_list .list_item .mine:hover {
+            background-image:
+                url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAiCAYAAAA6RwvCAAAAAXNSR0IArs4c6QAAAiNJREFUWAnNmL9Lw0AUx18ulaIgKIiFLroL6i6os4s/BgdXRwsuLv4DurgIdXTUwcEfi7MK7io4q0uxIigIlaJp7Sd6saZNe8Wk6XdJe1zf93O5l8t7tQqFQlkM9V4UubhRcnal5CEv8vRiSf7Vcn+d6ivLYH9ZhlIi0+MlmRwtSXfSMHBlmmUCcntvyc6x7QIUP8yCJ7u+gVbmHBkZbr7WhiC5Z0u2Dmw5uVRm7gGzZidKsrboSHogGCgQ5PxayWo2IW+FgOgtDvf2iGxnPmVqrFT3l3VBdk9t2dy3pRy8gLrBmg1alXRaX3JkecapmZrwjwCxsWf7h0P5zsJ0bD/Mn81nO7gTUQsPvKrlfSMxyYmwt6PaTH/GAy88tTwQno6wElMHb3TFC08tF4Rz4r+PqA7YyhVPvJELkj36JWslUBhzOSiR4tj2J04YBqYxeF3AoHh3mB7bpsFbmYc3DAqiuAWD4i0at2BI8CpvpNxhOImcXqg91rUvDErXE3owjisM8SfIz8oVlVXcgiFBeXf3GJwnjfY2rAXAoKgx4xYMikI3bsGgqLYpdOMS3jAoSv6gOrIdcNwNGNzHNzMffNhEDUO7gVwQ+g5K/nYLT93zeAcafQclf7uEF55aHgjND30HJX/UwgOv6obLA8GcpKXviFp4+B+Qmr5G9xvtbrDqdnrckY5oOfXWdEQTrmG4UvJT6XOXTOvbUP+WqIbhc5R/1HwBfbf7DG4HmvQAAAAASUVORK5CYII=)
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Type,
+        .main .Match_box_list .list_item_title .Cabinet_Type {
+            width: 236px
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Count,
+        .main .Match_box_list .list_item_title .Cabinet_Count {
+            width: 44px;
+            margin-left: 18px
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Weight,
+        .main .Match_box_list .list_item_title .Cabinet_Weight {
+            width: 127px
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Size,
+        .main .Match_box_list .list_item_title .Cabinet_Size {
+            width: 406px;
+            margin-left: 20px
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Type li {
+            width: 52px;
+            height: 44px;
+            border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            margin-right: 6px;
+            background: #fff;
+            border: 1px solid #e9e9e9
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Type li:last-child {
+            margin-right: 0
+        }
+
+        .main .Match_box_list .list_item .boxerrors li {
+            border: 1px solid #ffd5d5;
+            background: #ffd5d5
+        }
+
+        /* .main .Match_box_list .list_item .Cabinet_Type li:hover {
+            cursor: pointer;
+            -webkit-box-shadow: 3px 3px 5px #ccc;
+            box-shadow: 3px 3px 5px #ccc;
+            -webkit-transform: translateY(-3px);
+            -ms-transform: translateY(-3px);
+            transform: translateY(-3px)
+        } */
+
+        .main .Match_box_list .list_item .Cabinet_Type .active {
+            background: #fff;
+            -webkit-box-shadow: 3px 3px 5px #ccc;
+            box-shadow: 3px 3px 5px #ccc;
+            border: 2px solid #1054ff
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Type li p {
+            font-size: 13px;
+            text-align: center;
+            color: #333;
+            height: 14px;
+            line-height: 14px
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Type li p:first-child {
+            margin-top: 6px;
+            margin-bottom: 4px
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Type .active p {
+            color: #1054ff;
+            font-weight: 700
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Count input {
+            width: 42px;
+            height: 44px;
+            border: 1px solid #e9e9e9;
+            font-size: 12px;
+            color: #1951fc;
+            text-align: center
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Count.boxQuantityerrors input {
+            border: 1px solid #ffd5d5;
+            background: #ffd5d5
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Count input:hover {
+            border: 1px solid #e9e9e9
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Count input:focus {
+            border: 1px solid #1054ff
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Size input {
+            width: 70px;
+            height: 42px;
+            font-size: 12px;
+            color: #1951fc;
+            text-align: center;
+            border: 1px solid #fff;
+            border-right: 1px solid #e9e9e9
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Size input:hover {
+            border: 1px solid #e7eeff
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Size input:focus {
+            color: #1951fc;
+            border: 1px solid #1054ff
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Size input.placeholder {
+            color: #aaa
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Size input::-webkit-input-placeholder {
+            color: #aaa
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Size input:-moz-placeholder,
+        .main .Match_box_list .list_item .Cabinet_Size input::-moz-placeholder {
+            color: #aaa;
+            opacity: 1
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Size input:-ms-input-placeholder {
+            color: #aaa
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Weight {
+            border: 1px solid #e9e9e9
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Size input:first-child {
+            margin-left: 0
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Weight input {
+            width: 70px;
+            height: 42px;
+            border: 0;
+            font-size: 12px;
+            text-align: center;
+            color: #1054ff;
+            border: 1px solid #fff;
+            border-right: 1px solid #e9e9e9
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Weight input:hover {
+            border: 1px solid #e7eeff
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Weight input:focus {
+            color: #1054ff;
+            border: 1px solid #1054ff
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Weight input.placeholder {
+            color: #aaa
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Weight input::-webkit-input-placeholder {
+            color: #aaa
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Weight input:-moz-placeholder,
+        .main .Match_box_list .list_item .Cabinet_Weight input::-moz-placeholder {
+            color: #aaa;
+            opacity: 1
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Weight input:-ms-input-placeholder {
+            color: #aaa
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Size .Cabinet_item {
+            width: 127px;
+            border: 1px solid #e9e9e9;
+            margin-right: 8px
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Size .Cabinet_item:last-child {
+            margin-right: 0
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Size p,
+        .main .Match_box_list .list_item .Cabinet_Weight p {
+            width: 55px;
+            height: 44px;
+            line-height: 44px;
+            color: #282d37;
+            text-align: center;
+            font-size: 12px;
+            padding-right: 10px;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box
+        }
+
+        .main .list_item .Cabinet_Weight,
+        .main .Match_box_list .list_item .Cabinet_Size .Company {
+            float: right;
+            position: relative;
+            cursor: pointer;
+            height: 44px;
+            line-height: 44px;
+            width: 55px;
+            text-align: left;
+            font-size: 12px;
+            color: #333;
+            background: #fff
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Size .Company .Company_list {
+            position: absolute;
+            top: 50px;
+            width: 55px;
+            right: 0;
+            border: 1px solid #e9e9e9;
+            -webkit-box-shadow: 0 8px 8px 0 rgba(0, 0, 0, .04);
+            box-shadow: 0 8px 8px 0 rgba(0, 0, 0, .04);
+            display: none;
+            z-index: 999;
+            background: #fff
+        }
+
+        .main .Company .icon-sanjiaoxing,
+        .main .Company .icon-sanjiaoxing-copy-copy {
+            position: absolute;
+            right: 5px;
+            font-size: 12px
+        }
+
+        .main .Company span {
+            font-size: 12px;
+            color: #333
+        }
+
+        .main .Company img {
+            position: absolute;
+            top: 39px;
+            left: 18px;
+            display: none;
+            z-index: 1000
+        }
+
+        .main .Cabinet_Weight .Company_list {
+            position: absolute;
+            top: 53px;
+            width: 53px;
+            right: 0;
+            border: 1px solid #e9e9e9;
+            -webkit-box-shadow: 0 8px 8px 0 rgba(0, 0, 0, .04);
+            box-shadow: 0 8px 8px 0 rgba(0, 0, 0, .04);
+            display: none;
+            z-index: 999;
+            background: #fff
+        }
+
+        .main .Cabinet_Weight .Company_list,
+        .main .Match_box_list .list_item .Cabinet_Size .Company .Company_list {
+            background-image:
+                url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAHdElNRQfhBhsWKyqs9KzEAAAAU0lEQVQoz83QOQ6AQBADQc+HkXjLHm/dkyYgWaSBFDp1RZZ+F8aOvc0ByA8EI3KVHLLMHsFI3IsLceaVYGT8AiaJjUKhUmk0Op3BYDI52L4+XpJODEqGnDgI0ZgAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTctMDYtMjdUMjI6NDM6NDIrMDg6MDCnBIx1AAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE3LTA2LTI3VDIyOjQzOjQyKzA4OjAw1lk0yQAAAABJRU5ErkJggg==);
+            background-repeat: no-repeat
+        }
+
+        .main .Cabinet_Weight .Company_list li,
+        .main .Match_box_list .list_item .Cabinet_Size .Company .Company_list li {
+            height: 36px;
+            line-height: 36px;
+            text-align: center;
+            cursor: pointer
+        }
+
+        .main .Cabinet_Weight .Company_list li:hover,
+        .main .Match_box_list .list_item .Cabinet_Size .Company .Company_list li:hover {
+            background: #e8edfe;
+            color: #1054ff
+        }
+
+        .main .Cabinet_Weight .Company:hover,
+        .main .Match_box_list .list_item .Cabinet_Size .Company:hover {
+            background: #e7eeff;
+            color: #333
+        }
+
+        .main .Cabinet_Weight .Company {
+            display: block;
+            height: 44px;
+            line-height: 44px;
+            width: 55px;
+            text-align: center;
+            position: relative;
+            font-size: 12px
+        }
+
+        .main .offer {
+            width: 220px;
+            height: 40px;
+            line-height: 40px;
+            background: #f60;
+            color: #fff;
+            font-size: 16px;
+            display: block;
+            margin: 0 auto;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 3px;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px
+        }
+
+        .main .offer:hover {
+            background: #ff7317;
+            -webkit-box-shadow: 0 2px 4px 0 #ffc39b;
+            box-shadow: 0 2px 4px 0 #ffc39b
+        }
+
+        .main .other {
+            height: auto;
+            padding-bottom: 20px;
+            margin-bottom: 46px;
+            background: #f5f5f5;
+            border: 1px solid #eee
+        }
+
+        .main .other .title {
+            height: 15px;
+            padding: 15px 0 10px 139px;
+            font-size: 12px;
+            color: #666
+        }
+
+        .main .other .title p:nth-child(2n) {
+            margin-left: 290px;
+            margin-right: 216px
+        }
+
+        .main .other .normal_Cabinet {
+            width: 340px;
+            border: 1px solid #e9e9e9;
+            margin-left: 8px;
+            margin-right: 20px;
+            background: #fff
+        }
+
+        .main .other .normal_Cabinet li {
+            float: left;
+            width: 113px
+        }
+
+        .main .other .normal_Cabinet li:nth-child(2n) {
+            width: 112px;
+            border-left: 1px solid #eee;
+            border-right: 1px solid #eee
+        }
+
+        .main .other .normal_Cabinet li input {
+            width: 53px;
+            height: 36px;
+            text-indent: 19px;
+            border: 1px solid #fff;
+            float: left;
+            color: #1951fc
+        }
+
+        .main .other .normal_Cabinet li input:focus {
+            border: 1px solid #1054ff
+        }
+
+        .main .other .normal_Cabinet li input.placeholder {
+            color: #aaa
+        }
+
+        .main .other .normal_Cabinet li input::-webkit-input-placeholder {
+            color: #aaa
+        }
+
+        .main .other .normal_Cabinet li input:-moz-placeholder,
+        .main .other .normal_Cabinet li input::-moz-placeholder {
+            color: #aaa;
+            opacity: 1
+        }
+
+        .main .other .normal_Cabinet li input:-ms-input-placeholder {
+            color: #aaa
+        }
+
+        .main .other .normal_Cabinet li input:focus {
+            color: #1951fc
+        }
+
+        .main .other .normal_Cabinet li p {
+            font-size: 12px;
+            color: #333;
+            height: 36px;
+            line-height: 36px;
+            text-align: center
+        }
+
+        .main .other .hongkong {
+            background: #fff;
+            width: 392px;
+            height: 36px;
+            border: 1px solid #e9e9e9
+        }
+
+        .main .other .hongkong li {
+            width: 23.9%;
+            text-indent: 12px;
+            line-height: 38px;
+            font-size: 12px
+        }
+
+        .main .other .hongkong input {
+            background-color: #000
+        }
+
+        .main .other .calendar {
+            width: 137px;
+            position: relative
+        }
+
+        input[type=date]::-webkit-inner-spin-button {
+            visibility: hidden;
+        }
+
+        .main .other .calendar .shipmentTime {
+            width: 127px;
+            height: 36px;
+            border: 1px solid #e9e9e9;
+            display: block;
+            background: #fff;
+            line-height: 38px;
+            font-size: 12px;
+            color: #aaa;
+            text-align: center
+        }
+
+        .main .other .calendar .shipmentTime.active,
+        .main .other .calendar .shipmentTime.active:hover {
+            color: #1054ff
+        }
+
+        .main .other .calendar .shipmentTime:hover {
+            background: #e7eeff;
+            color: #aaa
+        }
+
+        .main .other .kalendar {
+            position: absolute;
+            top: 45px;
+            width: 130px;
+            right: 6px;
+            border: 1px solid #e9e9e9;
+            z-index: 9999;
+            background: #fff;
+            display: block;
+            color: #333
+        }
+
+        .main .other .kalendar .tli {
+            font-size: 14px;
+            color: #1054ff;
+            position: relative
+        }
+
+        .main .other .kalendar .tli img {
+            position: absolute;
+            top: -12px;
+            right: 63px
+        }
+
+        .main .other .kalendar ul {
+            width: 100%
+        }
+
+        .main .other .kalendar ul li {
+            float: left
+        }
+
+        .main .other .kalendar .year_type {
+            width: 100%;
+            margin: 0 auto;
+            overflow: hidden
+        }
+
+        .main .other .kalendar .year_type .active a {
+            border: 1px solid #1054ff;
+            color: #1054ff
+        }
+
+        .main .other .kalendar .year_type li {
+            float: left
+        }
+
+        .main .other .kalendar .year_type li a {
+            display: block;
+            text-align: center;
+            height: 36px;
+            line-height: 36px;
+            border: 1px solid #eee;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box
+        }
+
+        .main .other .kalendar .months {
+            overflow: hidden
+        }
+
+        .main .other .kalendar .months ul {
+            overflow: hidden;
+            width: 100%;
+            display: none
+        }
+
+        .main .other .kalendar .months ul li {
+            float: left
+        }
+
+        .main .other .kalendar .months ul li a {
+            text-align: center;
+            line-height: 36px;
+            border: 1px solid #eee;
+            height: 36px;
+            display: block;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box
+        }
+
+        .main .other .kalendar .months ul li a:hover {
+            color: #1054ff
+        }
+
+        .main .other .kalendar .months ul li .active {
+            border: 1px solid #1054ff;
+            color: #1054ff
+        }
+
+        .main .other .kalendar .months ul li .active a {
+            color: #333
+        }
+
+        .main .other .kalendar .months .actived {
+            display: block
+        }
+
+        .main .time_ranage {
+            overflow: hidden
+        }
+
+        .main .time_ranage li {
+            float: left;
+            width: 33.33333%
+        }
+
+        .main .time_ranage li a {
+            text-align: center;
+            height: 36px;
+            line-height: 36px;
+            display: block;
+            border: 1px solid #eee;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box
+        }
+
+        .main .time_ranage li a:hover {
+            color: #1054ff
+        }
+
+        .main .time_ranage li a p {
+            font-size: 12px
+        }
+
+        .main .time_ranage li .active {
+            border: 1px solid #1054ff;
+            color: #1054ff
+        }
+
+        .main .sure_kalendar {
+            display: block;
+            background: #1054ff;
+            text-align: center;
+            line-height: 36px;
+            height: 36px;
+            color: #fff;
+            font-size: 14px
+        }
+
+        .main .start_departure_list {
+            border: 1px solid #e9e9e9;
+            /* width: 196px; */
+            position: absolute;
+            left: 86px;
+            z-index: 999;
+            top: 54px;
+            -webkit-box-shadow: 0 8px 8px 0 rgba(0, 0, 0, .04);
+            box-shadow: 0 8px 8px 0 rgba(0, 0, 0, .04)
+        }
+
+        .main .start_departure_list ul {
+            height: 324px;
+            width: 220px;
+            background-color: #fff;
+            height: 288px;
+            overflow-y: scroll;
+            overflow-x: hidden
+        }
+
+        .main .start_departure_list p {
+            background: #1951fc;
+            z-index: 999;
+            /* width: 196px; */
+            height: 36px;
+            line-height: 36px;
+            text-indent: 16px;
+            font-size: 14px;
+            color: #fff;
+            position: relative
+        }
+
+        .main .start_departure_list p img {
+            position: absolute;
+            top: -6px;
+            left: 82px
+        }
+
+        .main .start_departure_list li {
+            width: 100%;
+            height: 36px;
+            position: relative;
+            background-color: #fff;
+            font-family: PingFangSC-Regular !important
+        }
+
+        .main .start_departure_list li input {
+            width: 100%;
+            border: 0;
+            text-indent: 16px;
+            height: 36px;
+            line-height: 36px
+        }
+
+        .main .start_departure_list li i {
+            position: absolute;
+            font-size: 16px;
+            top: 16px;
+            right: 16px;
+            cursor: pointer;
+            color: #333
+        }
+
+        .main .start_departure_list li i:hover {
+            color: #666
+        }
+
+        .main .start_departure_list li a {
+            display: block;
+            line-height: 36px;
+            font-size: 12px;
+            text-align: left;
+            text-indent: 19px;
+            color: #333
+        }
+
+        .main .start_departure_list li a.active {
+            color: #1054ff
+        }
+
+        .main .start_departure_list li a.disable {
+            color: #bbb
+        }
+
+        .main .errortip {
+            background: #ffd5d5
+        }
+
+        .main .address {
+            width: 390px;
+            padding-left: 370px;
+            padding-top: 10px;
+            padding-bottom: 0
+        }
+
+        .main .address li {
+            font-size: 12px;
+            line-height: 24px;
+            text-indent: 12px
+        }
+
+        .main .address li:first-child {
+            margin-bottom: 10px
+        }
+
+        .main .address li input {
+            width: 302px;
+            height: 22px;
+            border: 1px solid #e9e9e9;
+            margin-left: 5px
+        }
+
+        .main .address li input:focus {
+            border: 1px solid #1054ff
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Size .errors input {
+            border: 1px solid #ffd5d5;
+            background: #ffd5d5
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Size .errors input:hover {
+            border: 1px solid #e7eeff
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Size .errors input:focus {
+            border: 1px solid #1054ff
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Size .Company.errors {
+            background: #ffd5d5
+        }
+
+        .main .address li .errors,
+        .main .Match_box_list .list_item .Cabinet_Weight.errors input,
+        .main .other .calendar .errortime {
+            border: 1px solid #ffd5d5;
+            background: #ffd5d5
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Weight.errors input:hover {
+            border: 1px solid #e7eeff
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Weight.errors input:focus {
+            border: 1px solid #1054ff
+        }
+
+        .main .Match_box_list .Cabinet_Weight .Company.errors {
+            background: #ffd5d5
+        }
+
+        .main .Match_box_list .list_item .Cabinet_Count input:hover,
+        .main .Match_box_list .list_item .Cabinet_Size input:hover,
+        .main .Match_box_list .list_item .Cabinet_Weight input:hover {
+            background: #e7eeff
+        }
+
+        .main .errors_pod,
+        .main .errors_pol {
+            background: #ffd5d5
+        }
+    </style>
+</head>
+
+<body cz-shortcut-listen="true">
+    <div class="main">
+        <div class="select_departure">
+            <ul class="clearfix">
+                <li>
+                    <input value="@Model.StartDeparture" class="start_departure placeholder" readonly="readonly" name="StartDeparture">
+                </li>
+                <li class="to_departure">
+                    <a>
+                        <img
+                            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAALCAYAAAAX+i97AAAAAXNSR0IArs4c6QAAAPNJREFUOBHFlK0OwjAUhe/dEhQOtR8kGBQvwBsgNjJLgkXAI8Aj8ArgMeBRJGAQPAQ4gplce+hIRpqlgWRJR03bc+/t+dI/IgvNi8W6l6BZZWmnStHPGmD8zOTFH6H/M7eUYAdImYDQJSlPfiRmJc+vU/4arRj0ogx6KTPtuelObht+6LppbG2HdDOAhkjltR1joOumcS1AuTGAICN58GOxSBK4Jphcqw3oDQC4Cmx5FOIQJghMUFw+b1OSDY1J3SfHmdy3vNfXr3eHNGf1CluQYhdEYqX+rEYR+htQASAJ86eQ53CETq797cgKoE/PnDqE6QsATk9mski/MQAAAABJRU5ErkJggg==">
+                    </a>
+                </li>
+                <li>
+                    <input value="@Model.EndDeparture" type="text" class="end_departure placeholder" readonly="readonly" name="EndDeparture">
+                </li>
+            </ul>
+        </div>
+        <div class="clearfix Match_box">
+            <!-- <a class="pull-right">配箱指导</a> -->
+        </div>
+        <ul class="Match_box_list">
+            <li class="clearfix list_item_title">
+                <div class="pull-left Cabinet_Type">
+                    <p class="title text-center">柜型</p>
+                </div>
+                <div class="pull-left Cabinet_Count">
+                    <p class="title text-center">柜量</p>
+                </div>
+                <div class="pull-left Cabinet_Size">
+                    <p class="title text-center">尺寸</p>
+                </div>
+                <div class="pull-left Cabinet_Weight">
+                    <p class="title text-center">货重</p>
+                </div>
+            </li>
+            @foreach(var item in @Model.Cabinets){
+            <li class="clearfix list_item">
+                <!-- <div class="pull-left plus"></div> -->
+
+                <div class="pull-left Cabinet_Type">
+                    <ul class="clearfix">
+                        <li class="pull-left" @if(item.CabinetType == "20'OT,小开顶"){ @Html.DisplayName("active") }>
+                            <p>20'OT</p>
+                            <p>小开顶</p>
+                        </li>
+                        <li class="pull-left" @if(item.CabinetType == "40'OT,大开顶"){ @Html.DisplayName("active") }>
+                            <p>40'OT</p>
+                            <p>大开顶</p>
+                        </li>
+                        <li class="pull-left" @if(item.CabinetType == "20'FR,小框架"){ @Html.DisplayName("active") }>
+                            <p>20'FR</p>
+                            <p>小框架</p>
+                        </li>
+                        <li class="pull-left" @if(item.CabinetType == "40'FR,大框架"){ @Html.DisplayName("active") }>
+                            <p>40'FR</p>
+                            <p>大框架</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="pull-left Cabinet_Count">
+                    <input value="@item.CabinetCount" max="99999" min="0" type="text" readonly="readonly">
+                </div>
+                <div class="pull-left Cabinet_Size clearfix">
+                    <div class="pull-left Cabinet_item clearfix">
+                        <input value="@item.CabinetLength" type="number" max="99999" min="0" class="Cabinet_Length placeholder" name="CabinetLength"
+                            placeholder="装柜长度" readonly="readonly">
+                        <div class="Company">
+                            <p class="unit">
+                                <span class="unit">@item.CabinetLengthUnit</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="pull-left Cabinet_item clearfix">
+                        <input value="@item.CabinetWidth" type="number" max="99999" min="0" class="Cabinet_Width placeholder" name="CabinetWidth"
+                            placeholder="装柜宽度" readonly="readonly">
+                        <div class="Company">
+                            <p class="unit">
+                                <span class="unit">@item.CabinetWidthUnit</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="pull-left Cabinet_item clearfix">
+                        <input value="@item.CabinetHeight" type="number" max="99999" min="0" class="Cabinet_Height placeholder" name="CabinetHeight"
+                            placeholder="装柜高度" readonly="readonly">
+                        <div class="Company">
+                            <p class="unit">
+                                <span class="unit">@item.CabinetHeightUnit</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="pull-left Cabinet_Weight clearfix">
+                    <input value="@item.CabinetWeight" type="number" max="99999" min="0" name="CabinetWeight" class="pull-left" placeholder="单柜货重"
+                        readonly="readonly">
+
+                    <div class="pull-right Company">
+                        <p class="unit">
+                            <span class="unit">@item.CabinetWeightUnit</span>
+                        </p>
+                    </div>
+                </div>
+            </li>
+            }
+        </ul>
+        <div class="other">
+            <div class="title clearfix">
+                <p class="pull-left">还有普通货柜？</p>
+                <p class="pull-left">还需港前服务？</p>
+                <p class="pull-left">出运时间</p>
+            </div>
+            <div class="other_content clearfix">
+                <div class="normal_Cabinet pull-left">
+                    <ul class="clearfix">
+                        <li class="clearfix">
+                            <input name="@Model.Gp20" type="number" max="99999" min="0" class="placeholder" name="gp20"
+                                readonly="readonly">
+                            <p>x 20'GP</p>
+                        </li>
+                        <li class="clearfix">
+                            <input name="@Model.Gp40" type="number" max="99999" min="0" class="placeholder" name="gp40"
+                                readonly="readonly">
+                            <p>x 40'GP</p>
+                        </li>
+                        <li class="clearfix">
+                            <input name="@Model.Hc40" type="number" max="99999" min="0" class="placeholder" name="hc40"
+                                readonly="readonly">
+                            <p>x 40'HC</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="hongkong pull-left">
+                    <ul class="list-inline">
+                        <li>
+                            <label>
+                                <input type="checkbox" name="MotorcycleFactory" value="true" onclick="return false;" @if(Model.MotorcycleFactory){@Html.DisplayName("checked")}>
+                                到厂拖车
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="checkbox" name="WarehouseLoading" value="true" onclick="return false;" @if(Model.WarehouseLoading){@Html.DisplayName("checked")}>
+                                仓库装柜
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="checkbox" name="HomeLashing" value="true" onclick="return false;" @if(Model.HomeLashing){@Html.DisplayName("checked")}>
+                                上门绑扎
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                @Html.DisplayFor(m => m.CustomsDeclaration)
+                                <input type="checkbox" name="CustomsDeclaration" value="true" onclick="return false;" @if(Model.CustomsDeclaration){@Html.DisplayName("checked")}>
+                                代理报关
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                <div class="calendar pull-right">
+                    <!-- <a class="time" class="shipmentTime">请选择时间</a> -->
+                    <input value="@Model.ShipmentTime" type="text" name="ShipmentTime" class="shipmentTime">
+                </div>
+            </div>
+
+        </div>
+        <form class="form form-inline">
+            <div class="form-group-inline mb-3">
+                <label for="">姓名:</label>
+                <div class="form-group">
+                    <input value="@Model.UserName" type="text" class="placeholder" autocomplete="off" name="name" required="required"
+                        readonly="readonly">
+                    <div class="message none"></div>
+                </div>
+            </div>
+            <div class="form-group-inline">
+                <label for="">手机号:</label>
+                <div class="form-group">
+                    <input value="@Model.Tel" type="tel" class="placeholder" autocomplete="off" name="tel" required="required"
+                        readonly="readonly">
+                    <div class="message none"></div>
+                </div>
+            </div>
+            <div class="form-group-inline">
+                <label for="">邮箱:</label>
+                <div class="form-group">
+                    <input value="@Model.Email" type="email" class="placeholder" autocomplete="off" name="email" required="required"
+                        readonly="readonly">
+                    <div class="message"></div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</body>
+
+</html>

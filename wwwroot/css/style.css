@@ -248,6 +248,7 @@ a:visited {
   background-image: url('../images/bk.jpg');
   background-repeat: no-repeat;
   background-position: center;
+  background-size: cover;
 }
 
 table[data-toggle="table"] tbody td:last-child {

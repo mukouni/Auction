@@ -22,6 +22,7 @@ using System;
 using Microsoft.AspNetCore.Identity;
 using Action.Services;
 using Auction.Identity.Entities;
+using Action.Services.RazorHtmlEmails;
 
 namespace Auction
 {
@@ -72,6 +73,7 @@ namespace Auction
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
 
             services.AddDbContext<AuctionDbContext>(options =>
             {
