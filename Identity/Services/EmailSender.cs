@@ -157,7 +157,7 @@ namespace Auction.Identity.Services
         {
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress("Oog", _options.AdminEmailUserName));
-            message.To.Add(new MailboxAddress(_options.EmailUserName, _options.EmailUserName));
+            message.To.Add(new MailboxAddress(_options.OggEmailUserName, _options.OggEmailUserName));
             message.Subject = "Oog运费询价";
 
             var builder = new BodyBuilder();

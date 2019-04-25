@@ -51,5 +51,6 @@ namespace Auction
         public string SMSsecretKey { get; set; }
 
         public string FilesRootDir { get; set; }
+        public string OggEmailUserName { get; set; }
     }
 }

@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Auction.Models;
 using System;
+using System.IO;
+using CsvHelper;
 
 namespace Auctions.Controllers
 {
@@ -29,6 +31,11 @@ namespace Auctions.Controllers
             try
             {
                 await _emailSender.SendInquiryAsync(inquiry);
+                //     using (var writer = new StreamWriter("path\\to\\file.csv"))
+                //     using (var csv = new CsvWriter(writer))
+                //     {
+                //         csv.WriteRecords(inquiry);
+                //     }
             }
             catch (Exception ex)
             {

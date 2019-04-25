@@ -520,6 +520,13 @@ table[data-toggle="table"] tbody td:last-child {
 
 .bodyinfo.equipment-show .photos-container {
   margin: 0 0 20px 0;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.bodyinfo.equipment-show .photos-container label {
+  font-size: 1.25rem;
+  font-weight: 1;
 }
 
 .bodyinfo.equipment-show .photos-container .equipment-name {
