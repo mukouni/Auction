@@ -40,7 +40,8 @@ namespace Auctions.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                return Ok("Error");
+                return Ok(ex.Message);
+                // return Ok("Error");
             }
             // return Ok("Success");
             return View(inquiry);
