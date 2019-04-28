@@ -7,6 +7,8 @@ using Auction.Models;
 using System;
 using System.IO;
 using CsvHelper;
+using Auction.Models.EmailViewModels;
+using Microsoft.AspNetCore.Cors;
 
 namespace Auctions.Controllers
 {
@@ -26,6 +28,7 @@ namespace Auctions.Controllers
 
         [HttpPost("[action]")]
         [AllowAnonymous]
+        [EnableCors("*")]
         public async Task<IActionResult> InquiryEmail(InquiryViewModel inquiry)
         {
             try
@@ -43,8 +46,16 @@ namespace Auctions.Controllers
                 return Ok(ex.Message);
                 // return Ok("Error");
             }
-            // return Ok("Success");
-            return View(inquiry);
+            return Ok("success");
+        }
+
+        [HttpPost("[action]")]
+        [AllowAnonymous]
+        [EnableCors("*")]
+        public async Task<IActionResult> ContactUsEmail(ContactUsEmailViewModel contactUsEmailViewModel)
+        {
+            await _emailSender.SendContactUsEmailAsync(contactUsEmailViewModel);
+            return Ok("success");
         }
     }
 }

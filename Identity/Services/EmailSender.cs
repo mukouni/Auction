@@ -7,6 +7,7 @@ using MimeKit;
 using System.IO;
 using Auction.Models;
 using Action.Services.RazorHtmlEmails;
+using Auction.Models.EmailViewModels;
 
 namespace Auction.Identity.Services
 {
@@ -16,6 +17,9 @@ namespace Auction.Identity.Services
         Task SendApplyForEmailAsync(string fromPhoneNumber, string formUserName, string subject);
 
         Task SendInquiryAsync(InquiryViewModel inquiryViewModel);
+        Task SendContactUsEmailAsync(ContactUsEmailViewModel contactUsEmailViewModel);
+
+        Task SendMessageAsync(string fromeEmail, string fromeUsername, string toUserName, string toEmail, string messageBody, string subject);
     }
 
     // This class is used by the application to send email for account confirmation and password reset.
@@ -41,83 +45,62 @@ namespace Auction.Identity.Services
 
         public async Task ExecuteAsync(string emailAdrr, string userName, string subject, string callbackUrl)
         {
-            // SmtpClient client = new SmtpClient(_options.EmailHost, _options.EmailPort);
-            // client.Credentials = new NetworkCredential(_options.AdminEmailUserName, _options.AdminEmailPassword);
-            // client.UseDefaultCredentials = false;
-            // client.EnableSsl = false;
-
-            // var builder = new StringBuilder();
-            // string templatePath = $@"{Directory.GetCurrentDirectory()}\Identity\Templates";
-            // IRazorLightEngine engine = EngineFactory.CreatePhysical(templatePath);
-            // var model = new
-            // {
-            //     Username = userName,
-            //     Url = callbackUrl
-            // };
-            // var htmlMessage = "";
-            // var model = new
-            // {
-            //     Username = userName,
-            //     Url = callbackUrl
-            // };
-            // MailMessage mailMessage = new MailMessage();
-            // mailMessage.From = new MailAddress("it@ascendantcn.com");
-            // mailMessage.To.Add(email);
-            // mailMessage.Body = htmlMessage;
-            // mailMessage.IsBodyHtml = true;
-            // mailMessage.Subject = subject;
-
-            // Email.DefaultSender = new SmtpSender();
-            // Email.DefaultRenderer = new RazorRenderer();
-
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("中机电", _options.AdminEmailUserName));
-            message.To.Add(new MailboxAddress(userName, emailAdrr));
-            message.Subject = subject;
-
             var builder = new BodyBuilder();
-            // var rootFolder = Directory.GetCurrentDirectory();
-            // rootFolder = rootFolder.Substring(0,
-            //             rootFolder.IndexOf(@"\Project\", StringComparison.Ordinal) + @"\Project\".Length);
-            // PathToData = Path.GetFullPath(Path.Combine(rootFolder, "Data"));
-
-            // var Parser = Parser();
-            // var d = new FileStream(Path.Combine(PathToData, $"{dataFileName}.txt"), FileMode.Open);
-            // var fs = new StreamReader(d, Encoding.UTF8);
             using (StreamReader SourceReader = System.IO.File.OpenText($@"{Directory.GetCurrentDirectory()}\Identity\Templates\EmailTemplates.cshtml"))
             {
                 builder.HtmlBody = SourceReader.ReadToEnd();
             }
-            message.Body = new TextPart("html")
-            {
-                Text = builder.HtmlBody.Replace("#{UserName}", userName).Replace("#{Url}", callbackUrl)
-            };
-            // message.HtmlBody = builder.HtmlBody;
+            var messageBody = builder.HtmlBody.Replace("#{UserName}", userName).Replace("#{Url}", callbackUrl);
 
-            using (var client = new SmtpClient())
-            {
-                // For demo-purposes, accept all SSL certificates (in case the server supports STARTTLS)
-                // client.ServerCertificateValidationCallback = (s, c, h, e) => true;
-
-                client.Connect(_options.EmailHost, _options.EmailPort, false);
-
-                // Note: only needed if the SMTP server requires authentication
-                client.Authenticate(_options.AdminEmailUserName, _options.AdminEmailPassword);
-
-                await client.SendAsync(message);
-                await client.DisconnectAsync(true);
-            }
-            // return Task.CompletedTask;
+            await SendMessageAsync("中机电", _options.AdminEmailUserName, userName, emailAdrr, messageBody, subject);
         }
 
         public async Task SendApplyForEmailAsync(string fromPhoneNumber, string formRealName, string subject)
         {
+            var builder = new BodyBuilder();
+            using (StreamReader SourceReader = System.IO.File.OpenText($@"{Directory.GetCurrentDirectory()}\Identity\Templates\ApplyEmailTemplates.cshtml"))
+            {
+                builder.HtmlBody = SourceReader.ReadToEnd();
+            }
+            var messageBody = builder.HtmlBody.Replace("#{RealName}", formRealName)
+                                        .Replace("#{PhoneNumber}", fromPhoneNumber)
+                                        .Replace("#{Now}", DateTime.Now.ToShortDateString());
+
+            await SendMessageAsync("中机电", _options.AdminEmailUserName, _options.EmailUserName, _options.EmailUserName, messageBody, subject);
+        }
+
+        public async Task SendInquiryAsync(InquiryViewModel inquiryViewModel)
+        {
+            var messageBody = await _razorViewToStringRenderer.RenderViewToStringAsync(
+                    "/Identity/Templates/InquiryEmailTemplates.cshtml",
+                        inquiryViewModel);
+            await SendMessageAsync("Oog", _options.AdminEmailUserName, _options.OggEmailUserName, _options.OggEmailUserName, messageBody, "Oog运费询价");
+        }
+
+        public async Task SendOogContactUsEmailAsync(InquiryViewModel inquiryViewModel)
+        {
+            var messageBody = await _razorViewToStringRenderer.RenderViewToStringAsync(
+                    "/Identity/Templates/InquiryEmailTemplates.cshtml",
+                        inquiryViewModel);
+            await SendMessageAsync("Oog", _options.AdminEmailUserName, _options.OggEmailUserName, _options.OggEmailUserName, messageBody, "Oog运费询价");
+        }
+
+        public async Task SendContactUsEmailAsync(ContactUsEmailViewModel contactUsEmailViewModel)
+        {
+            var messageBody = $@"姓名：{contactUsEmailViewModel.Name} &#9;  手机号：{contactUsEmailViewModel.Phone} &#9; 邮箱：{contactUsEmailViewModel.Email} <br/>
+                                内容：<br/>
+                                {contactUsEmailViewModel.Message}";
+            await SendMessageAsync("Oog", _options.AdminEmailUserName, _options.OggEmailUserName, _options.OggEmailUserName, messageBody, "联系我们");
+        }
+
+        public async Task SendMessageAsync(string fromeUsername, string fromeEmail, string toUserName, string toEmail, string messageBody, string subject)
+        {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("中机电", _options.AdminEmailUserName));
-            message.To.Add(new MailboxAddress(_options.EmailUserName, _options.EmailUserName));
+            message.From.Add(new MailboxAddress(fromeUsername, fromeEmail));
+            message.To.Add(new MailboxAddress(toUserName, toEmail));
             message.Subject = subject;
 
-            var builder = new BodyBuilder();
+            // var builder = new BodyBuilder();
             // var rootFolder = Directory.GetCurrentDirectory();
             // rootFolder = rootFolder.Substring(0,
             //             rootFolder.IndexOf(@"\Project\", StringComparison.Ordinal) + @"\Project\".Length);
@@ -126,54 +109,13 @@ namespace Auction.Identity.Services
             // var Parser = Parser();
             // var d = new FileStream(Path.Combine(PathToData, $"{dataFileName}.txt"), FileMode.Open);
             // var fs = new StreamReader(d, Encoding.UTF8);
-            using (StreamReader SourceReader = System.IO.File.OpenText($@"{Directory.GetCurrentDirectory()}\Identity\Templates\ApplyEmailTemplates.cshtml"))
-            {
-                builder.HtmlBody = SourceReader.ReadToEnd();
-            }
+            // using (StreamReader SourceReader = System.IO.File.OpenText($@"{Directory.GetCurrentDirectory()}\Identity\Templates\ApplyEmailTemplates.cshtml"))
+            // {
+            //     builder.HtmlBody = SourceReader.ReadToEnd();
+            // }
             message.Body = new TextPart("html")
             {
-                Text = builder.HtmlBody.Replace("#{RealName}", formRealName)
-                                        .Replace("#{PhoneNumber}", fromPhoneNumber)
-                                        .Replace("#{Now}", DateTime.Now.ToShortDateString())
-
-            };
-            // message.HtmlBody = builder.HtmlBody;
-
-            using (var client = new SmtpClient())
-            {
-                // For demo-purposes, accept all SSL certificates (in case the server supports STARTTLS)
-                // client.ServerCertificateValidationCallback = (s, c, h, e) => true;
-
-                client.Connect(_options.EmailHost, _options.EmailPort, false);
-
-                // Note: only needed if the SMTP server requires authentication
-                client.Authenticate(_options.AdminEmailUserName, _options.AdminEmailPassword);
-
-                await client.SendAsync(message);
-                await client.DisconnectAsync(true);
-            }
-        }
-        public async Task SendInquiryAsync(InquiryViewModel inquiryViewModel)
-        {
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("Oog", _options.AdminEmailUserName));
-            message.To.Add(new MailboxAddress(_options.OggEmailUserName, _options.OggEmailUserName));
-            message.Subject = "Oog运费询价";
-
-            var builder = new BodyBuilder();
-            // var rootFolder = Directory.GetCurrentDirectory();
-            // rootFolder = rootFolder.Substring(0,
-            //             rootFolder.IndexOf(@"\Project\", StringComparison.Ordinal) + @"\Project\".Length);
-            // PathToData = Path.GetFullPath(Path.Combine(rootFolder, "Data"));
-
-            // var Parser = Parser();
-            // var d = new FileStream(Path.Combine(PathToData, $"{dataFileName }.txt"), FileMode.Open);
-            // var fs = new StreamReader(d, Encoding.UTF8);
-            message.Body = new TextPart("html")
-            {
-                Text = await _razorViewToStringRenderer.RenderViewToStringAsync(
-                    "/Identity/Templates/InquiryEmailTemplates.cshtml",
-                        inquiryViewModel)
+                Text = messageBody
             };
 
             // message.HtmlBody = builder.HtmlBody;
@@ -187,7 +129,6 @@ namespace Auction.Identity.Services
 
                 // Note: only needed if the SMTP server requires authentication
                 client.Authenticate(_options.AdminEmailUserName, _options.AdminEmailPassword);
-
                 await client.SendAsync(message);
                 await client.DisconnectAsync(true);
             }
