@@ -659,57 +659,71 @@ namespace Auction.Controllers
             ViewData["Action"] = "Auctioned";
             ViewData["ShowSoltAtSort"] = true;
             ViewData["ShowPriceSort"] = true;
-            using (_context)
+            try
             {
-                var query = _context.Equipments.AsQueryable<Equipment>();
-                if (!string.IsNullOrEmpty(searchEquipment.KeyWord))
+                using (_context)
                 {
-                    query = query.Where(x =>
-                        x.Name.Contains(searchEquipment.KeyWord.Trim()) ||
-                        x.Code.Contains(searchEquipment.KeyWord.Trim()) ||
-                        x.Model.Contains(searchEquipment.KeyWord.Trim()));
+
+
+                    var query = _context.Equipments.AsQueryable<Equipment>();
+                    if (!string.IsNullOrEmpty(searchEquipment.KeyWord))
+                    {
+                        query = query.Where(x =>
+                            x.Name.Contains(searchEquipment.KeyWord.Trim()) ||
+                            x.Code.Contains(searchEquipment.KeyWord.Trim()) ||
+                            x.Model.Contains(searchEquipment.KeyWord.Trim()));
+                    }
+                    query = query.Where(x => x.AuctionHouse != null && x.DealPrice != null);
+                    query = query.Where(x => x.IsDeleted == CommonEnum.IsDeleted.No || x.IsDeleted == null);
+
+                    searchEquipment = SliderMaxMin(searchEquipment, query);
+                    searchEquipment = SearchConditionRange(searchEquipment, query);
+
+                    // 全匹配查询，不过滤所有条件
+                    query = SearchCondition(query, searchEquipment);
+
+                    query = query.AuctionSort(searchEquipment);
+
+                    var totalCount = query.Count();
+                    var list = query.Paged(searchEquipment.CurrentPage, searchEquipment.PageSize)
+                                   // .Select(equipment =>  _mapper.Map<EquipmentViewModel>(equipment)) //因为设置了延迟加载会报错
+                                   .ProjectTo<EquipmentViewModel>().ToList();
+                    // .Project().To<EquipmentViewModel>()
+
+                    searchEquipment.Equipments = new StaticPagedList<EquipmentViewModel>(list,
+                                                                                        searchEquipment.CurrentPage,
+                                                                                        searchEquipment.PageSize,
+                                                                                        totalCount);
+                    searchEquipment.Count = totalCount;
+
+                    if (Request.IsAjaxGetRequest())
+                    {
+                        // 搜索
+                        return (IActionResult)PartialView("_AuctionInfoPartial", searchEquipment);
+                    }
+                    if (Request.IsAjaxPostRequest())
+                    {
+                        // 翻页
+                        if (list.Count == 0)
+                        {
+                            var response = ResponseModelFactory.CreateResultInstance;
+                            response.SetData("<p class=\"text-center\">没有更多数据了！</p>", list.Count);
+                            return Ok(response);
+                        }
+                        return (IActionResult)PartialView("_AuctionListPartial", searchEquipment);
+                    }
+                    // 刷新
+                    return View(searchEquipment);
                 }
-                query = query.Where(x => x.AuctionHouse != null && x.DealPrice != null);
-                query = query.Where(x => x.IsDeleted == CommonEnum.IsDeleted.No || x.IsDeleted == null);
-
-                searchEquipment = SliderMaxMin(searchEquipment, query);
-                searchEquipment = SearchConditionRange(searchEquipment, query);
-
-                // 全匹配查询，不过滤所有条件
-                query = SearchCondition(query, searchEquipment);
-
-                query = query.AuctionSort(searchEquipment);
-
-                var totalCount = query.Count();
-                var list = query.Paged(searchEquipment.CurrentPage, searchEquipment.PageSize)
-                               // .Select(equipment =>  _mapper.Map<EquipmentViewModel>(equipment)) //因为设置了延迟加载会报错
-                               .ProjectTo<EquipmentViewModel>().ToList();
-                // .Project().To<EquipmentViewModel>()
-
-                searchEquipment.Equipments = new StaticPagedList<EquipmentViewModel>(list,
-                                                                                    searchEquipment.CurrentPage,
-                                                                                    searchEquipment.PageSize,
-                                                                                    totalCount);
-                searchEquipment.Count = totalCount;
-
-                if (Request.IsAjaxGetRequest())
-                {
-                    // 搜索
-                    return (IActionResult)PartialView("_AuctionInfoPartial", searchEquipment);
-                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
                 if (Request.IsAjaxPostRequest())
                 {
-                    // 翻页
-                    if (list.Count == 0)
-                    {
-                        var response = ResponseModelFactory.CreateResultInstance;
-                        response.SetData("<p class=\"text-center\">没有更多数据了！</p>", list.Count);
-                        return Ok(response);
-                    }
-                    return (IActionResult)PartialView("_AuctionListPartial", searchEquipment);
+                    return Ok("error");
                 }
-                // 刷新
-                return View(searchEquipment);
+                return View();
             }
         }
 
