@@ -33,6 +33,7 @@
     <script>
         function searchEquipments(method = "get", nextPage = 1, pageSize = parseInt("@Model.PageSize")){
             var formData = $("#filter-form").serializeObject();
+            formData = deleteUnCheckedEle(formData);
             formData.KeyWord = $("#KeyWord").val();
             if(method == "post"){
                 var pageData = {
@@ -58,9 +59,14 @@
                             scrollEndGet.hasMore = false;
                             $(".data")[0] .innerHTML += response.Data;
                         }else{
-                            $(".data")[0] .innerHTML += response;
-                            currentPage += 1;
-                            scrollEndGet.hasMore = true;
+                            if(!response.data){
+                                $(".data")[0] .innerHTML += response;
+                                scrollEndGet.currentPage += 1;
+                                scrollEndGet.hasMore = true;
+                            }else{
+                                $(".data")[0] .innerHTML += response.data;
+                                scrollEndGet.hasMore = false;
+                            }
                         }
                         scrollEndGet.ticking = false;
                     }

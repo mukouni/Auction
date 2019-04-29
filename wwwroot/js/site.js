@@ -427,7 +427,6 @@ function ScrollEndGet() {
                 var isScrollEnd = scrollEndGet.lastKnownScrollPosition + scrollEndGet.windowHeight >= scrollEndGet.documentHeight;
 
                 if (!scrollEndGet.ticking && isScrollEnd) {
-                    console.log(11)
                     window.requestAnimationFrame(function () {
                         scrollEndGet.getNextPage(scrollEndGet.currentPage);
                         scrollEndGet.ticking = false;
@@ -505,29 +504,68 @@ function addOrUpdateChip(resetValue, ...args) {
         addRemoveElement(chip, args[0], resetValue);
         document.getElementsByClassName("condition")[0].appendChild(chip);
     }
-    //searchEquipments();
 }
 
 var bindCheckBox = function () {
-    //$("#models-form-group").find("input[type='checkbox']:visible").each(function(i, ele){
-    $(".search input[type='checkbox']:visible").each(function (i, ele) {
-        $(document).on("change click touch touchstart touchend", "#" + $(ele).attr("id"), function () {
-            var chipId = $(this).attr("id") + "-chip";
+    $(document).on('click', 'input[type="checkbox"]', function () {  
+        var chipId = $(this).attr("id") + "-chip";
             if ($(this).is(':checked')) {
-                var checkboxArrayId = $(this).attr("id").split("_").slice(0, 2).join("_");
-                var hiddenInputId = checkboxArrayId + "__Name";
-                var valueInput = $("#" + hiddenInputId);
-
-                //addOrUpdateChip(resetCheckboxStatus, chipId, valueInput.val());
                 searchEquipments();
             } else {
                 $("#" + chipId).remove();
                 searchEquipments();
             }
-
-        })
     });
+    //$("#models-form-group").find("input[type='checkbox']:visible").each(function(i, ele){
+    // $(".search input[type='checkbox']:visible").each(function (i, ele) {
+    //     $(document).on("change click touch touchstart touchend", "#" + $(ele).attr("id"), function () {
+    //         var chipId = $(this).attr("id") + "-chip";
+    //         if ($(this).is(':checked')) {
+    //             // var checkboxArrayId = $(this).attr("id").split("_").slice(0, 2).join("_");
+    //             // var hiddenInputId = checkboxArrayId + "__Name";
+    //             // var valueInput = $("#" + hiddenInputId);
+
+    //             //addOrUpdateChip(resetCheckboxStatus, chipId, valueInput.val());
+    //             searchEquipments();
+    //         } else {
+    //             $("#" + chipId).remove();
+    //             searchEquipments();
+    //         }
+
+    //     })
+    // });
 };
+
+function deleteUnCheckedEle(formData){
+    for(var key in formData){
+        let match= key.match(/(\w*\[[0-9]*\])\.(\w*)/);
+        if(match && match[2] == 'Name' && formData[match[1] + '.' + 'Selected'] == undefined){
+           delete formData[match[1] + '.' + 'Name'];
+        }
+    }
+    let names = {Names: 0, Manufacturers: 0, Models: 0, Countries: 0, Cities: 0, AuctionHouses: 0};
+    for(var key in formData){
+        let match = key.match(/((\w*)\[([0-9]*)\])\.Select/);
+        if(match){
+            if(match[3] != 0){
+                let orginNameKey = match[1] + '.' + 'Name';
+                let newNameKey = match[2] + '[' + names[match[2]] + ']' + '.' + 'Name';
+                if(orginNameKey != newNameKey) {
+                    let orginSelectKey = match[1] + '.' + 'Selected';
+                    let newSelectKey = match[2] + '[' + names[match[2]] + ']' + '.' + 'Selected';
+
+                    formData[newNameKey] = formData[orginNameKey];
+                    formData[newSelectKey] = 'true';
+                    delete formData[orginNameKey];
+                    delete formData[orginSelectKey];
+                }
+            }
+
+            names[match[2]] = names[match[2]] + 1;
+        }
+    }
+    return formData;
+}
 
 function resetCheckboxStatus(id) {
     $("#" + id.toString()).prop('checked', false);

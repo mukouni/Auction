@@ -23,7 +23,7 @@
                 <b class="price pb-md-2 pb-sm-1">@item.PriceCurrency?.SymbolCode@item.Price</b>
             }
             @if(ViewData["Action"] == "Auctioned"){
-                <b class="price pb-md-2 pb-sm-1">@item.DealPriceCurrency?.SymbolCode@item.DealPrice</b>
+                <b class="price pb-md-2 pb-sm-1">@item.DealPriceCurrency?.SymbolCode@item.DealPrice?.ToString("N0")</b>
             }
             @if (SignInManager.IsSignedIn(User) && (User.IsInRole(ApplicationRole.Admin) || User.IsInRole(ApplicationRole.Staff))){
                 <p>

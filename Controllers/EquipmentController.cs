@@ -37,6 +37,7 @@ using System.Collections;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Cors;
 
 namespace Auction.Controllers
 {
@@ -160,7 +161,7 @@ namespace Auction.Controllers
             ViewData["breadcrumb"] = breadcrumb;
 
             var equipment = new EquipmentViewModel();
-            equipment.Code = "A" + GenerateCode();
+            
             var group1 = new SelectListGroup() { Name = "Group 1" };
             equipment.Currencies = _context.Currencies.Select(c => new SelectListItem
             {
@@ -177,6 +178,7 @@ namespace Auction.Controllers
         {
 
             Equipment equipment = _mapper.Map<Equipment>(EquipmentVM);
+            equipment.Code = "A" + GenerateCode();
             equipment.CoverPhoto = null;
             await _context.Equipments.AddAsync(equipment);
             await _context.SaveChangesAsync();
@@ -663,8 +665,6 @@ namespace Auction.Controllers
             {
                 using (_context)
                 {
-
-
                     var query = _context.Equipments.AsQueryable<Equipment>();
                     if (!string.IsNullOrEmpty(searchEquipment.KeyWord))
                     {
@@ -1048,15 +1048,15 @@ namespace Auction.Controllers
                 selectedManufacturers = searchEquipment.Manufacturers?.Where(e => e.Selected).Select(e => e.Name).ToArray();
 
             var selectedAuctionHouses = new string[] { };
-            if (searchEquipment.Manufacturers != null)
+            if (searchEquipment.AuctionHouses != null)
                 selectedAuctionHouses = searchEquipment.AuctionHouses?.Where(e => e.Selected).Select(e => e.Name).ToArray();
 
             var selectedCountries = new string[] { };
-            if (searchEquipment.Manufacturers != null)
+            if (searchEquipment.Countries != null)
                 selectedCountries = searchEquipment.Countries?.Where(e => e.Selected).Select(e => e.Name).ToArray();
 
             var selectedCities = new string[] { };
-            if (searchEquipment.Manufacturers != null)
+            if (searchEquipment.Cities != null)
                 selectedCities = searchEquipment.Cities?.Where(e => e.Selected).Select(e => e.Name).ToArray();
 
 
