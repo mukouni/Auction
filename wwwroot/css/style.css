@@ -1,6 +1,6 @@
 html,
 body {
-  font-family: 'Trebuchet MS';
+  font-family: "Trebuchet MS";
 
   height: 100%;
 }
@@ -90,10 +90,10 @@ a:visited {
 }
 
 .nav-pills .nav-link.active,
-.nav-pills .show>.nav-link,
+.nav-pills .show > .nav-link,
 .nav .nav-link.active {
   color: #495057;
-  background-color: #EAB82D;
+  background-color: #eab82d;
 }
 
 .pagination {
@@ -108,12 +108,12 @@ a:visited {
 }
 
 .head a {
-  font-size: 1.125rem;
+  font-size: 1rem;
 }
 
 .head {
   /* 18px */
-  line-height: 3.125rem;
+  line-height: 2.5rem;
   /* 50px */
 
   background-color: #003a70;
@@ -134,7 +134,6 @@ a:visited {
 
   text-align: center;
 
-
   background-color: white;
 }
 
@@ -145,7 +144,7 @@ a:visited {
 .title {
   position: relative;
 
-  height: 100px;
+  height: 70px;
 
   border-bottom: 3px solid #e87511;
   background-color: #f0f0f0;
@@ -158,12 +157,12 @@ a:visited {
 }
 
 .title img {
-  width: 200px;
+  width: 160px;
 }
 
 @media (min-width: 576px) {
   .title img {
-    width: 340px;
+    width: 240px;
   }
 }
 
@@ -206,46 +205,45 @@ a:visited {
 }
 
 #navbar li.nav-item a {
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: bold;
-
+  padding: 0.3rem 0.6rem;
   color: #495057;
 }
 
 .btn-primary,
 .page-item.active .page-link {
-  background-color: #EAB82D;
-  border-color: #EAB82D;
+  background-color: #eab82d;
+  border-color: #eab82d;
 }
 
 .btn-primary:hover,
 .btn-primary:not(:disabled):not(.disabled).active,
 .btn-primary:not(:disabled):not(.disabled):active,
-.show>.btn-primary.dropdown-toggle {
+.show > .btn-primary.dropdown-toggle {
   background-color: #e87511;
   border-color: #e87511;
 }
 
 .page-link:focus,
 .form-control:focus {
-  border-color: #EAB82D;
-  box-shadow: 0 0 0 0.2rem #EAB82D80;
+  border-color: #eab82d;
+  box-shadow: 0 0 0 0.2rem #eab82d80;
 }
 
 .daterangepicker select {
   border-radius: 2px;
 }
-
 #navbar li.nav-item:hover {
   border-radius: 5px;
   background-color: white;
 }
 
 .body {
-  height: calc(100% - 140px);
-  margin: 100px -15px 40px;
+  height: calc(100% - 110px);
+  margin: 70px -15px 40px;
 
-  background-image: url('../images/bk.jpg');
+  background-image: url("../images/bk.jpg");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -264,8 +262,8 @@ table[data-toggle="table"] tbody td:last-child {
 
 @media (min-width: 576px) {
   .body {
-    height: calc(100% - 190px);
-    margin: 150px -15px 40px;
+    height: calc(100% - 150px);
+    margin: 110px -15px 40px;
   }
 
   .alert-dismissible {
@@ -280,7 +278,7 @@ table[data-toggle="table"] tbody td:last-child {
 
   border: 2px solid #e87511;
   border-radius: 5px;
-  background-color: rgba(158, 158, 158, .5);
+  background-color: rgba(158, 158, 158, 0.5);
 }
 
 .login h3 {
@@ -312,7 +310,7 @@ table[data-toggle="table"] tbody td:last-child {
 
   width: 100%;
 
-  content: ' ';
+  content: " ";
 }
 
 .bodyinfo {
@@ -320,19 +318,19 @@ table[data-toggle="table"] tbody td:last-child {
   /* min-width: 1000px; */
   height: auto;
   min-height: calc(100% - 190px);
-  margin: 150px auto 40px;
+  margin: 120px auto 42px;
 }
 
-@media(max-width: 1024px) {
+@media (max-width: 1024px) {
   .bodyinfo {
     width: 100%;
     min-width: 768px;
   }
 }
 
-@media(max-width: 576px) {
+@media (max-width: 576px) {
   .bodyinfo {
-    margin: 100px auto 0;
+    margin: 80px auto 0;
     min-width: auto;
   }
 }
@@ -340,6 +338,7 @@ table[data-toggle="table"] tbody td:last-child {
 .bodyinfo .search-input {
   height: 43px;
   width: 100%;
+  margin-bottom: 0.3125rem;
 }
 
 .bodyinfo .condition {
@@ -360,10 +359,10 @@ table[data-toggle="table"] tbody td:last-child {
 }
 
 .bodyinfo .info .equipment-list .media-body p {
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
 }
 
-@media(max-width: 576px) {
+@media (max-width: 576px) {
   #navbar li.nav-item a {
     font-size: 1.25rem;
   }
@@ -432,7 +431,7 @@ table[data-toggle="table"] tbody td:last-child {
     position: relative;
     z-index: 1;
     will-change: transform;
-    background-color: #FFF;
+    background-color: #fff;
     /* A background-color is required */
     min-height: 100vh;
   }
@@ -457,13 +456,12 @@ table[data-toggle="table"] tbody td:last-child {
   }
 
   .sold-out-new:before {
-    top: calc(50% - .5rem) !important;
+    top: calc(50% - 0.5rem) !important;
   }
 
   .sold-out-new:after {
-    top: calc(50% - .9rem) !important;
+    top: calc(50% - 0.9rem) !important;
   }
-
 }
 
 .bodyinfo .info .search {
@@ -474,6 +472,34 @@ table[data-toggle="table"] tbody td:last-child {
   padding-bottom: 40px;
 
   border-right: 2px solid gray;
+}
+
+.bodyinfo .info .search .form-group .form-check:nth-child(n + 7) {
+  display: none;
+}
+.bodyinfo .info .search .form-group .show-more::after {
+  display: block;
+  content: " 更多>>";
+  font-size: 0.875rem;
+  font-weight: bold;
+  height: 1rem;
+  width: auto;
+  cursor: pointer;
+}
+.bodyinfo
+  .info
+  .search
+  .form-group
+  .form-check:nth-child(6)
+  ~ .hidden-more::after {
+  display: block;
+  content: " 隐藏>>";
+  font-size: 0.875rem;
+  font-weight: bold;
+  height: 1rem;
+  width: auto;
+  display: block;
+  cursor: pointer;
 }
 
 .bodyinfo .info .show .sort {
@@ -610,7 +636,6 @@ footer {
   }
 }
 
-
 .data .equipment-list {
   border-bottom: 1px dotted #8f8f8f;
   position: relative;
@@ -639,7 +664,6 @@ footer {
   .data .equipment-list .price {
     font-size: 2.5rem;
   }
-
 }
 
 @media (min-width: 990px) and (max-width: 1600px) {
@@ -721,7 +745,7 @@ footer {
 .sold-out-new:before {
   content: "";
   position: absolute;
-  left: .3rem;
+  left: 0.3rem;
   top: calc(50% - 1.5rem);
   width: 4.5rem;
   height: 2.5rem;
@@ -737,7 +761,7 @@ footer {
 .sold-out-new:after {
   content: "已售";
   position: absolute;
-  left: .8rem;
+  left: 0.8rem;
   top: calc(50% - 1.4rem - 6px);
   width: 4.5rem;
   line-height: 3rem;

@@ -507,14 +507,14 @@ function addOrUpdateChip(resetValue, ...args) {
 }
 
 var bindCheckBox = function () {
-    $(document).on('click', 'input[type="checkbox"]', function () {  
+    $(document).on('click', 'input[type="checkbox"]', function () {
         var chipId = $(this).attr("id") + "-chip";
-            if ($(this).is(':checked')) {
-                searchEquipments();
-            } else {
-                $("#" + chipId).remove();
-                searchEquipments();
-            }
+        if ($(this).is(':checked')) {
+            searchEquipments();
+        } else {
+            $("#" + chipId).remove();
+            searchEquipments();
+        }
     });
     //$("#models-form-group").find("input[type='checkbox']:visible").each(function(i, ele){
     // $(".search input[type='checkbox']:visible").each(function (i, ele) {
@@ -536,21 +536,28 @@ var bindCheckBox = function () {
     // });
 };
 
-function deleteUnCheckedEle(formData){
-    for(var key in formData){
-        let match= key.match(/(\w*\[[0-9]*\])\.(\w*)/);
-        if(match && match[2] == 'Name' && formData[match[1] + '.' + 'Selected'] == undefined){
-           delete formData[match[1] + '.' + 'Name'];
+function deleteUnCheckedEle(formData) {
+    for (var key in formData) {
+        let match = key.match(/(\w*\[[0-9]*\])\.(\w*)/);
+        if (match && match[2] == 'Name' && formData[match[1] + '.' + 'Selected'] == undefined) {
+            delete formData[match[1] + '.' + 'Name'];
         }
     }
-    let names = {Names: 0, Manufacturers: 0, Models: 0, Countries: 0, Cities: 0, AuctionHouses: 0};
-    for(var key in formData){
+    let names = {
+        Names: 0,
+        Manufacturers: 0,
+        Models: 0,
+        Countries: 0,
+        Cities: 0,
+        AuctionHouses: 0
+    };
+    for (var key in formData) {
         let match = key.match(/((\w*)\[([0-9]*)\])\.Select/);
-        if(match){
-            if(match[3] != 0){
+        if (match) {
+            if (match[3] != 0) {
                 let orginNameKey = match[1] + '.' + 'Name';
                 let newNameKey = match[2] + '[' + names[match[2]] + ']' + '.' + 'Name';
-                if(orginNameKey != newNameKey) {
+                if (orginNameKey != newNameKey) {
                     let orginSelectKey = match[1] + '.' + 'Selected';
                     let newSelectKey = match[2] + '[' + names[match[2]] + ']' + '.' + 'Selected';
 
@@ -600,3 +607,28 @@ function applicationMembers(obj, id) {
         }
     });
 }
+
+function SearchItemDisplay() {
+    $('.search').on('click', '.show-more', function (){
+        $(this).nextAll().show();
+        $(this).nextAll('.form-check:last').after("<span class='hidden-more'><span>");
+        $(this).remove();
+    });
+    $('.search').on('click', '.hidden-more', function (){
+        var allFormCheck = $(this).closest(".form-group").find(".form-check");
+        allFormCheck.eq(5).after("<span class='show-more'><span>");
+        allFormCheck.eq(5).nextAll(".form-check").hide();
+        $(this).remove();
+    });
+    var group = $('.search .form-group');
+    $.each(group, function(){
+        var length = $(this).find('.form-check').length;
+        if(length > 6){
+            if(!$(this).find('.form-check').eq(5).next().hasClass('show-more')){
+                $(this).find('.form-check').eq(5).after("<span class='show-more'><span>");
+            }
+        }
+    })
+}
+// SearchItemDisplay();
+

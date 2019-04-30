@@ -42,7 +42,7 @@
         function checkedValue(){
             $(".condition").html("");
 
-            $(".search input[type='checkbox']:visible:checked").each(function(i, ele){
+            $(".search input[type='checkbox']:checked").each(function(i, ele){
                 var chipId = $(ele).attr("id") + "-chip";
                 var checkboxArrayId = $(ele).attr("id").split("_").slice(0,2).join("_");  
                 var hiddenInputId = checkboxArrayId + "__Name";
