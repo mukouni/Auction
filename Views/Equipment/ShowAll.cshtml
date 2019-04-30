@@ -14,10 +14,10 @@
 
     <div class="photos-container pt-3">
         <span class="row equipment-name font-weight-bold h3 col" style="color: #EAB82D">
-            @if(Model.DealPrice != null && Model.DealPrice != 0 && ViewData["Type"].ToString() == "InsteadAuction"){
+            @if(Model.DealPrice != null && Model.DealPrice != 0 && Model.AuctionHouse == null){
                 <span class="sold-out-new"></span>
             }
-            <span @if(Model.DealPrice != null && Model.DealPrice != 0 && ViewData["Type"].ToString() == "InsteadAuction"){ @Html.DisplayName("style=text-indent:5rem;")}>
+            <span @if(Model.DealPrice != null && Model.DealPrice != 0 && Model.AuctionHouse == null){ @Html.DisplayName("style=text-indent:5rem;")}>
                 @Model.Manufacturer  @Model.Model @Model.Name
             </span>
         </span>
@@ -138,198 +138,199 @@
             </div>
         </div>
     </div>
-
-    @if(Model.ExteriorPhotos != null && Model.ExteriorPhotos.Count > 0){
-    <div class="exterior-photos-container photos-container">
-        <div class="row photo-title col mb-1">
-            外观图片:
-        </div>
-        <div class="row">
-            <div class="exterior-photos photos col-md-3" itemscope itemtype="http://schema.org/ImageGallery">
-                <div class="swiper-container gallery-top">
-                    <div class="swiper-wrapper my-gallery">
-                    @foreach(var photo in @Model.ExteriorPhotos?.OrderBy(p => p.FileName)){
-                        <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-                            <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
-                                <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
-                            </a>
-                            <figcaption></figcaption>
-                        </figure>
-                    }
-                    </div>
-                    <!-- Add Arrows -->
-                    <div class="swiper-button-next swiper-button-white" tabindex="0" role="button" aria-label="上一张" aria-disabled="false"></div>
-                    <div class="swiper-button-prev swiper-button-white" tabindex="0" role="button" aria-label="下一张" aria-disabled="false"></div>
-                <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
-                </div>
-    
-                <div class="swiper-container gallery-thumbs">
-                    <div class="swiper-wrapper">
+    <div class="row equipment-photos">
+        @if(Model.ExteriorPhotos != null && Model.ExteriorPhotos.Count > 0){
+        <div class="exterior-photos-container photos-container">
+            <div class="row photo-title col mb-1">
+                外观图片:
+            </div>
+            <div class="row">
+                <div class="exterior-photos photos col-md-3" itemscope itemtype="http://schema.org/ImageGallery">
+                    <div class="swiper-container gallery-top">
+                        <div class="swiper-wrapper my-gallery">
                         @foreach(var photo in @Model.ExteriorPhotos?.OrderBy(p => p.FileName)){
-                            <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                            <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                                <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
+                                    <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
+                                </a>
+                                <figcaption></figcaption>
+                            </figure>
                         }
-                    </div>
-                <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
-                </div>
-            </div>
-            <div class="photo-message">
-            </div>
-        </div>
-    </div>
-    }
-    @if(Model.TrackedChassisPhotos != null && Model.TrackedChassisPhotos.Count > 0){
-    <div class="tracked-chassis-photos-container photos-container">
-        <div class="row photo-title col mb-1">
-            履带底架图片:
-        </div>
-        <div class="row">
-            <div class="tracked-chassis-photos photos col-md-3" itemscope itemtype="http://schema.org/ImageGallery">
-                <div class="swiper-container gallery-top">
-                    <div class="swiper-wrapper my-gallery">
-                    @foreach(var photo in @Model.TrackedChassisPhotos?.OrderBy(p => p.FileName)){
-                        <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-                            <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
-                                <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
-                            </a>
-                            <figcaption></figcaption>
-                        </figure>
-                    }
-                    </div>
-                    <!-- Add Arrows -->
-                    <div class="swiper-button-next swiper-button-white" tabindex="0" role="button" aria-label="上一张" aria-disabled="false"></div>
-                    <div class="swiper-button-prev swiper-button-white" tabindex="0" role="button" aria-label="下一张" aria-disabled="false"></div>
+                        </div>
+                        <!-- Add Arrows -->
+                        <div class="swiper-button-next swiper-button-white" tabindex="0" role="button" aria-label="上一张" aria-disabled="false"></div>
+                        <div class="swiper-button-prev swiper-button-white" tabindex="0" role="button" aria-label="下一张" aria-disabled="false"></div>
                     <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                    </div>
+        
+                    <div class="swiper-container gallery-thumbs">
+                        <div class="swiper-wrapper">
+                            @foreach(var photo in @Model.ExteriorPhotos?.OrderBy(p => p.FileName)){
+                                <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                            }
+                        </div>
+                    <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                    </div>
                 </div>
-                <div class="swiper-container gallery-thumbs">
-                    <div class="swiper-wrapper">
+                <div class="photo-message">
+                </div>
+            </div>
+        </div>
+        }
+        @if(Model.TrackedChassisPhotos != null && Model.TrackedChassisPhotos.Count > 0){
+        <div class="tracked-chassis-photos-container photos-container">
+            <div class="row photo-title col mb-1">
+                履带底架图片:
+            </div>
+            <div class="row">
+                <div class="tracked-chassis-photos photos col-md-3" itemscope itemtype="http://schema.org/ImageGallery">
+                    <div class="swiper-container gallery-top">
+                        <div class="swiper-wrapper my-gallery">
                         @foreach(var photo in @Model.TrackedChassisPhotos?.OrderBy(p => p.FileName)){
-                            <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                            <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                                <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
+                                    <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
+                                </a>
+                                <figcaption></figcaption>
+                            </figure>
                         }
+                        </div>
+                        <!-- Add Arrows -->
+                        <div class="swiper-button-next swiper-button-white" tabindex="0" role="button" aria-label="上一张" aria-disabled="false"></div>
+                        <div class="swiper-button-prev swiper-button-white" tabindex="0" role="button" aria-label="下一张" aria-disabled="false"></div>
+                        <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
                     </div>
-                    <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                    <div class="swiper-container gallery-thumbs">
+                        <div class="swiper-wrapper">
+                            @foreach(var photo in @Model.TrackedChassisPhotos?.OrderBy(p => p.FileName)){
+                                <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                            }
+                        </div>
+                        <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                    </div>
+                </div>
+                <div class="photo-message">
                 </div>
             </div>
-            <div class="photo-message">
+        </div>
+        }
+        
+        @if(Model.CabPhotos != null && Model.CabPhotos.Count > 0){
+        <div class="cab-photos-container photos-container">
+            <div class="row photo-title col mb-1">
+                驾驶室照片:
             </div>
-        </div>
-    </div>
-    }
-    
-    @if(Model.CabPhotos != null && Model.CabPhotos.Count > 0){
-    <div class="cab-photos-container photos-container">
-        <div class="row photo-title col mb-1">
-            驾驶室照片:
-        </div>
-        <div class="row">
-            <div class="cab-photos photos col-md-3" itemscope itemtype="http://schema.org/ImageGallery">
-                <div class="swiper-container gallery-top">
-                    <div class="swiper-wrapper my-gallery">
-                    @foreach(var photo in @Model.CabPhotos?.OrderBy(p => p.FileName)){
-                        <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-                            <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
-                                <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
-                            </a>
-                            <figcaption></figcaption>
-                        </figure>
-                    }
-                    </div>
-                    <!-- Add Arrows -->
-                    <div class="swiper-button-next swiper-button-white" tabindex="0" role="button" aria-label="上一张" aria-disabled="false"></div>
-                    <div class="swiper-button-prev swiper-button-white" tabindex="0" role="button" aria-label="下一张" aria-disabled="false"></div>
-                <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
-                </div>
-    
-                @if(@Model.CabPhotos.Count > 1){
-                <div class="swiper-container gallery-thumbs">
-                    <div class="swiper-wrapper">
+            <div class="row">
+                <div class="cab-photos photos col-md-3" itemscope itemtype="http://schema.org/ImageGallery">
+                    <div class="swiper-container gallery-top">
+                        <div class="swiper-wrapper my-gallery">
                         @foreach(var photo in @Model.CabPhotos?.OrderBy(p => p.FileName)){
-                            <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                            <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                                <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
+                                    <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
+                                </a>
+                                <figcaption></figcaption>
+                            </figure>
                         }
-                    </div>
+                        </div>
+                        <!-- Add Arrows -->
+                        <div class="swiper-button-next swiper-button-white" tabindex="0" role="button" aria-label="上一张" aria-disabled="false"></div>
+                        <div class="swiper-button-prev swiper-button-white" tabindex="0" role="button" aria-label="下一张" aria-disabled="false"></div>
                     <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
-                </div>
-                }
-            </div>
-            <div class="photo-message">
-            </div>
-        </div>
-    </div>
-    }
-    @if(Model.BoomPhotos != null && Model.BoomPhotos.Count > 0){
-    <div class="boom-photos-container photos-container">
-        <div class="row photo-title col mb-1">
-            臂架照片:
-        </div>
-        <div class="row">
-            <div class="boom-photos photos col-md-3" itemscope itemtype="http://schema.org/ImageGallery">
-                <div class="swiper-container gallery-top">
-                    <div class="swiper-wrapper my-gallery">
-                    @foreach(var photo in @Model.BoomPhotos?.OrderBy(p => p.FileName)){
-                        <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-                            <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
-                                <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
-                            </a>
-                            <figcaption></figcaption>
-                        </figure>
+                    </div>
+        
+                    @if(@Model.CabPhotos.Count > 1){
+                    <div class="swiper-container gallery-thumbs">
+                        <div class="swiper-wrapper">
+                            @foreach(var photo in @Model.CabPhotos?.OrderBy(p => p.FileName)){
+                                <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                            }
+                        </div>
+                        <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                    </div>
                     }
-                    </div>
-                    <!-- Add Arrows -->
-                    <div class="swiper-button-next swiper-button-white" tabindex="0" role="button" aria-label="上一张" aria-disabled="false"></div>
-                    <div class="swiper-button-prev swiper-button-white" tabindex="0" role="button" aria-label="下一张" aria-disabled="false"></div>
-                    <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
                 </div>
-                <div class="swiper-container gallery-thumbs">
-                    <div class="swiper-wrapper">
+                <div class="photo-message">
+                </div>
+            </div>
+        </div>
+        }
+        @if(Model.BoomPhotos != null && Model.BoomPhotos.Count > 0){
+        <div class="boom-photos-container photos-container">
+            <div class="row photo-title col mb-1">
+                臂架照片:
+            </div>
+            <div class="row">
+                <div class="boom-photos photos col-md-3" itemscope itemtype="http://schema.org/ImageGallery">
+                    <div class="swiper-container gallery-top">
+                        <div class="swiper-wrapper my-gallery">
                         @foreach(var photo in @Model.BoomPhotos?.OrderBy(p => p.FileName)){
-                            <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                            <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                                <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
+                                    <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
+                                </a>
+                                <figcaption></figcaption>
+                            </figure>
                         }
+                        </div>
+                        <!-- Add Arrows -->
+                        <div class="swiper-button-next swiper-button-white" tabindex="0" role="button" aria-label="上一张" aria-disabled="false"></div>
+                        <div class="swiper-button-prev swiper-button-white" tabindex="0" role="button" aria-label="下一张" aria-disabled="false"></div>
+                        <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
                     </div>
-                    <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                    <div class="swiper-container gallery-thumbs">
+                        <div class="swiper-wrapper">
+                            @foreach(var photo in @Model.BoomPhotos?.OrderBy(p => p.FileName)){
+                                <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                            }
+                        </div>
+                        <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                    </div>
+                </div>
+                <div class="photo-message">
                 </div>
             </div>
-            <div class="photo-message">
+        </div>
+        }
+        @if(Model.EnginePhotos != null && Model.EnginePhotos.Count > 0){
+        <div class="engine-photos-container photos-container">
+            <div class="row photo-title col mb-1">
+                引擎照片:
             </div>
-        </div>
-    </div>
-    }
-    @if(Model.EnginePhotos != null && Model.EnginePhotos.Count > 0){
-    <div class="engine-photos-container photos-container">
-        <div class="row photo-title col mb-1">
-            引擎照片:
-        </div>
-        <div class="row">
-            <div class="engine-photos photos col-md-3" itemscope itemtype="http://schema.org/ImageGallery">
-                <div class="swiper-container gallery-top">
-                    <div class="swiper-wrapper my-gallery">
-                    @foreach(var photo in @Model.EnginePhotos?.OrderBy(p => p.FileName)){
-                        <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-                            <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
-                                <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
-                            </a>
-                            <figcaption></figcaption>
-                        </figure>
-                    }
-                    </div>
-                    <!-- Add Arrows -->
-                    <div class="swiper-button-next swiper-button-white" tabindex="0" role="button" aria-label="上一张" aria-disabled="false"></div>
-                    <div class="swiper-button-prev swiper-button-white" tabindex="0" role="button" aria-label="下一张" aria-disabled="false"></div>
-                <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
-                </div>
-    
-                <div class="swiper-container gallery-thumbs">
-                    <div class="swiper-wrapper">
+            <div class="row">
+                <div class="engine-photos photos col-md-3" itemscope itemtype="http://schema.org/ImageGallery">
+                    <div class="swiper-container gallery-top">
+                        <div class="swiper-wrapper my-gallery">
                         @foreach(var photo in @Model.EnginePhotos?.OrderBy(p => p.FileName)){
-                            <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                            <figure class="swiper-slide" style="background-image:url(@photo.RequestPath)" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                                <a href="@photo.RequestPath" itemprop="contentUrl" data-size="0x0">
+                                    <img src="@photo.RequestPath" itemprop="thumbnail" alt="Image description" class="d-none"/>
+                                </a>
+                                <figcaption></figcaption>
+                            </figure>
                         }
+                        </div>
+                        <!-- Add Arrows -->
+                        <div class="swiper-button-next swiper-button-white" tabindex="0" role="button" aria-label="上一张" aria-disabled="false"></div>
+                        <div class="swiper-button-prev swiper-button-white" tabindex="0" role="button" aria-label="下一张" aria-disabled="false"></div>
+                    <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
                     </div>
-                <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+        
+                    <div class="swiper-container gallery-thumbs">
+                        <div class="swiper-wrapper">
+                            @foreach(var photo in @Model.EnginePhotos?.OrderBy(p => p.FileName)){
+                                <div class="swiper-slide" style="background-image:url(@photo.RequestPath)"></div>
+                            }
+                        </div>
+                    <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                    </div>
+                </div>
+                <div class="photo-message">
                 </div>
             </div>
-            <div class="photo-message">
-            </div>
         </div>
+        }
     </div>
-    }
 </div>
 @await Html.PartialAsync("_PhotoSwipeWindowPort")
 @section script {
