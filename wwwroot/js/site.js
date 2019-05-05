@@ -111,14 +111,10 @@ function UploadPhoto(uploadUrl, deleteUrl, setHiddenPhototUrl, modelId) {
                     FileName: data.response.data.fileName,
                     PhotoId: data.response.data.id
                 });
-                console.log(newPhotos);
             }).on('filesorted', function (event, params) {})
             .on('filebatchpreupload', function (event, data, jqXHR) {})
             .on("filesuccessremove", function (event, id, fileindex) {
-                console.log(id)
                 var previewId = $("#" + id).data("previewid")
-                console.log(previewId)
-                console.log(newPhotos)
                 $.each(newPhotos, function (i, p) {
                     if (p.PreviewId == previewId) {
                         $.ajax({
@@ -607,25 +603,42 @@ function applicationMembers(obj, id) {
         }
     });
 }
-
+var showSearchItem = { Names: true, Manufacturers: true, Models: true, Cities: true, AuctionHouse: true }
 function SearchItemDisplay() {
     $('.search').on('click', '.show-more', function (){
+        let type = $(this).closest('.form-group ').find('.control-label').first().attr('for');
+        showSearchItem[type] = false;
         $(this).nextAll().show();
-        $(this).nextAll('.form-check:last').after("<span class='hidden-more'><span>");
-        $(this).remove();
+        $(this).hide();
+        $(this).prevAll('.hidden-more').show();
     });
     $('.search').on('click', '.hidden-more', function (){
+        let type = $(this).closest('.form-group ').find('.control-label').first().attr('for');
+        showSearchItem[type] = true;
         var allFormCheck = $(this).closest(".form-group").find(".form-check");
-        allFormCheck.eq(5).after("<span class='show-more'><span>");
         allFormCheck.eq(5).nextAll(".form-check").hide();
-        $(this).remove();
+        $(this).prevAll('.show-more').show();
+        $(this).hide();
     });
-    var group = $('.search .form-group');
+
+    let group = $('.search .form-group');
     $.each(group, function(){
-        var length = $(this).find('.form-check').length;
+        let length = $(this).find('.form-check').length;
         if(length > 6){
-            if(!$(this).find('.form-check').eq(5).next().hasClass('show-more')){
+
+            let type = $(this).find('.control-label').first().attr('for');
+            
+            if(!$(this).find('.show-more').length > 0)
                 $(this).find('.form-check').eq(5).after("<span class='show-more'><span>");
+            if(!$(this).find('.hidden-more').length > 0)
+                $(this).find('.form-check:last').after("<span class='hidden-more'><span>");
+            if(!showSearchItem[type]){
+                $(this).find('.show-more').hide();
+                $(this).find('.show-more').nextAll().show();
+                // $(this).find('.hidden-more').show();
+            }else{
+                $(this).find('.show-more').show();
+                $(this).find('.hidden-more').hide();
             }
         }
     })
