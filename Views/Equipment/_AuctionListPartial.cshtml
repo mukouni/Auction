@@ -57,7 +57,7 @@
                 <b class="price pb-md-2 pb-sm-1">@item.DealPriceCurrency?.SymbolCode@item.DealPrice?.ToString("N0")</b>
             }
             @if(item.DealPrice == null && ViewData["Action"] == "InsteadAuction"){
-                <b class="price pb-md-2 pb-sm-1">@item.PriceCurrency?.SymbolCode@item.Price</b>
+                <b class="price pb-md-2 pb-sm-1">@item.PriceCurrency?.SymbolCode@item.Price?.ToString("N0")</b>
             }
         </div>
         <!-- <div class="sold-out">
