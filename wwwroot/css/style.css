@@ -398,6 +398,10 @@ table[data-toggle="table"] tbody td:last-child {
     font-size: 1.25rem;
   }
 
+  .bodyinfo .info .equipment-list .media-body .equipment-title:hover {
+    color: #e87511;
+  }
+
   .data .equipment-list .price {
     bottom: 0;
     left: 0;
@@ -655,6 +659,10 @@ footer {
 
 .data .equipment-list .equipment-title {
   color: #3c3c3c;
+}
+
+.data .equipment-list .equipment-title:hover {
+  color: #e87511;
 }
 
 .data .equipment-list .price {
