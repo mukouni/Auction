@@ -90,7 +90,7 @@ a:visited {
 }
 
 .nav-pills .nav-link.active,
-.nav-pills .show > .nav-link,
+.nav-pills .show>.nav-link,
 .nav .nav-link.active {
   color: #495057;
   background-color: #eab82d;
@@ -220,7 +220,7 @@ a:visited {
 .btn-primary:hover,
 .btn-primary:not(:disabled):not(.disabled).active,
 .btn-primary:not(:disabled):not(.disabled):active,
-.show > .btn-primary.dropdown-toggle {
+.show>.btn-primary.dropdown-toggle {
   background-color: #e87511;
   border-color: #e87511;
 }
@@ -234,6 +234,7 @@ a:visited {
 .daterangepicker select {
   border-radius: 2px;
 }
+
 #navbar li.nav-item:hover {
   border-radius: 5px;
   background-color: white;
@@ -267,7 +268,12 @@ table[data-toggle="table"] tbody td:last-child {
   }
 
   .alert-dismissible {
-    margin-top: 150px;
+    margin-top: 110px;
+    line-height: .6rem;
+  }
+
+  .alert-dismissible .close {
+    line-height: .6rem;
   }
 }
 
@@ -462,6 +468,15 @@ table[data-toggle="table"] tbody td:last-child {
   .sold-out-new:after {
     top: calc(50% - 0.9rem) !important;
   }
+
+  .alert-dismissible {
+    margin-top: 110px;
+    line-height: .6rem;
+  }
+
+  .alert-dismissible .close {
+    line-height: .6rem;
+  }
 }
 
 .bodyinfo .info .search {
@@ -477,6 +492,7 @@ table[data-toggle="table"] tbody td:last-child {
 .bodyinfo .info .search .form-group .form-check:nth-child(n + 7) {
   display: none;
 }
+
 .bodyinfo .info .search .form-group .show-more::after {
   display: block;
   content: " 更多>>";
@@ -486,12 +502,8 @@ table[data-toggle="table"] tbody td:last-child {
   width: auto;
   cursor: pointer;
 }
-.bodyinfo
-  .info
-  .search
-  .form-group
-  .form-check:nth-child(6)
-  ~ .hidden-more::after {
+
+.bodyinfo .info .search .form-group .form-check:nth-child(6)~.hidden-more::after {
   display: block;
   content: " 隐藏>>";
   font-size: 0.875rem;
@@ -623,11 +635,11 @@ table[data-toggle="table"] tbody td:last-child {
 footer {
   margin: 0 -15px;
 
-  background-color: #3f3f3f;
+  background-color: #f0f0f0;
 
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
-  color: white;
+  color: #7d7d7d;
 }
 
 @media (min-width: 410px) {
@@ -772,4 +784,126 @@ footer {
   -moz-transform: rotate(-10deg);
   -webkit-transform: rotate(-10deg);
   -o-transform: rotate(-10deg);
+}
+
+.alert-dismissible {
+  -moz-animation-name: fadeIn;
+  -webkit-animation-name: fadeIn;
+  -ms-animation-name: fadeIn;
+  animation-name: fadeIn;
+  -moz-animation-duration: 5s;
+  -webkit-animation-duration: 5s;
+  -ms-animation-duration: 5s;
+  animation-duration: 5s;
+  -moz-animation-timing-function: ease-in-out;
+  -webkit-animation-timing-function: ease-in-out;
+  -ms-animation-timing-function: ease-in-out;
+  animation-timing-function: ease-in-out;
+  -moz-animation-fill-mode: forwards;
+  -webkit-animation-fill-mode: forwards;
+  -ms-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+
+.alert-dismissible.fadeOut {
+  -moz-animation-name: fadeOut;
+  -webkit-animation-name: fadeOut;
+  -ms-animation-name: fadeOut;
+  animation-name: fadeOut;
+}
+
+@-moz-keyframes fadeIn {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@-ms-keyframes fadeIn {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@-keyframes fadeIn {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@-moz-keyframes fadeOut {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@-webkit-keyframes fadeOut {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@-ms-keyframes fadeOut {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@-keyframes fadeOut {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
 }

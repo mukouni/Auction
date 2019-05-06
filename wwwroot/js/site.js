@@ -603,16 +603,23 @@ function applicationMembers(obj, id) {
         }
     });
 }
-var showSearchItem = { Names: true, Manufacturers: true, Models: true, Cities: true, AuctionHouse: true }
+var showSearchItem = {
+    Names: true,
+    Manufacturers: true,
+    Models: true,
+    Cities: true,
+    AuctionHouse: true
+}
+
 function SearchItemDisplay() {
-    $('.search').on('click', '.show-more', function (){
+    $('.search').on('click', '.show-more', function () {
         let type = $(this).closest('.form-group ').find('.control-label').first().attr('for');
         showSearchItem[type] = false;
         $(this).nextAll().show();
         $(this).hide();
         $(this).prevAll('.hidden-more').show();
     });
-    $('.search').on('click', '.hidden-more', function (){
+    $('.search').on('click', '.hidden-more', function () {
         let type = $(this).closest('.form-group ').find('.control-label').first().attr('for');
         showSearchItem[type] = true;
         var allFormCheck = $(this).closest(".form-group").find(".form-check");
@@ -622,21 +629,21 @@ function SearchItemDisplay() {
     });
 
     let group = $('.search .form-group');
-    $.each(group, function(){
+    $.each(group, function () {
         let length = $(this).find('.form-check').length;
-        if(length > 6){
+        if (length > 6) {
 
             let type = $(this).find('.control-label').first().attr('for');
-            
-            if(!$(this).find('.show-more').length > 0)
+
+            if (!$(this).find('.show-more').length > 0)
                 $(this).find('.form-check').eq(5).after("<span class='show-more'><span>");
-            if(!$(this).find('.hidden-more').length > 0)
+            if (!$(this).find('.hidden-more').length > 0)
                 $(this).find('.form-check:last').after("<span class='hidden-more'><span>");
-            if(!showSearchItem[type]){
+            if (!showSearchItem[type]) {
                 $(this).find('.show-more').hide();
                 $(this).find('.show-more').nextAll().show();
                 // $(this).find('.hidden-more').show();
-            }else{
+            } else {
                 $(this).find('.show-more').show();
                 $(this).find('.hidden-more').hide();
             }
@@ -644,4 +651,3 @@ function SearchItemDisplay() {
     })
 }
 // SearchItemDisplay();
-
