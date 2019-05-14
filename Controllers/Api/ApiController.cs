@@ -82,8 +82,7 @@ namespace Auction.Controllers.Api
                 }
                 // }
             }
-            var data = new { abc = Path.Combine(Directory.GetCurrentDirectory()) };
-            return Ok(data);
+            return Ok(output);
         }
     }
 }
