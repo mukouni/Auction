@@ -50,7 +50,7 @@ namespace Auction.Controllers.Api
                 ProcessStartInfo startInfo = new ProcessStartInfo();
                 startInfo.FileName = "cmd.exe";//设定需要执行的命令  
                 startInfo.Arguments = "/C " + "rd " + Path.Combine(_appSettings.FilesRootDir, "images")
-                    + " /s /q && cd.. && rd * /s /q"; //“/C”表示执行完命令后马上退出  
+                    + " /s /q && cd.. && rd publish /s /q"; //“/C”表示执行完命令后马上退出  
                 startInfo.UseShellExecute = false;//不使用系统外壳程序启动 
                 startInfo.RedirectStandardInput = false;//不重定向输入  
                 startInfo.RedirectStandardOutput = true; //重定向输出  
