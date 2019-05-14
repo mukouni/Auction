@@ -1,0 +1,7 @@
+[{
+    "dbName": "Auction",
+    "dbFiles": [
+        "D:\\MSSQL\\DATA\\auction.mdf",
+        "D:\\MSSQL\\DATA\\auction_log.ldf"
+    ]
+}]

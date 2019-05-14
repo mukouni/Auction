@@ -24,7 +24,7 @@ namespace Auction.Controllers.Api
     [Area("api")]
     [Route("[area]/[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class AccountController : ApiController
+    public class AccountController : Controller
     {
         private readonly AuctionSettings _appSettings;
         private readonly AuctionDbContext _context;

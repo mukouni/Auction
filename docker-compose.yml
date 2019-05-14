@@ -1,0 +1,37 @@
+version: "3.7"
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # volumes:
+    #   - type: volume
+    #     source: "..\\net_project\\uploadfiles"
+    #     target: "D:\\net_project\\ploadfiles"
+    #     volume:
+    #       nocopy: true
+    # - type: bind
+    #   source: ../wwwroot/
+    #   target: D:\net_project\wwwroot
+    ports:
+      - "127.0.0.1:8000:8000"
+    # depends_on:
+    # - db
+    # network_mode: "host"
+  # test:
+  #   build:
+  #     context: ./test
+  #     dockerfile: Dockerfile
+  #   command: powershell -executionpolicy bypass "c:\temp\iis-server-test.ps1"
+  #   depends_on:
+  #     - "web"
+  # db:
+  #   image: "microsoft/mssql-server-windows-developer"
+  #   volumes:
+  #     - mssql: D:\\net_project\\mssql\\data
+  #   environment:
+  #     SA_PASSWORD: "sasasa"
+  #     ACCEPT_EULA: "Y"
+  #     # - ConnectionString=sql.data
+# volumes:
+#   ploadfiles:

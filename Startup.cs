@@ -160,7 +160,7 @@ namespace Auction
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
-                    Path.Combine(_configuration.GetSection("AuctionSettings:FilesRootDir").Value, "images")),
+                    Path.Combine(Directory.GetCurrentDirectory(), "..", "uploadfiles", "images")),
                 RequestPath = "/images"
             });
             // app.UseStaticFiles(
